@@ -3,10 +3,10 @@
 override_dh_auto_install:
 	dh_auto_install
 
-	mkdir -p $(CURDIR)/debian/homegear/etc/homegear/devices/4
-	cp $(CURDIR)/misc/Device\ Description\ Files/* $(CURDIR)/debian/homegear/etc/homegear/devices/4
-	chmod 755 $(CURDIR)/debian/homegear/etc/homegear/devices/4
-	chmod 644 $(CURDIR)/debian/homegear/etc/homegear/devices/4/*
+	mkdir -p $(CURDIR)/debian/homegear-max/etc/homegear/devices/4
+	cp $(CURDIR)/misc/Device\ Description\ Files/* $(CURDIR)/debian/homegear-max/etc/homegear/devices/4
+	chmod 755 $(CURDIR)/debian/homegear-max/etc/homegear/devices/4
+	chmod 644 $(CURDIR)/debian/homegear-max/etc/homegear/devices/4/*
 
 override_dh_strip:
 	dh_strip --dbg-package=homegear-max
