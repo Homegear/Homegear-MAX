@@ -1445,7 +1445,7 @@ PVariable MAXPeer::setValue(int32_t clientID, uint32_t channel, std::string valu
 		}
 		else if(rpcParameter->physical->operationType != IPhysical::OperationType::Enum::command) return Variable::createError(-6, "Parameter is not settable.");
 		PToggle toggleCast;
-		if(rpcParameter->casts.empty()) toggleCast = std::dynamic_pointer_cast<Toggle>(rpcParameter->casts.at(0));
+		if(!rpcParameter->casts.empty()) toggleCast = std::dynamic_pointer_cast<Toggle>(rpcParameter->casts.at(0));
 		if(toggleCast)
 		{
 			//Handle toggle parameter
