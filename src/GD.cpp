@@ -36,5 +36,5 @@ namespace MAX
 	std::map<std::string, std::shared_ptr<BaseLib::Systems::IPhysicalInterface>> GD::physicalInterfaces;
 	std::shared_ptr<BaseLib::Systems::IPhysicalInterface> GD::defaultPhysicalInterface;
 	BaseLib::Output GD::out;
-	BaseLib::DeviceDescription::Devices GD::rpcDevices(BaseLib::Systems::DeviceFamilies::MAX);
+	BaseLib::DeviceDescription::Devices GD::rpcDevices(4);
 }

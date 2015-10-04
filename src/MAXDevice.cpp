@@ -44,12 +44,12 @@ void MAXDevice::setPhysicalInterfaceID(std::string id)
 	}
 }
 
-MAXDevice::MAXDevice(IDeviceEventSink* eventHandler) : LogicalDevice(BaseLib::Systems::DeviceFamilies::MAX, GD::bl, eventHandler)
+MAXDevice::MAXDevice(IDeviceEventSink* eventHandler) : LogicalDevice(4, GD::bl, eventHandler)
 {
 	_physicalInterface = GD::defaultPhysicalInterface;
 }
 
-MAXDevice::MAXDevice(uint32_t deviceID, std::string serialNumber, int32_t address, IDeviceEventSink* eventHandler) : LogicalDevice(BaseLib::Systems::DeviceFamilies::MAX, GD::bl, deviceID, serialNumber, address, eventHandler)
+MAXDevice::MAXDevice(uint32_t deviceID, std::string serialNumber, int32_t address, IDeviceEventSink* eventHandler) : LogicalDevice(4, GD::bl, deviceID, serialNumber, address, eventHandler)
 {
 	_physicalInterface = GD::defaultPhysicalInterface;
 }

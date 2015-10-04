@@ -1045,7 +1045,7 @@ void MAXCentral::handlePairingRequest(int32_t messageCounter, std::shared_ptr<MA
 
 		std::string serialNumber((char*)&packet->payload()->at(4), 10);
 		uint32_t rawType = (packet->payload()->at(2) << 8) + packet->payload()->at(3);
-		LogicalDeviceType deviceType(BaseLib::Systems::DeviceFamilies::MAX, rawType);
+		LogicalDeviceType deviceType(4, rawType);
 
 		std::shared_ptr<MAXPeer> peer(getPeer(packet->senderAddress()));
 		if(peer && (peer->getSerialNumber() != serialNumber || peer->getDeviceType() != deviceType))

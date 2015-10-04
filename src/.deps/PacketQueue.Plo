@@ -223,7 +223,6 @@ PacketQueue.lo: PacketQueue.cpp /usr/include/stdc-predef.h PacketQueue.h \
  /usr/include/x86_64-linux-gnu/bits/sigthread.h \
  /usr/include/homegear-base/Managers/FileDescriptorManager.h \
  /usr/include/homegear-base/HelperFunctions/HelperFunctions.h \
- /usr/include/homegear-base/Systems/DeviceFamilies.h \
  /usr/include/c++/4.8/algorithm /usr/include/c++/4.8/bits/stl_algo.h \
  /usr/include/c++/4.8/bits/algorithmfwd.h \
  /usr/include/c++/4.8/bits/stl_heap.h /usr/include/c++/4.8/random \
@@ -260,7 +259,6 @@ PacketQueue.lo: PacketQueue.cpp /usr/include/stdc-predef.h PacketQueue.h \
  /usr/include/homegear-base/DeviceDescription/Devices.h \
  /usr/include/homegear-base/Systems/Packet.h \
  /usr/include/homegear-base/Systems/DeviceTypes.h \
- /usr/include/homegear-base/Systems/DeviceFamilies.h \
  /usr/include/homegear-base/DeviceDescription/HomegearDevice.h \
  /usr/include/homegear-base/DeviceDescription/DevicePacket.h \
  /usr/include/homegear-base/DeviceDescription/JsonPayload.h \
@@ -272,7 +270,6 @@ PacketQueue.lo: PacketQueue.cpp /usr/include/stdc-predef.h PacketQueue.h \
  /usr/include/homegear-base/DeviceDescription/Logical.h \
  /usr/include/homegear-base/DeviceDescription/Physical.h \
  /usr/include/homegear-base/DeviceDescription/SupportedDevice.h \
- /usr/include/homegear-base/Systems/DeviceFamilies.h \
  /usr/include/homegear-base/DeviceDescription/RunProgram.h \
  /usr/include/homegear-base/DeviceDescription/Function.h \
  /usr/include/homegear-base/DeviceDescription/ParameterGroup.h \
@@ -304,7 +301,6 @@ PacketQueue.lo: PacketQueue.cpp /usr/include/stdc-predef.h PacketQueue.h \
  /usr/include/homegear-base/Systems/IPhysicalInterface.h \
  /usr/include/homegear-base/IEvents.h \
  /usr/include/homegear-base/Systems/PhysicalInterfaceSettings.h \
- /usr/include/homegear-base/Systems/DeviceFamilies.h \
  /usr/include/homegear-base/Managers/FileDescriptorManager.h \
  /usr/include/c++/4.8/condition_variable \
  /usr/include/homegear-base/Systems/Packet.h \
@@ -321,7 +317,8 @@ PacketQueue.lo: PacketQueue.cpp /usr/include/stdc-predef.h PacketQueue.h \
  /usr/include/homegear-base/Output/Output.h \
  /usr/include/homegear-base/SSDP/SSDP.h \
  /usr/include/homegear-base/Encoding/HTTP.h \
- /usr/include/homegear-base/Variable.h MAXPacket.h \
+ /usr/include/homegear-base/Variable.h \
+ /usr/include/homegear-base/IQueue.h MAXPacket.h \
  /usr/include/c++/4.8/queue /usr/include/c++/4.8/bits/stl_queue.h \
  MAXMessage.h MAXDevice.h MAXPeer.h PendingQueues.h MAXDeviceTypes.h \
  QueueManager.h PacketManager.h MAXMessages.h GD.h MAX.h
@@ -890,8 +887,6 @@ delegate_template.hpp:
 
 /usr/include/homegear-base/HelperFunctions/HelperFunctions.h:
 
-/usr/include/homegear-base/Systems/DeviceFamilies.h:
-
 /usr/include/c++/4.8/algorithm:
 
 /usr/include/c++/4.8/bits/stl_algo.h:
@@ -980,8 +975,6 @@ delegate_template.hpp:
 
 /usr/include/homegear-base/Systems/DeviceTypes.h:
 
-/usr/include/homegear-base/Systems/DeviceFamilies.h:
-
 /usr/include/homegear-base/DeviceDescription/HomegearDevice.h:
 
 /usr/include/homegear-base/DeviceDescription/DevicePacket.h:
@@ -1003,8 +996,6 @@ delegate_template.hpp:
 /usr/include/homegear-base/DeviceDescription/Physical.h:
 
 /usr/include/homegear-base/DeviceDescription/SupportedDevice.h:
-
-/usr/include/homegear-base/Systems/DeviceFamilies.h:
 
 /usr/include/homegear-base/DeviceDescription/RunProgram.h:
 
@@ -1080,8 +1071,6 @@ delegate_template.hpp:
 
 /usr/include/homegear-base/Systems/PhysicalInterfaceSettings.h:
 
-/usr/include/homegear-base/Systems/DeviceFamilies.h:
-
 /usr/include/homegear-base/Managers/FileDescriptorManager.h:
 
 /usr/include/c++/4.8/condition_variable:
@@ -1115,6 +1104,8 @@ delegate_template.hpp:
 /usr/include/homegear-base/Encoding/HTTP.h:
 
 /usr/include/homegear-base/Variable.h:
+
+/usr/include/homegear-base/IQueue.h:
 
 MAXPacket.h:
 
