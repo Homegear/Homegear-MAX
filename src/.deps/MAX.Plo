@@ -319,7 +319,26 @@ MAX.lo: MAX.cpp /usr/include/stdc-predef.h MAX.h \
  /usr/include/homegear-base/Variable.h \
  /usr/include/homegear-base/IQueue.h PhysicalInterfaces/CUL.h \
  /usr/include/homegear-base/BaseLib.h PhysicalInterfaces/COC.h \
- PhysicalInterfaces/TICC1100.h MAXDeviceTypes.h \
+ PhysicalInterfaces/TICC1100.h PhysicalInterfaces/../../config.h \
+ /usr/include/x86_64-linux-gnu/sys/ioctl.h \
+ /usr/include/x86_64-linux-gnu/bits/ioctls.h \
+ /usr/include/x86_64-linux-gnu/asm/ioctls.h \
+ /usr/include/asm-generic/ioctls.h /usr/include/linux/ioctl.h \
+ /usr/include/x86_64-linux-gnu/asm/ioctl.h \
+ /usr/include/asm-generic/ioctl.h \
+ /usr/include/x86_64-linux-gnu/bits/ioctl-types.h \
+ /usr/include/x86_64-linux-gnu/sys/mman.h \
+ /usr/include/x86_64-linux-gnu/bits/mman.h \
+ /usr/include/x86_64-linux-gnu/bits/mman-linux.h \
+ /usr/include/linux/spi/spidev.h /usr/include/linux/types.h \
+ /usr/include/x86_64-linux-gnu/asm/types.h \
+ /usr/include/asm-generic/types.h /usr/include/asm-generic/int-ll64.h \
+ /usr/include/x86_64-linux-gnu/asm/bitsperlong.h \
+ /usr/include/asm-generic/bitsperlong.h /usr/include/linux/posix_types.h \
+ /usr/include/linux/stddef.h \
+ /usr/include/x86_64-linux-gnu/asm/posix_types.h \
+ /usr/include/x86_64-linux-gnu/asm/posix_types_64.h \
+ /usr/include/asm-generic/posix_types.h MAXDeviceTypes.h \
  LogicalDevices/MAXCentral.h LogicalDevices/../MAXDevice.h \
  LogicalDevices/../MAXPeer.h LogicalDevices/../MAXPacket.h \
  LogicalDevices/../PendingQueues.h LogicalDevices/../PacketQueue.h \
@@ -1115,6 +1134,54 @@ PhysicalInterfaces/CUL.h:
 PhysicalInterfaces/COC.h:
 
 PhysicalInterfaces/TICC1100.h:
+
+PhysicalInterfaces/../../config.h:
+
+/usr/include/x86_64-linux-gnu/sys/ioctl.h:
+
+/usr/include/x86_64-linux-gnu/bits/ioctls.h:
+
+/usr/include/x86_64-linux-gnu/asm/ioctls.h:
+
+/usr/include/asm-generic/ioctls.h:
+
+/usr/include/linux/ioctl.h:
+
+/usr/include/x86_64-linux-gnu/asm/ioctl.h:
+
+/usr/include/asm-generic/ioctl.h:
+
+/usr/include/x86_64-linux-gnu/bits/ioctl-types.h:
+
+/usr/include/x86_64-linux-gnu/sys/mman.h:
+
+/usr/include/x86_64-linux-gnu/bits/mman.h:
+
+/usr/include/x86_64-linux-gnu/bits/mman-linux.h:
+
+/usr/include/linux/spi/spidev.h:
+
+/usr/include/linux/types.h:
+
+/usr/include/x86_64-linux-gnu/asm/types.h:
+
+/usr/include/asm-generic/types.h:
+
+/usr/include/asm-generic/int-ll64.h:
+
+/usr/include/x86_64-linux-gnu/asm/bitsperlong.h:
+
+/usr/include/asm-generic/bitsperlong.h:
+
+/usr/include/linux/posix_types.h:
+
+/usr/include/linux/stddef.h:
+
+/usr/include/x86_64-linux-gnu/asm/posix_types.h:
+
+/usr/include/x86_64-linux-gnu/asm/posix_types_64.h:
+
+/usr/include/asm-generic/posix_types.h:
 
 MAXDeviceTypes.h:
 
