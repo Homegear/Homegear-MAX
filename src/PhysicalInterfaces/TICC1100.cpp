@@ -27,8 +27,9 @@
  * files in the program, then also delete it here.
  */
 
-#ifdef SPIINTERFACES
 #include "TICC1100.h"
+
+#ifdef SPIINTERFACES
 #include "../MAXPacket.h"
 #include "../GD.h"
 
