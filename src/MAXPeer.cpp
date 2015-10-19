@@ -1159,7 +1159,7 @@ PVariable MAXPeer::getParamsetDescription(int32_t clientID, int32_t channel, Par
 		Functions::iterator functionIterator = _rpcDevice->functions.find(channel);
 		if(functionIterator == _rpcDevice->functions.end()) return Variable::createError(-2, "Unknown channel");
 		PParameterGroup parameterGroup = functionIterator->second->getParameterGroup(type);
-		if(!parameterGroup || parameterGroup->parameters.empty()) return Variable::createError(-3, "Unknown parameter set");
+		if(!parameterGroup) return Variable::createError(-3, "Unknown parameter set");
 		if(type == ParameterGroup::Type::link && remoteID > 0)
 		{
 			std::shared_ptr<BaseLib::Systems::BasicPeer> remotePeer = getPeer(channel, remoteID, remoteChannel);
@@ -1194,7 +1194,7 @@ PVariable MAXPeer::putParamset(int32_t clientID, int32_t channel, ParameterGroup
 		if(functionIterator == _rpcDevice->functions.end()) return Variable::createError(-2, "Unknown channel");
 		if(type == ParameterGroup::Type::none) type = ParameterGroup::Type::link;
 		PParameterGroup parameterGroup = functionIterator->second->getParameterGroup(type);
-		if(!parameterGroup || parameterGroup->parameters.empty()) return Variable::createError(-3, "Unknown parameter set");
+		if(!parameterGroup) return Variable::createError(-3, "Unknown parameter set");
 		if(variables->structValue->empty()) return PVariable(new Variable(VariableType::tVoid));
 
 		if(type == ParameterGroup::Type::Enum::config)
@@ -1322,7 +1322,7 @@ PVariable MAXPeer::getParamset(int32_t clientID, int32_t channel, ParameterGroup
 		if(functionIterator == _rpcDevice->functions.end()) return Variable::createError(-2, "Unknown channel");
 		if(type == ParameterGroup::Type::none) type = ParameterGroup::Type::link;
 		PParameterGroup parameterGroup = functionIterator->second->getParameterGroup(type);
-		if(!parameterGroup || parameterGroup->parameters.empty()) return Variable::createError(-3, "Unknown parameter set");
+		if(!parameterGroup) return Variable::createError(-3, "Unknown parameter set");
 		PVariable variables(new Variable(VariableType::tStruct));
 
 		for(Parameters::iterator i = parameterGroup->parameters.begin(); i != parameterGroup->parameters.end(); ++i)
