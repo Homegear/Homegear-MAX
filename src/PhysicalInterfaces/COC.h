@@ -30,7 +30,7 @@
 #ifndef COC_H
 #define COC_H
 
-#include "../homegear-base/BaseLib.h"
+#include "homegear-base/BaseLib.h"
 
 namespace MAX
 {

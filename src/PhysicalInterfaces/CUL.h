@@ -30,7 +30,7 @@
 #ifndef CUL_H
 #define CUL_H
 
-#include "../homegear-base/BaseLib.h"
+#include "homegear-base/BaseLib.h"
 
 #include <thread>
 #include <iostream>
