@@ -255,6 +255,7 @@ MAX.lo: MAX.cpp /usr/include/stdc-predef.h MAX.h \
  /usr/include/homegear-base/HelperFunctions/Net.h \
  /usr/include/homegear-base/Exception.h \
  /usr/include/homegear-base/HelperFunctions/Io.h \
+ /usr/include/homegear-base/LowLevel/Gpio.h \
  /usr/include/homegear-base/DeviceDescription/Devices.h \
  /usr/include/homegear-base/Systems/Packet.h \
  /usr/include/homegear-base/Systems/DeviceTypes.h \
@@ -318,8 +319,8 @@ MAX.lo: MAX.cpp /usr/include/stdc-predef.h MAX.h \
  /usr/include/homegear-base/Encoding/HTTP.h \
  /usr/include/homegear-base/Variable.h \
  /usr/include/homegear-base/IQueue.h PhysicalInterfaces/CUL.h \
- /usr/include/homegear-base/BaseLib.h PhysicalInterfaces/COC.h \
- PhysicalInterfaces/TICC1100.h PhysicalInterfaces/../../config.h \
+ PhysicalInterfaces/COC.h PhysicalInterfaces/TICC1100.h \
+ PhysicalInterfaces/../../config.h \
  /usr/include/x86_64-linux-gnu/sys/ioctl.h \
  /usr/include/x86_64-linux-gnu/bits/ioctls.h \
  /usr/include/x86_64-linux-gnu/asm/ioctls.h \
@@ -989,6 +990,8 @@ MAX.h:
 
 /usr/include/homegear-base/HelperFunctions/Io.h:
 
+/usr/include/homegear-base/LowLevel/Gpio.h:
+
 /usr/include/homegear-base/DeviceDescription/Devices.h:
 
 /usr/include/homegear-base/Systems/Packet.h:
@@ -1128,8 +1131,6 @@ MAX.h:
 /usr/include/homegear-base/IQueue.h:
 
 PhysicalInterfaces/CUL.h:
-
-/usr/include/homegear-base/BaseLib.h:
 
 PhysicalInterfaces/COC.h:
 

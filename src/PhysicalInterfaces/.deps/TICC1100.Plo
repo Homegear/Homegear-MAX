@@ -256,6 +256,7 @@ PhysicalInterfaces/TICC1100.lo: PhysicalInterfaces/TICC1100.cpp \
  /usr/include/homegear-base/HelperFunctions/Net.h \
  /usr/include/homegear-base/Exception.h \
  /usr/include/homegear-base/HelperFunctions/Io.h \
+ /usr/include/homegear-base/LowLevel/Gpio.h \
  /usr/include/homegear-base/DeviceDescription/Devices.h \
  /usr/include/homegear-base/Systems/Packet.h \
  /usr/include/homegear-base/Systems/DeviceTypes.h \
@@ -338,8 +339,7 @@ PhysicalInterfaces/TICC1100.lo: PhysicalInterfaces/TICC1100.cpp \
  /usr/include/x86_64-linux-gnu/asm/posix_types.h \
  /usr/include/x86_64-linux-gnu/asm/posix_types_64.h \
  /usr/include/asm-generic/posix_types.h PhysicalInterfaces/../MAXPacket.h \
- /usr/include/homegear-base/BaseLib.h PhysicalInterfaces/../GD.h \
- PhysicalInterfaces/../MAX.h
+ PhysicalInterfaces/../GD.h PhysicalInterfaces/../MAX.h
 
 /usr/include/stdc-predef.h:
 
@@ -983,6 +983,8 @@ PhysicalInterfaces/../../config.h:
 
 /usr/include/homegear-base/HelperFunctions/Io.h:
 
+/usr/include/homegear-base/LowLevel/Gpio.h:
+
 /usr/include/homegear-base/DeviceDescription/Devices.h:
 
 /usr/include/homegear-base/Systems/Packet.h:
@@ -1168,8 +1170,6 @@ PhysicalInterfaces/../../config.h:
 /usr/include/asm-generic/posix_types.h:
 
 PhysicalInterfaces/../MAXPacket.h:
-
-/usr/include/homegear-base/BaseLib.h:
 
 PhysicalInterfaces/../GD.h:
 
