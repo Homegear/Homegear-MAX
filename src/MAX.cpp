@@ -52,7 +52,7 @@ MAX::MAX(BaseLib::Obj* bl, BaseLib::Systems::DeviceFamily::IFamilyEventSink* eve
 	GD::out.setPrefix("Module MAX: ");
 	GD::out.printDebug("Debug: Loading module...");
 	_family = 4;
-	GD::rpcDevices.init(_bl);
+	GD::rpcDevices.init(_bl, this);
 }
 
 MAX::~MAX()
