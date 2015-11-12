@@ -316,6 +316,8 @@ PacketQueue.lo: PacketQueue.cpp /usr/include/stdc-predef.h PacketQueue.h \
  /usr/include/homegear-base/Threads/Threads.h \
  /usr/include/homegear-base/Exception.h \
  /usr/include/homegear-base/Output/Output.h \
+ /usr/include/homegear-base/Licensing/LicensingFactory.h \
+ /usr/include/homegear-base/Licensing/Licensing.h \
  /usr/include/homegear-base/SSDP/SSDP.h \
  /usr/include/homegear-base/Encoding/HTTP.h \
  /usr/include/homegear-base/Variable.h \
@@ -1101,6 +1103,10 @@ delegate_template.hpp:
 /usr/include/homegear-base/Exception.h:
 
 /usr/include/homegear-base/Output/Output.h:
+
+/usr/include/homegear-base/Licensing/LicensingFactory.h:
+
+/usr/include/homegear-base/Licensing/Licensing.h:
 
 /usr/include/homegear-base/SSDP/SSDP.h:
 
