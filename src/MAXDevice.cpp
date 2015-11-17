@@ -241,7 +241,7 @@ void MAXDevice::loadPeers()
 {
 	try
 	{
-		std::shared_ptr<BaseLib::Database::DataTable> rows = raiseGetPeers();
+		std::shared_ptr<BaseLib::Database::DataTable> rows = _bl->db->getPeers(_deviceID);
 		for(BaseLib::Database::DataTable::iterator row = rows->begin(); row != rows->end(); ++row)
 		{
 			int32_t peerID = row->second.at(0)->intValue;
@@ -278,7 +278,7 @@ void MAXDevice::loadVariables()
 {
 	try
 	{
-		std::shared_ptr<BaseLib::Database::DataTable> rows = raiseGetDeviceVariables();
+		std::shared_ptr<BaseLib::Database::DataTable> rows = _bl->db->getDeviceVariables(_deviceID);
 		for(BaseLib::Database::DataTable::iterator row = rows->begin(); row != rows->end(); ++row)
 		{
 			_variableDatabaseIDs[row->second.at(2)->intValue] = row->second.at(0)->intValue;

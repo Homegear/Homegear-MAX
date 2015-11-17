@@ -116,12 +116,14 @@ MAXPeer::MAXPeer(uint32_t parentID, bool centralFeatures, IPeerEventSink* eventH
 	}
 	setPhysicalInterface(GD::defaultPhysicalInterface);
 	_lastTimePacket = BaseLib::HelperFunctions::getTime() + (BaseLib::HelperFunctions::getRandomNumber(1, 1000) * 10000);
+	_randomSleep = BaseLib::HelperFunctions::getRandomNumber(0, 1800000);
 }
 
 MAXPeer::MAXPeer(int32_t id, int32_t address, std::string serialNumber, uint32_t parentID, bool centralFeatures, IPeerEventSink* eventHandler) : Peer(GD::bl, id, address, serialNumber, parentID, centralFeatures, eventHandler)
 {
 	setPhysicalInterface(GD::defaultPhysicalInterface);
 	_lastTimePacket = BaseLib::HelperFunctions::getTime() + (BaseLib::HelperFunctions::getRandomNumber(1, 1000) * 10000);
+	_randomSleep = BaseLib::HelperFunctions::getRandomNumber(0, 1800000);
 }
 
 MAXPeer::~MAXPeer()
@@ -160,10 +162,13 @@ void MAXPeer::worker()
 		if(serviceMessages->getConfigPending())
 		{
 			if(!pendingQueues || pendingQueues->empty()) serviceMessages->setConfigPending(false);
-			else if(_bl->settings.devLog() && (getRXModes() & HomegearDevice::ReceiveModes::wakeUp) && (_bl->hf.getTime() - serviceMessages->getConfigPendingSetTime()) > 360000)
+			else if((_bl->hf.getTime() - serviceMessages->getConfigPendingSetTime()) > (900000 + _randomSleep))
 			{
-				GD::out.printWarning("Devlog warning: Configuration for peer with id " + std::to_string(_peerID) + " supporting wake up is pending since more than 6 minutes.");
-				serviceMessages->resetConfigPendingSetTime();
+				if((getRXModes() & HomegearDevice::ReceiveModes::always) || (getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio))
+				{
+					std::shared_ptr<MAXCentral> central = std::dynamic_pointer_cast<MAXCentral>(getCentral());
+					central->enqueuePendingQueues(_address);
+				}
 			}
 		}
 	}
@@ -460,7 +465,7 @@ void MAXPeer::loadVariables(BaseLib::Systems::LogicalDevice* device, std::shared
 {
 	try
 	{
-		if(!rows) rows = raiseGetPeerVariables();
+		if(!rows) rows = _bl->db->getPeerVariables(_peerID);
 		Peer::loadVariables(device, rows);
 		_databaseMutex.lock();
 		for(BaseLib::Database::DataTable::iterator row = rows->begin(); row != rows->end(); ++row)

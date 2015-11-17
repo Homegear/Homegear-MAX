@@ -1,1055 +1,4140 @@
-<?xml version="1.0"?>
-<!-- Sends no cyclic status packets, so cyclic_timeout is not settable -->
-<device version="1" needs_time="true">
-	<types>
-		<type name="MAX! Plug Adapter" id="BC-TS-Sw-Pl">
-			<type_id>0x01AA</type_id>
-			<firmware cond_op="GE">0x10</firmware>
-		</type>
-	</types>
-	<parameters type="MASTER" id="switch_dev_master">
-		<parameter id="STATE_SATURDAY_1">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="0" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SATURDAY_1">
-			<logical type="integer" min="5" max="1440" default="360" unit="minutes"/>
-			<physical type="integer" interface="config" list="0" index="12.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SATURDAY_2">
-			<logical type="boolean" default="true" />
-			<physical type="integer" interface="config" list="0" index="13.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SATURDAY_2">
-			<logical type="integer" min="5" max="1440" default="1320" unit="minutes"/>
-			<physical type="integer" interface="config" list="0" index="14.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SATURDAY_3">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="0" index="15.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SATURDAY_3">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="0" index="16.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SATURDAY_4">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="0" index="17.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SATURDAY_4">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="0" index="18.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SATURDAY_5">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="0" index="19.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SATURDAY_5">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="0" index="20.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SATURDAY_6">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="0" index="21.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SATURDAY_6">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="0" index="22.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SATURDAY_7">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="0" index="23.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SATURDAY_7">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="0" index="24.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SATURDAY_8">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="16" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SATURDAY_8">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="16" index="12.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SATURDAY_9">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="16" index="13.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SATURDAY_9">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="16" index="14.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SATURDAY_10">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="16" index="15.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SATURDAY_10">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="16" index="16.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SATURDAY_11">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="16" index="17.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SATURDAY_11">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="16" index="18.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SATURDAY_12">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="16" index="19.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SATURDAY_12">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="16" index="20.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SATURDAY_13">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="16" index="21.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SATURDAY_13">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="16" index="22.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SUNDAY_1">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="1" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SUNDAY_1">
-			<logical type="integer" min="5" max="1440" default="360" unit="minutes"/>
-			<physical type="integer" interface="config" list="1" index="12.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SUNDAY_2">
-			<logical type="boolean" default="true" />
-			<physical type="integer" interface="config" list="1" index="13.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SUNDAY_2">
-			<logical type="integer" min="5" max="1440" default="1320" unit="minutes"/>
-			<physical type="integer" interface="config" list="1" index="14.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SUNDAY_3">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="1" index="15.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SUNDAY_3">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="1" index="16.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SUNDAY_4">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="1" index="17.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SUNDAY_4">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="1" index="18.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SUNDAY_5">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="1" index="19.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SUNDAY_5">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="1" index="20.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SUNDAY_6">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="1" index="21.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SUNDAY_6">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="1" index="22.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SUNDAY_7">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="1" index="23.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SUNDAY_7">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="1" index="24.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SUNDAY_8">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="17" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SUNDAY_8">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="17" index="12.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SUNDAY_9">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="17" index="13.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SUNDAY_9">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="17" index="14.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SUNDAY_10">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="17" index="15.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SUNDAY_10">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="17" index="16.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SUNDAY_11">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="17" index="17.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SUNDAY_11">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="17" index="18.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SUNDAY_12">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="17" index="19.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SUNDAY_12">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="17" index="20.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_SUNDAY_13">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="17" index="21.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_SUNDAY_13">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="17" index="22.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_MONDAY_1">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="2" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_MONDAY_1">
-			<logical type="integer" min="5" max="1440" default="360" unit="minutes"/>
-			<physical type="integer" interface="config" list="2" index="12.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_MONDAY_2">
-			<logical type="boolean" default="true" />
-			<physical type="integer" interface="config" list="2" index="13.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_MONDAY_2">
-			<logical type="integer" min="5" max="1440" default="540" unit="minutes"/>
-			<physical type="integer" interface="config" list="2" index="14.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_MONDAY_3">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="2" index="15.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_MONDAY_3">
-			<logical type="integer" min="5" max="1440" default="1020" unit="minutes"/>
-			<physical type="integer" interface="config" list="2" index="16.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_MONDAY_4">
-			<logical type="boolean" default="true" />
-			<physical type="integer" interface="config" list="2" index="17.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_MONDAY_4">
-			<logical type="integer" min="5" max="1440" default="1380" unit="minutes"/>
-			<physical type="integer" interface="config" list="2" index="18.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_MONDAY_5">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="2" index="19.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_MONDAY_5">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="2" index="20.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_MONDAY_6">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="2" index="21.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_MONDAY_6">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="2" index="22.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_MONDAY_7">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="2" index="23.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_MONDAY_7">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="2" index="24.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_MONDAY_8">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="18" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_MONDAY_8">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="18" index="12.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_MONDAY_9">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="18" index="13.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_MONDAY_9">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="18" index="14.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_MONDAY_10">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="18" index="15.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_MONDAY_10">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="18" index="16.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_MONDAY_11">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="18" index="17.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_MONDAY_11">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="18" index="18.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_MONDAY_12">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="18" index="19.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_MONDAY_12">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="18" index="20.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_MONDAY_13">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="18" index="21.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_MONDAY_13">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="18" index="22.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_TUESDAY_1">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="3" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_TUESDAY_1">
-			<logical type="integer" min="5" max="1440" default="360" unit="minutes"/>
-			<physical type="integer" interface="config" list="3" index="12.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_TUESDAY_2">
-			<logical type="boolean" default="true" />
-			<physical type="integer" interface="config" list="3" index="13.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_TUESDAY_2">
-			<logical type="integer" min="5" max="1440" default="540" unit="minutes"/>
-			<physical type="integer" interface="config" list="3" index="14.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_TUESDAY_3">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="3" index="15.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_TUESDAY_3">
-			<logical type="integer" min="5" max="1440" default="1020" unit="minutes"/>
-			<physical type="integer" interface="config" list="3" index="16.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_TUESDAY_4">
-			<logical type="boolean" default="true" />
-			<physical type="integer" interface="config" list="3" index="17.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_TUESDAY_4">
-			<logical type="integer" min="5" max="1440" default="1380" unit="minutes"/>
-			<physical type="integer" interface="config" list="3" index="18.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_TUESDAY_5">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="3" index="19.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_TUESDAY_5">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="3" index="20.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_TUESDAY_6">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="3" index="21.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_TUESDAY_6">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="3" index="22.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_TUESDAY_7">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="3" index="23.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_TUESDAY_7">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="3" index="24.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_TUESDAY_8">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="19" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_TUESDAY_8">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="19" index="12.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_TUESDAY_9">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="19" index="13.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_TUESDAY_9">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="19" index="14.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_TUESDAY_10">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="19" index="15.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_TUESDAY_10">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="19" index="16.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_TUESDAY_11">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="19" index="17.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_TUESDAY_11">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="19" index="18.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_TUESDAY_12">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="19" index="19.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_TUESDAY_12">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="19" index="20.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_TUESDAY_13">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="19" index="21.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_TUESDAY_13">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="19" index="22.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_WEDNESDAY_1">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="4" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="STATE_WEDNESDAY_1">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="4" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_WEDNESDAY_1">
-			<logical type="integer" min="5" max="1440" default="360" unit="minutes"/>
-			<physical type="integer" interface="config" list="4" index="12.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_WEDNESDAY_2">
-			<logical type="boolean" default="true" />
-			<physical type="integer" interface="config" list="4" index="13.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_WEDNESDAY_2">
-			<logical type="integer" min="5" max="1440" default="540" unit="minutes"/>
-			<physical type="integer" interface="config" list="4" index="14.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_WEDNESDAY_3">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="4" index="15.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_WEDNESDAY_3">
-			<logical type="integer" min="5" max="1440" default="1020" unit="minutes"/>
-			<physical type="integer" interface="config" list="4" index="16.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_WEDNESDAY_4">
-			<logical type="boolean" default="true" />
-			<physical type="integer" interface="config" list="4" index="17.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_WEDNESDAY_4">
-			<logical type="integer" min="5" max="1440" default="1380" unit="minutes"/>
-			<physical type="integer" interface="config" list="4" index="18.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_WEDNESDAY_5">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="4" index="19.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_WEDNESDAY_5">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="4" index="20.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_WEDNESDAY_6">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="4" index="21.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_WEDNESDAY_6">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="4" index="22.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_WEDNESDAY_7">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="4" index="23.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_WEDNESDAY_7">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="4" index="24.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_WEDNESDAY_8">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="20" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_WEDNESDAY_8">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="20" index="12.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_WEDNESDAY_9">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="20" index="13.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_WEDNESDAY_9">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="20" index="14.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_WEDNESDAY_10">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="20" index="15.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_WEDNESDAY_10">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="20" index="16.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_WEDNESDAY_11">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="20" index="17.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_WEDNESDAY_11">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="20" index="18.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_WEDNESDAY_12">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="20" index="19.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_WEDNESDAY_12">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="20" index="20.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_WEDNESDAY_13">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="20" index="21.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_WEDNESDAY_13">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="20" index="22.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_THURSDAY_1">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="5" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_THURSDAY_1">
-			<logical type="integer" min="5" max="1440" default="360" unit="minutes"/>
-			<physical type="integer" interface="config" list="5" index="12.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_THURSDAY_2">
-			<logical type="boolean" default="true" />
-			<physical type="integer" interface="config" list="5" index="13.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_THURSDAY_2">
-			<logical type="integer" min="5" max="1440" default="540" unit="minutes"/>
-			<physical type="integer" interface="config" list="5" index="14.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_THURSDAY_3">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="5" index="15.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_THURSDAY_3">
-			<logical type="integer" min="5" max="1440" default="1020" unit="minutes"/>
-			<physical type="integer" interface="config" list="5" index="16.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_THURSDAY_4">
-			<logical type="boolean" default="true" />
-			<physical type="integer" interface="config" list="5" index="17.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_THURSDAY_4">
-			<logical type="integer" min="5" max="1440" default="1380" unit="minutes"/>
-			<physical type="integer" interface="config" list="5" index="18.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_THURSDAY_5">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="5" index="19.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_THURSDAY_5">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="5" index="20.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_THURSDAY_6">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="5" index="21.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_THURSDAY_6">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="5" index="22.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_THURSDAY_7">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="5" index="23.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_THURSDAY_7">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="5" index="24.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_THURSDAY_8">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="21" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_THURSDAY_8">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="21" index="12.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_THURSDAY_9">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="21" index="13.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_THURSDAY_9">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="21" index="14.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_THURSDAY_10">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="21" index="15.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_THURSDAY_10">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="21" index="16.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_THURSDAY_11">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="21" index="17.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_THURSDAY_11">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="21" index="18.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_THURSDAY_12">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="21" index="19.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_THURSDAY_12">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="21" index="20.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_THURSDAY_13">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="21" index="21.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_THURSDAY_13">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="21" index="22.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_FRIDAY_1">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="6" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_FRIDAY_1">
-			<logical type="integer" min="5" max="1440" default="360" unit="minutes"/>
-			<physical type="integer" interface="config" list="6" index="12.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_FRIDAY_2">
-			<logical type="boolean" default="true" />
-			<physical type="integer" interface="config" list="6" index="13.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_FRIDAY_2">
-			<logical type="integer" min="5" max="1440" default="540" unit="minutes"/>
-			<physical type="integer" interface="config" list="6" index="14.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_FRIDAY_3">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="6" index="15.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_FRIDAY_3">
-			<logical type="integer" min="5" max="1440" default="1020" unit="minutes"/>
-			<physical type="integer" interface="config" list="6" index="16.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_FRIDAY_4">
-			<logical type="boolean" default="true" />
-			<physical type="integer" interface="config" list="6" index="17.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_FRIDAY_4">
-			<logical type="integer" min="5" max="1440" default="1380" unit="minutes"/>
-			<physical type="integer" interface="config" list="6" index="18.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_FRIDAY_5">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="6" index="19.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_FRIDAY_5">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="6" index="20.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_FRIDAY_6">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="6" index="21.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_FRIDAY_6">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="6" index="22.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_FRIDAY_7">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="6" index="23.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_FRIDAY_7">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="6" index="24.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_FRIDAY_8">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="22" index="11.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_FRIDAY_8">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="22" index="12.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_FRIDAY_9">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="22" index="13.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_FRIDAY_9">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="22" index="14.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_FRIDAY_10">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="22" index="15.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_FRIDAY_10">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="22" index="16.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_FRIDAY_11">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="22" index="17.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_FRIDAY_11">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="22" index="18.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_FRIDAY_12">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="22" index="19.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_FRIDAY_12">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="22" index="20.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-		<parameter id="STATE_FRIDAY_13">
-			<logical type="boolean" default="false" />
-			<physical type="integer" interface="config" list="22" index="21.1" size="0.6"/>
-			<conversion type="boolean_integer" threshold="40" false="9" true="61" />
-		</parameter>
-		<parameter id="ENDTIME_FRIDAY_13">
-			<logical type="integer" min="5" max="1440" default="1440" unit="minutes"/>
-			<physical type="integer" interface="config" list="22" index="22.0" size="1.1"/>
-			<conversion type="integer_integer_scale" div="5"/>
-		</parameter>
-	</parameters>
-	<channels>
-		<channel index="0" type="MAINTENANCE" ui_flags="internal" class="maintenance" count="1">
-			<parameters type="MASTER" id="maint_ch_master"/>
-			<parameters type="VALUES" id="maint_ch_values">
-				<parameter id="UNREACH" operations="read,event" ui_flags="service">
-					<logical type="boolean"/>
-					<physical type="integer" interface="internal" value_id="UNREACH"/>
-				</parameter>
-				<parameter id="STICKY_UNREACH" operations="read,write,event" ui_flags="service,sticky">
-					<logical type="boolean"/>
-					<physical type="integer" interface="internal" value_id="STICKY_UNREACH"/>
-				</parameter>
-				<parameter id="CONFIG_PENDING" operations="read,event" ui_flags="service">
-					<logical type="boolean"/>
-					<physical type="integer" interface="internal" value_id="CONFIG_PENDING"/>
-				</parameter>
-				<parameter id="RSSI_DEVICE" operations="read,event">
-					<logical type="integer"/>
-					<physical type="integer" interface="internal" value_id="RSSI_DEVICE"/>
-				</parameter>
-				<parameter id="RSSI_PEER" operations="read,event">
-					<logical type="integer"/>
-					<physical type="integer" interface="internal" value_id="RSSI_PEER"/>
-				</parameter>
-				<parameter id="BOOT" operations="read,event">
-					<logical type="action"/>
-					<physical type="integer" interface="command" value_id="BOOT">
-						<event packet="INFO_POWERON"/>
-					</physical>
-				</parameter>
-			</parameters>
-		</channel>
-		<channel index="1" type="SWITCH">
-			<link_roles>
-				<target name="SWITCH"/>
-			</link_roles>
-			<parameters type="VALUES" id="switch_ch_values">
-				<parameter id="STATE" operations="read,write,event" control="SWITCH.STATE">
-					<logical type="boolean" default="false"/>
-					<physical type="integer" interface="command" value_id="STATE" id="STATE">
-						<set request="LEVEL_SET"/>
-						<event packet="INFO_LEVEL"/>
-						<event frame="INFO_LEVEL2"/>
-						<event frame="ACK_STATUS"/>
-					</physical>
-					<!-- Value is actually a temperature -->
-					<conversion type="boolean_integer" threshold="40" false="10" true="60"/>
-				</parameter>
-				<parameter id="MANU_MODE" operations="write">
-					<logical type="action" />
-					<physical type="integer" interface="command" value_id="MANU_MODE" id="MANU_MODE">
-						<set request="LEVEL_SET"/>
-					</physical>
-				</parameter>
-				<parameter id="AUTO_MODE" operations="write">
-					<logical type="action" />
-					<physical type="integer" interface="command" id="AUTO_MODE">
-						<set request="AUTO_MODE"/>
-					</physical>
-				</parameter>
-				<parameter id="CONTROL_MODE" operations="read,event">
-					<logical type="option">
-						<option id="AUTO-MODE"/>
-						<option id="MANU-MODE" default="true"/>
-					</logical>
-					<physical type="integer" interface="command" value_id="CONTROL_MODE">
-						<event frame="INFO_LEVEL"/>
-						<event frame="INFO_LEVEL2"/>
-						<event frame="ACK_STATUS"/>
-					</physical>
-				</parameter>
-				<!--parameter id="ECO_STATE" operations="read,write,event">
-					<logical type="boolean" default="false"/>
-					<physical type="integer" interface="command" id="ECO_STATE">
-						<set request="ACTION_SET"/>
-					</physical>
-					<conversion type="boolean_integer" threshold="40" false="10" true="60"/>
-				</parameter>
-				<parameter id="COMFORT_STATE" operations="read,write,event">
-					<logical type="boolean" default="true"/>
-					<physical type="integer" interface="command" id="COMFORT_STATE">
-						<set request="ACTION_SET"/>
-					</physical>
-					<conversion type="boolean_integer" threshold="40" false="10" true="60"/>
-				</parameter>-->
-			</parameters>
-		</channel>
-	</channels>
+<homegearDevice version="1">
+	<supportedDevices>
+		<device id="BC-TS-Sw-Pl">
+			<description>MAX! Plug Adapter</description>
+			<typeNumber>0x1AA</typeNumber>
+			<minFirmwareVersion>0x10</minFirmwareVersion>
+		</device>
+	</supportedDevices>
+	<properties>
+		<needsTime>true</needsTime>
+	</properties>
+	<functions>
+		<function channel="0" type="MAINTENANCE" channelCount="1">
+			<properties>
+				<internal>true</internal>
+			</properties>
+			<configParameters>switch_dev_master--0</configParameters>
+			<variables>maint_ch_values--0</variables>
+		</function>
+		<function channel="1" type="SWITCH" channelCount="1">
+			<properties>
+				<linkReceiverFunctionTypes>
+					<type>SWITCH</type>
+				</linkReceiverFunctionTypes>
+			</properties>
+			<configParameters>config--1</configParameters>
+			<variables>switch_ch_values--1</variables>
+		</function>
+	</functions>
 	<packets>
-		<packet id="LEVEL_SET" direction="to_device" type="0x40" subtype="0x04">
-			<!-- Index 9 is the room/group index -->
-			<parameter type="integer" index="9.0" size="1.0" const_value="1"/>
-			<parameter type="integer" index="10.6" size="0.1" const_value="1"/>
-			<parameter type="integer" index="10.0" size="0.6" param="STATE"/>
+		<packet id="ACK_STATUS">
+			<direction>toCentral</direction>
+			<type>0x2</type>
+			<subtype>0x2</subtype>
+			<channel>1</channel>
+			<binaryPayload>
+				<element>
+					<index>11.0</index>
+					<size>0.2</size>
+					<parameterId>CONTROL_MODE</parameterId>
+				</element>
+				<element>
+					<index>13.0</index>
+					<size>0.6</size>
+					<parameterId>STATE</parameterId>
+				</element>
+			</binaryPayload>
 		</packet>
-		<packet id="AUTO_MODE" direction="to_device" type="0x40" subtype="0x04">
-			<!-- Index 9 is the room/group index -->
-			<parameter type="integer" index="9.0" size="1.0" const_value="1"/>
-			<parameter type="integer" index="10.0" size="1.0" const_value="0" />
+		<packet id="AUTO_MODE">
+			<direction>fromCentral</direction>
+			<type>0x40</type>
+			<subtype>0x4</subtype>
+			<binaryPayload>
+				<element>
+					<index>9.0</index>
+					<constValueInteger>1</constValueInteger>
+				</element>
+				<element>
+					<index>10.0</index>
+					<constValueInteger>0</constValueInteger>
+				</element>
+			</binaryPayload>
 		</packet>
-		<packet id="INFO_LEVEL" direction="from_device" event="true" type="0x40" fixed_channel="1">
-			<parameter type="integer" index="10.0" size="0.6" param="STATE"/>
-			<parameter type="integer" index="10.6" size="0.2" param="CONTROL_MODE"/>
+		<packet id="INFO_LEVEL">
+			<direction>toCentral</direction>
+			<type>0x40</type>
+			<channel>1</channel>
+			<binaryPayload>
+				<element>
+					<index>10.0</index>
+					<size>0.6</size>
+					<parameterId>STATE</parameterId>
+				</element>
+				<element>
+					<index>10.6</index>
+					<size>0.2</size>
+					<parameterId>CONTROL_MODE</parameterId>
+				</element>
+			</binaryPayload>
 		</packet>
-		<packet id="ACK_STATUS" direction="from_device" event="true" type="0x02" subtype="0x02" fixed_channel="1">
-			<parameter type="integer" index="11.0" size="0.2" param="CONTROL_MODE"/>
-			<!-- index 12 would be VALVE_STATE -->
-			<parameter type="integer" index="13.0" size="0.6" param="STATE"/>
+		<packet id="INFO_LEVEL2">
+			<direction>toCentral</direction>
+			<type>0x60</type>
+			<subtype>0x4</subtype>
+			<channel>1</channel>
+			<binaryPayload>
+				<element>
+					<index>10.0</index>
+					<size>0.2</size>
+					<parameterId>CONTROL_MODE</parameterId>
+				</element>
+				<element>
+					<index>12.0</index>
+					<size>0.6</size>
+					<parameterId>STATE</parameterId>
+				</element>
+			</binaryPayload>
 		</packet>
-		<!--<packet id="ACTION_SET" direction="to_device" type="0x11" subtype="0x00">
-			<parameter type="integer" index="9.0" size="1.0" const_value="0"/>
-			<parameter type="integer" index="10.0" size="1.0" param="COMFORT_STATE"/>
-			<parameter type="integer" index="11.0" size="1.0" param="ECO_STATE"/>
-			<parameter type="integer" index="12.0" size="1.0" const_value="0x3D"/>
-			<parameter type="integer" index="13.0" size="1.0" const_value="0x09"/>
-			<parameter type="integer" index="14.0" size="1.0" const_value="0x07"/>
-			<parameter type="integer" index="15.0" size="1.0" const_value="0x18"/>
-			<parameter type="integer" index="16.0" size="1.0" const_value="0x03"/>
-		</packet>-->
-		<!-- Commented, because sometimes INFO_LEVEL2 is sent with STATE="true" immediately after setting STATE to "false" -->
-		<packet id="INFO_LEVEL2" direction="from_device" event="true" type="0x60" subtype="0x04" fixed_channel="1">
-			<parameter type="integer" index="10.0" size="0.2" param="CONTROL_MODE"/>
-			<parameter type="integer" index="12.0" size="0.6" param="STATE"/>
+		<packet id="INFO_POWERON">
+			<direction>toCentral</direction>
+			<type>0xFF</type>
+			<subtype>0x0</subtype>
+			<channel>0</channel>
+			<binaryPayload>
+				<element>
+					<index>9.0</index>
+					<parameterId>BOOT</parameterId>
+				</element>
+			</binaryPayload>
 		</packet>
-		<packet id="INFO_POWERON" direction="from_device" event="true" type="0xFF" subtype="0x00" fixed_channel="0">
-			<parameter type="integer" index="9.0" size="1.0" param="BOOT"/>
+		<packet id="LEVEL_SET">
+			<direction>fromCentral</direction>
+			<type>0x40</type>
+			<subtype>0x4</subtype>
+			<binaryPayload>
+				<element>
+					<index>9.0</index>
+					<constValueInteger>1</constValueInteger>
+				</element>
+				<element>
+					<index>10.6</index>
+					<size>0.1</size>
+					<constValueInteger>1</constValueInteger>
+				</element>
+				<element>
+					<index>10.0</index>
+					<size>0.6</size>
+					<parameterId>STATE</parameterId>
+				</element>
+			</binaryPayload>
 		</packet>
 	</packets>
-</device>
+	<parameterGroups>
+		<configParameters id="config--1"/>
+		<configParameters id="switch_dev_master--0">
+			<parameter id="STATE_SATURDAY_1">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>0</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SATURDAY_1">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>360</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>12.0</index>
+					<size>1.1</size>
+					<list>0</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SATURDAY_2">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>true</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>13.1</index>
+					<size>0.6</size>
+					<list>0</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SATURDAY_2">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1320</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>14.0</index>
+					<size>1.1</size>
+					<list>0</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SATURDAY_3">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>15.1</index>
+					<size>0.6</size>
+					<list>0</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SATURDAY_3">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>16.0</index>
+					<size>1.1</size>
+					<list>0</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SATURDAY_4">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>17.1</index>
+					<size>0.6</size>
+					<list>0</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SATURDAY_4">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>18.0</index>
+					<size>1.1</size>
+					<list>0</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SATURDAY_5">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>19.1</index>
+					<size>0.6</size>
+					<list>0</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SATURDAY_5">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>20.0</index>
+					<size>1.1</size>
+					<list>0</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SATURDAY_6">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>21.1</index>
+					<size>0.6</size>
+					<list>0</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SATURDAY_6">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>22.0</index>
+					<size>1.1</size>
+					<list>0</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SATURDAY_7">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>23.1</index>
+					<size>0.6</size>
+					<list>0</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SATURDAY_7">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>24.0</index>
+					<size>1.1</size>
+					<list>0</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SATURDAY_8">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>16</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SATURDAY_8">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>12.0</index>
+					<size>1.1</size>
+					<list>16</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SATURDAY_9">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>13.1</index>
+					<size>0.6</size>
+					<list>16</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SATURDAY_9">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>14.0</index>
+					<size>1.1</size>
+					<list>16</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SATURDAY_10">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>15.1</index>
+					<size>0.6</size>
+					<list>16</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SATURDAY_10">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>16.0</index>
+					<size>1.1</size>
+					<list>16</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SATURDAY_11">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>17.1</index>
+					<size>0.6</size>
+					<list>16</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SATURDAY_11">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>18.0</index>
+					<size>1.1</size>
+					<list>16</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SATURDAY_12">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>19.1</index>
+					<size>0.6</size>
+					<list>16</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SATURDAY_12">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>20.0</index>
+					<size>1.1</size>
+					<list>16</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SATURDAY_13">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>21.1</index>
+					<size>0.6</size>
+					<list>16</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SATURDAY_13">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>22.0</index>
+					<size>1.1</size>
+					<list>16</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SUNDAY_1">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>1</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SUNDAY_1">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>360</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>12.0</index>
+					<size>1.1</size>
+					<list>1</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SUNDAY_2">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>true</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>13.1</index>
+					<size>0.6</size>
+					<list>1</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SUNDAY_2">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1320</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>14.0</index>
+					<size>1.1</size>
+					<list>1</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SUNDAY_3">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>15.1</index>
+					<size>0.6</size>
+					<list>1</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SUNDAY_3">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>16.0</index>
+					<size>1.1</size>
+					<list>1</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SUNDAY_4">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>17.1</index>
+					<size>0.6</size>
+					<list>1</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SUNDAY_4">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>18.0</index>
+					<size>1.1</size>
+					<list>1</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SUNDAY_5">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>19.1</index>
+					<size>0.6</size>
+					<list>1</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SUNDAY_5">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>20.0</index>
+					<size>1.1</size>
+					<list>1</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SUNDAY_6">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>21.1</index>
+					<size>0.6</size>
+					<list>1</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SUNDAY_6">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>22.0</index>
+					<size>1.1</size>
+					<list>1</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SUNDAY_7">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>23.1</index>
+					<size>0.6</size>
+					<list>1</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SUNDAY_7">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>24.0</index>
+					<size>1.1</size>
+					<list>1</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SUNDAY_8">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>17</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SUNDAY_8">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>12.0</index>
+					<size>1.1</size>
+					<list>17</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SUNDAY_9">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>13.1</index>
+					<size>0.6</size>
+					<list>17</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SUNDAY_9">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>14.0</index>
+					<size>1.1</size>
+					<list>17</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SUNDAY_10">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>15.1</index>
+					<size>0.6</size>
+					<list>17</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SUNDAY_10">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>16.0</index>
+					<size>1.1</size>
+					<list>17</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SUNDAY_11">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>17.1</index>
+					<size>0.6</size>
+					<list>17</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SUNDAY_11">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>18.0</index>
+					<size>1.1</size>
+					<list>17</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SUNDAY_12">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>19.1</index>
+					<size>0.6</size>
+					<list>17</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SUNDAY_12">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>20.0</index>
+					<size>1.1</size>
+					<list>17</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_SUNDAY_13">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>21.1</index>
+					<size>0.6</size>
+					<list>17</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_SUNDAY_13">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>22.0</index>
+					<size>1.1</size>
+					<list>17</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_MONDAY_1">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>2</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_MONDAY_1">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>360</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>12.0</index>
+					<size>1.1</size>
+					<list>2</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_MONDAY_2">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>true</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>13.1</index>
+					<size>0.6</size>
+					<list>2</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_MONDAY_2">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>540</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>14.0</index>
+					<size>1.1</size>
+					<list>2</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_MONDAY_3">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>15.1</index>
+					<size>0.6</size>
+					<list>2</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_MONDAY_3">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1020</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>16.0</index>
+					<size>1.1</size>
+					<list>2</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_MONDAY_4">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>true</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>17.1</index>
+					<size>0.6</size>
+					<list>2</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_MONDAY_4">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1380</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>18.0</index>
+					<size>1.1</size>
+					<list>2</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_MONDAY_5">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>19.1</index>
+					<size>0.6</size>
+					<list>2</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_MONDAY_5">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>20.0</index>
+					<size>1.1</size>
+					<list>2</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_MONDAY_6">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>21.1</index>
+					<size>0.6</size>
+					<list>2</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_MONDAY_6">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>22.0</index>
+					<size>1.1</size>
+					<list>2</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_MONDAY_7">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>23.1</index>
+					<size>0.6</size>
+					<list>2</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_MONDAY_7">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>24.0</index>
+					<size>1.1</size>
+					<list>2</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_MONDAY_8">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>18</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_MONDAY_8">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>12.0</index>
+					<size>1.1</size>
+					<list>18</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_MONDAY_9">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>13.1</index>
+					<size>0.6</size>
+					<list>18</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_MONDAY_9">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>14.0</index>
+					<size>1.1</size>
+					<list>18</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_MONDAY_10">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>15.1</index>
+					<size>0.6</size>
+					<list>18</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_MONDAY_10">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>16.0</index>
+					<size>1.1</size>
+					<list>18</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_MONDAY_11">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>17.1</index>
+					<size>0.6</size>
+					<list>18</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_MONDAY_11">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>18.0</index>
+					<size>1.1</size>
+					<list>18</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_MONDAY_12">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>19.1</index>
+					<size>0.6</size>
+					<list>18</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_MONDAY_12">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>20.0</index>
+					<size>1.1</size>
+					<list>18</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_MONDAY_13">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>21.1</index>
+					<size>0.6</size>
+					<list>18</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_MONDAY_13">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>22.0</index>
+					<size>1.1</size>
+					<list>18</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_TUESDAY_1">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>3</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_TUESDAY_1">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>360</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>12.0</index>
+					<size>1.1</size>
+					<list>3</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_TUESDAY_2">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>true</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>13.1</index>
+					<size>0.6</size>
+					<list>3</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_TUESDAY_2">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>540</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>14.0</index>
+					<size>1.1</size>
+					<list>3</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_TUESDAY_3">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>15.1</index>
+					<size>0.6</size>
+					<list>3</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_TUESDAY_3">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1020</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>16.0</index>
+					<size>1.1</size>
+					<list>3</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_TUESDAY_4">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>true</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>17.1</index>
+					<size>0.6</size>
+					<list>3</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_TUESDAY_4">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1380</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>18.0</index>
+					<size>1.1</size>
+					<list>3</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_TUESDAY_5">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>19.1</index>
+					<size>0.6</size>
+					<list>3</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_TUESDAY_5">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>20.0</index>
+					<size>1.1</size>
+					<list>3</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_TUESDAY_6">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>21.1</index>
+					<size>0.6</size>
+					<list>3</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_TUESDAY_6">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>22.0</index>
+					<size>1.1</size>
+					<list>3</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_TUESDAY_7">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>23.1</index>
+					<size>0.6</size>
+					<list>3</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_TUESDAY_7">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>24.0</index>
+					<size>1.1</size>
+					<list>3</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_TUESDAY_8">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>19</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_TUESDAY_8">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>12.0</index>
+					<size>1.1</size>
+					<list>19</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_TUESDAY_9">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>13.1</index>
+					<size>0.6</size>
+					<list>19</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_TUESDAY_9">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>14.0</index>
+					<size>1.1</size>
+					<list>19</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_TUESDAY_10">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>15.1</index>
+					<size>0.6</size>
+					<list>19</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_TUESDAY_10">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>16.0</index>
+					<size>1.1</size>
+					<list>19</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_TUESDAY_11">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>17.1</index>
+					<size>0.6</size>
+					<list>19</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_TUESDAY_11">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>18.0</index>
+					<size>1.1</size>
+					<list>19</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_TUESDAY_12">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>19.1</index>
+					<size>0.6</size>
+					<list>19</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_TUESDAY_12">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>20.0</index>
+					<size>1.1</size>
+					<list>19</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_TUESDAY_13">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>21.1</index>
+					<size>0.6</size>
+					<list>19</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_TUESDAY_13">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>22.0</index>
+					<size>1.1</size>
+					<list>19</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_WEDNESDAY_1">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_WEDNESDAY_1">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_WEDNESDAY_1">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>360</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>12.0</index>
+					<size>1.1</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_WEDNESDAY_2">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>true</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>13.1</index>
+					<size>0.6</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_WEDNESDAY_2">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>540</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>14.0</index>
+					<size>1.1</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_WEDNESDAY_3">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>15.1</index>
+					<size>0.6</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_WEDNESDAY_3">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1020</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>16.0</index>
+					<size>1.1</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_WEDNESDAY_4">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>true</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>17.1</index>
+					<size>0.6</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_WEDNESDAY_4">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1380</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>18.0</index>
+					<size>1.1</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_WEDNESDAY_5">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>19.1</index>
+					<size>0.6</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_WEDNESDAY_5">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>20.0</index>
+					<size>1.1</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_WEDNESDAY_6">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>21.1</index>
+					<size>0.6</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_WEDNESDAY_6">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>22.0</index>
+					<size>1.1</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_WEDNESDAY_7">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>23.1</index>
+					<size>0.6</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_WEDNESDAY_7">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>24.0</index>
+					<size>1.1</size>
+					<list>4</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_WEDNESDAY_8">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>20</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_WEDNESDAY_8">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>12.0</index>
+					<size>1.1</size>
+					<list>20</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_WEDNESDAY_9">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>13.1</index>
+					<size>0.6</size>
+					<list>20</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_WEDNESDAY_9">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>14.0</index>
+					<size>1.1</size>
+					<list>20</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_WEDNESDAY_10">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>15.1</index>
+					<size>0.6</size>
+					<list>20</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_WEDNESDAY_10">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>16.0</index>
+					<size>1.1</size>
+					<list>20</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_WEDNESDAY_11">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>17.1</index>
+					<size>0.6</size>
+					<list>20</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_WEDNESDAY_11">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>18.0</index>
+					<size>1.1</size>
+					<list>20</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_WEDNESDAY_12">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>19.1</index>
+					<size>0.6</size>
+					<list>20</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_WEDNESDAY_12">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>20.0</index>
+					<size>1.1</size>
+					<list>20</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_WEDNESDAY_13">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>21.1</index>
+					<size>0.6</size>
+					<list>20</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_WEDNESDAY_13">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>22.0</index>
+					<size>1.1</size>
+					<list>20</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_THURSDAY_1">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>5</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_THURSDAY_1">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>360</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>12.0</index>
+					<size>1.1</size>
+					<list>5</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_THURSDAY_2">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>true</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>13.1</index>
+					<size>0.6</size>
+					<list>5</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_THURSDAY_2">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>540</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>14.0</index>
+					<size>1.1</size>
+					<list>5</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_THURSDAY_3">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>15.1</index>
+					<size>0.6</size>
+					<list>5</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_THURSDAY_3">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1020</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>16.0</index>
+					<size>1.1</size>
+					<list>5</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_THURSDAY_4">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>true</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>17.1</index>
+					<size>0.6</size>
+					<list>5</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_THURSDAY_4">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1380</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>18.0</index>
+					<size>1.1</size>
+					<list>5</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_THURSDAY_5">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>19.1</index>
+					<size>0.6</size>
+					<list>5</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_THURSDAY_5">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>20.0</index>
+					<size>1.1</size>
+					<list>5</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_THURSDAY_6">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>21.1</index>
+					<size>0.6</size>
+					<list>5</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_THURSDAY_6">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>22.0</index>
+					<size>1.1</size>
+					<list>5</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_THURSDAY_7">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>23.1</index>
+					<size>0.6</size>
+					<list>5</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_THURSDAY_7">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>24.0</index>
+					<size>1.1</size>
+					<list>5</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_THURSDAY_8">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>21</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_THURSDAY_8">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>12.0</index>
+					<size>1.1</size>
+					<list>21</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_THURSDAY_9">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>13.1</index>
+					<size>0.6</size>
+					<list>21</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_THURSDAY_9">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>14.0</index>
+					<size>1.1</size>
+					<list>21</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_THURSDAY_10">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>15.1</index>
+					<size>0.6</size>
+					<list>21</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_THURSDAY_10">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>16.0</index>
+					<size>1.1</size>
+					<list>21</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_THURSDAY_11">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>17.1</index>
+					<size>0.6</size>
+					<list>21</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_THURSDAY_11">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>18.0</index>
+					<size>1.1</size>
+					<list>21</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_THURSDAY_12">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>19.1</index>
+					<size>0.6</size>
+					<list>21</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_THURSDAY_12">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>20.0</index>
+					<size>1.1</size>
+					<list>21</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_THURSDAY_13">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>21.1</index>
+					<size>0.6</size>
+					<list>21</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_THURSDAY_13">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>22.0</index>
+					<size>1.1</size>
+					<list>21</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_FRIDAY_1">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>6</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_FRIDAY_1">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>360</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>12.0</index>
+					<size>1.1</size>
+					<list>6</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_FRIDAY_2">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>true</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>13.1</index>
+					<size>0.6</size>
+					<list>6</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_FRIDAY_2">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>540</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>14.0</index>
+					<size>1.1</size>
+					<list>6</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_FRIDAY_3">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>15.1</index>
+					<size>0.6</size>
+					<list>6</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_FRIDAY_3">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1020</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>16.0</index>
+					<size>1.1</size>
+					<list>6</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_FRIDAY_4">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>true</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>17.1</index>
+					<size>0.6</size>
+					<list>6</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_FRIDAY_4">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1380</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>18.0</index>
+					<size>1.1</size>
+					<list>6</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_FRIDAY_5">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>19.1</index>
+					<size>0.6</size>
+					<list>6</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_FRIDAY_5">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>20.0</index>
+					<size>1.1</size>
+					<list>6</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_FRIDAY_6">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>21.1</index>
+					<size>0.6</size>
+					<list>6</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_FRIDAY_6">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>22.0</index>
+					<size>1.1</size>
+					<list>6</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_FRIDAY_7">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>23.1</index>
+					<size>0.6</size>
+					<list>6</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_FRIDAY_7">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>24.0</index>
+					<size>1.1</size>
+					<list>6</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_FRIDAY_8">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>11.1</index>
+					<size>0.6</size>
+					<list>22</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_FRIDAY_8">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>12.0</index>
+					<size>1.1</size>
+					<list>22</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_FRIDAY_9">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>13.1</index>
+					<size>0.6</size>
+					<list>22</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_FRIDAY_9">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>14.0</index>
+					<size>1.1</size>
+					<list>22</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_FRIDAY_10">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>15.1</index>
+					<size>0.6</size>
+					<list>22</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_FRIDAY_10">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>16.0</index>
+					<size>1.1</size>
+					<list>22</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_FRIDAY_11">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>17.1</index>
+					<size>0.6</size>
+					<list>22</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_FRIDAY_11">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>18.0</index>
+					<size>1.1</size>
+					<list>22</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_FRIDAY_12">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>19.1</index>
+					<size>0.6</size>
+					<list>22</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_FRIDAY_12">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>20.0</index>
+					<size>1.1</size>
+					<list>22</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STATE_FRIDAY_13">
+				<properties>
+					<casts>
+						<booleanInteger>
+							<trueValue>61</trueValue>
+							<falseValue>9</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="">
+					<index>21.1</index>
+					<size>0.6</size>
+					<list>22</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="ENDTIME_FRIDAY_13">
+				<properties>
+					<unit>minutes</unit>
+					<casts>
+						<integerIntegerScale>
+							<operation>division</operation>
+							<factor>5.000000</factor>
+						</integerIntegerScale>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<minimumValue>5</minimumValue>
+					<maximumValue>1440</maximumValue>
+					<defaultValue>1440</defaultValue>
+				</logicalInteger>
+				<physicalInteger groupId="">
+					<index>22.0</index>
+					<size>1.1</size>
+					<list>22</list>
+					<operationType>config</operationType>
+				</physicalInteger>
+			</parameter>
+		</configParameters>
+		<variables id="maint_ch_values--0">
+			<parameter id="UNREACH">
+				<properties>
+					<writeable>false</writeable>
+					<service>true</service>
+				</properties>
+				<logicalBoolean/>
+				<physicalInteger groupId="UNREACH">
+					<operationType>internal</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STICKY_UNREACH">
+				<properties>
+					<service>true</service>
+					<sticky>true</sticky>
+				</properties>
+				<logicalBoolean/>
+				<physicalInteger groupId="STICKY_UNREACH">
+					<operationType>internal</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="CONFIG_PENDING">
+				<properties>
+					<writeable>false</writeable>
+					<service>true</service>
+				</properties>
+				<logicalBoolean/>
+				<physicalInteger groupId="CONFIG_PENDING">
+					<operationType>internal</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="RSSI_DEVICE">
+				<properties>
+					<writeable>false</writeable>
+				</properties>
+				<logicalInteger/>
+				<physicalInteger groupId="RSSI_DEVICE">
+					<operationType>internal</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="RSSI_PEER">
+				<properties>
+					<writeable>false</writeable>
+				</properties>
+				<logicalInteger/>
+				<physicalInteger groupId="RSSI_PEER">
+					<operationType>internal</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="BOOT">
+				<properties>
+					<writeable>false</writeable>
+				</properties>
+				<logicalAction/>
+				<physicalInteger groupId="BOOT">
+					<size>1.0</size>
+					<operationType>command</operationType>
+				</physicalInteger>
+				<packets>
+					<packet id="INFO_POWERON">
+						<type>event</type>
+					</packet>
+				</packets>
+			</parameter>
+		</variables>
+		<variables id="switch_ch_values--1">
+			<parameter id="STATE">
+				<properties>
+					<control>SWITCH.STATE</control>
+					<casts>
+						<booleanInteger>
+							<trueValue>60</trueValue>
+							<falseValue>10</falseValue>
+							<threshold>40</threshold>
+						</booleanInteger>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalInteger groupId="STATE">
+					<size>0.6</size>
+					<operationType>command</operationType>
+				</physicalInteger>
+				<packets>
+					<packet id="LEVEL_SET">
+						<type>set</type>
+					</packet>
+					<packet id="INFO_LEVEL">
+						<type>event</type>
+					</packet>
+					<packet id="INFO_LEVEL2">
+						<type>event</type>
+					</packet>
+					<packet id="ACK_STATUS">
+						<type>event</type>
+					</packet>
+				</packets>
+			</parameter>
+			<parameter id="MANU_MODE">
+				<properties>
+					<readable>false</readable>
+				</properties>
+				<logicalAction/>
+				<physicalInteger groupId="MANU_MODE">
+					<operationType>command</operationType>
+				</physicalInteger>
+				<packets>
+					<packet id="LEVEL_SET">
+						<type>set</type>
+					</packet>
+				</packets>
+			</parameter>
+			<parameter id="AUTO_MODE">
+				<properties>
+					<readable>false</readable>
+				</properties>
+				<logicalAction/>
+				<physicalInteger groupId="AUTO_MODE">
+					<operationType>command</operationType>
+				</physicalInteger>
+				<packets>
+					<packet id="AUTO_MODE">
+						<type>set</type>
+					</packet>
+				</packets>
+			</parameter>
+			<parameter id="CONTROL_MODE">
+				<properties>
+					<writeable>false</writeable>
+				</properties>
+				<logicalEnumeration>
+					<defaultValue>1</defaultValue>
+					<value>
+						<id>AUTO-MODE</id>
+						<index>0</index>
+					</value>
+					<value>
+						<id>MANU-MODE</id>
+						<index>1</index>
+					</value>
+				</logicalEnumeration>
+				<physicalInteger groupId="CONTROL_MODE">
+					<size>0.2</size>
+					<operationType>command</operationType>
+				</physicalInteger>
+				<packets>
+					<packet id="INFO_LEVEL">
+						<type>event</type>
+					</packet>
+					<packet id="INFO_LEVEL2">
+						<type>event</type>
+					</packet>
+					<packet id="ACK_STATUS">
+						<type>event</type>
+					</packet>
+				</packets>
+			</parameter>
+		</variables>
+	</parameterGroups>
+</homegearDevice>
+
