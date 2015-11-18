@@ -53,7 +53,7 @@ TICC1100::TICC1100(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> 
 		_out.printDebug("Debug: PATABLE will be set to 0x" + BaseLib::HelperFunctions::getHexString(settings->txPowerSetting, 2));
 		if(settings->interruptPin != 0 && settings->interruptPin != 2)
 		{
-			if(settings->interruptPin > 0) _out.printWarning("Warning: Setting for interruptPin for device CC1100 in physicalinterfaces.conf is invalid.");
+			if(settings->interruptPin > 0) _out.printWarning("Warning: Setting for interruptPin for device CC1100 in max.conf is invalid.");
 			settings->interruptPin = 2;
 		}
 
@@ -194,7 +194,7 @@ void TICC1100::setConfig()
 			0x00, //28: RCCTRL0
 		};
 	}
-	else _out.printError("Error: Unknown value for \"oscillatorFrequency\" in physicalinterfaces.conf. Valid values are 26000000 and 27000000.");
+	else _out.printError("Error: Unknown value for \"oscillatorFrequency\" in max.conf. Valid values are 26000000 and 27000000.");
 }
 
 void TICC1100::openDevice()

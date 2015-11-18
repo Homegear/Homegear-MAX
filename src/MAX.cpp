@@ -28,10 +28,8 @@
  */
 
 #include "MAX.h"
-#include "PhysicalInterfaces/CUL.h"
-#include "PhysicalInterfaces/COC.h"
-#include "PhysicalInterfaces/TICC1100.h"
 #include "MAXDeviceTypes.h"
+#include "Interfaces.h"
 #include "LogicalDevices/MAXCentral.h"
 #include "LogicalDevices/MAXSpyDevice.h"
 #include "GD.h"
@@ -39,7 +37,7 @@
 namespace MAX
 {
 
-MAX::MAX(BaseLib::Obj* bl, BaseLib::Systems::DeviceFamily::IFamilyEventSink* eventHandler) : BaseLib::Systems::DeviceFamily(bl, eventHandler)
+MAX::MAX(BaseLib::Obj* bl, BaseLib::Systems::DeviceFamily::IFamilyEventSink* eventHandler) : BaseLib::Systems::DeviceFamily(bl, eventHandler, MAX_FAMILY_ID, "MAX!")
 {
 	if(!bl || !eventHandler)
 	{
@@ -51,8 +49,8 @@ MAX::MAX(BaseLib::Obj* bl, BaseLib::Systems::DeviceFamily::IFamilyEventSink* eve
 	GD::out.init(bl);
 	GD::out.setPrefix("Module MAX: ");
 	GD::out.printDebug("Debug: Loading module...");
-	_family = 4;
 	GD::rpcDevices.init(_bl, this);
+	_physicalInterfaces.reset(new Interfaces(bl, _settings->getPhysicalInterfaceSettings()));
 }
 
 MAX::~MAX()
@@ -80,41 +78,6 @@ void MAX::dispose()
 }
 
 std::shared_ptr<BaseLib::Systems::Central> MAX::getCentral() { return _central; }
-
-std::shared_ptr<BaseLib::Systems::IPhysicalInterface> MAX::createPhysicalDevice(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings)
-{
-	try
-	{
-		std::shared_ptr<BaseLib::Systems::IPhysicalInterface> device;
-		if(!settings) return device;
-		GD::out.printDebug("Debug: Creating physical device. Type defined in physicalinterfaces.conf is: " + settings->type);
-		if(settings->type == "cul") device.reset(new CUL(settings));
-		else if(settings->type == "coc") device.reset(new COC(settings));
-#ifdef SPIINTERFACES
-		else if(settings->type == "cc1100") device.reset(new TICC1100(settings));
-#endif
-		else GD::out.printError("Error: Unsupported physical device type: " + settings->type);
-		if(device)
-		{
-			GD::physicalInterfaces[settings->id] = device;
-			if(settings->isDefault || !GD::defaultPhysicalInterface) GD::defaultPhysicalInterface = device;
-		}
-		return device;
-	}
-	catch(const std::exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
-	return std::shared_ptr<BaseLib::Systems::IPhysicalInterface>();
-}
 
 uint32_t MAX::getUniqueAddress(uint32_t seed)
 {
@@ -218,7 +181,7 @@ void MAX::load()
 	try
 	{
 		_devices.clear();
-		std::shared_ptr<BaseLib::Database::DataTable> rows = _bl->db->getDevices((uint32_t)_family);
+		std::shared_ptr<BaseLib::Database::DataTable> rows = _bl->db->getDevices((uint32_t)getFamily());
 		bool spyDeviceExists = false;
 		for(BaseLib::Database::DataTable::iterator row = rows->begin(); row != rows->end(); ++row)
 		{
