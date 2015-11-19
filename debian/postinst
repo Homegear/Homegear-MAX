@@ -4,6 +4,14 @@ case $1 in
 	# Configure this package. If the package must prompt the user for
 	# information, do it here.
 	configure)
+		chown -R homegear:homegear /var/lib/homegear/modules
+		chmod -R 550 /var/lib/homegear/modules
+		echo "##########################################################################"
+		echo "##########################################################################"
+		echo "### Please modify the file /etc/homegear/families/max.conf             ###"
+		echo "### according to your needs and restart Homegear.                      ###"
+		echo "##########################################################################"
+		echo "##########################################################################"
 		;;
 
 	# Back out of an attempt to upgrade this package FROM THIS VERSION
