@@ -37,9 +37,6 @@ namespace MAX
 	enum class DeviceType : uint32_t
 	{
 		none = 					0xFFFFFFFF,
-		HMRCV50 = 				0x0000,
-		MAXSD = 				0xFFFFFFFE,
-		MAXCENTRAL = 			0xFFFFFFFD,
 		BCTSSWPL =				0x01AA,
 		BCRTTRXCYG3 =			0x01A0
 	};

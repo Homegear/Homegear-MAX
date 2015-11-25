@@ -30,7 +30,12 @@
 #ifndef MAXCENTRAL_H_
 #define MAXCENTRAL_H_
 
-#include "../MAXDevice.h"
+#include "homegear-base/BaseLib.h"
+#include "MAXPeer.h"
+#include "MAXPacket.h"
+#include "MAXMessages.h"
+#include "QueueManager.h"
+#include "PacketManager.h"
 
 #include <memory>
 #include <mutex>
@@ -38,25 +43,57 @@
 
 namespace MAX
 {
+class MAXMessages;
 
-class MAXCentral : public MAXDevice, public BaseLib::Systems::Central
+class MAXCentral : public BaseLib::Systems::ICentral
 {
 public:
-	MAXCentral(IDeviceEventSink* eventHandler);
-	MAXCentral(uint32_t deviceType, std::string serialNumber, int32_t address, IDeviceEventSink* eventHandler);
+	//In table variables
+	int32_t getFirmwareVersion() { return _firmwareVersion; }
+	void setFirmwareVersion(int32_t value) { _firmwareVersion = value; saveVariable(0, value); }
+	int32_t getCentralAddress() { return _centralAddress; }
+	void setCentralAddress(int32_t value) { _centralAddress = value; saveVariable(1, value); }
+	std::string getPhysicalInterfaceID() { return _physicalInterfaceID; }
+	void setPhysicalInterfaceID(std::string);
+	//End
+
+	MAXCentral(ICentralEventSink* eventHandler);
+	MAXCentral(uint32_t deviceType, std::string serialNumber, int32_t address, ICentralEventSink* eventHandler);
 	virtual ~MAXCentral();
+	virtual void stopThreads();
+	virtual void dispose(bool wait = true);
+
+	std::unordered_map<int32_t, uint8_t>* messageCounter() { return &_messageCounter; }
+	static bool isSwitch(BaseLib::Systems::LogicalDeviceType type);
+
+	std::shared_ptr<MAXPeer> getPeer(int32_t address);
+	std::shared_ptr<MAXPeer> getPeer(uint64_t id);
+	std::shared_ptr<MAXPeer> getPeer(std::string serialNumber);
+	virtual bool isInPairingMode() { return _pairing; }
+	virtual std::shared_ptr<MAXMessages> getMessages() { return _messages; }
+	std::shared_ptr<MAXPacket> getSentPacket(int32_t address) { return _sentPackets.get(address); }
+	std::shared_ptr<MAXPacket> getTimePacket(uint8_t messageCounter, int32_t receiverAddress, bool burst);
+
+	virtual void loadVariables();
+	virtual void saveVariables();
+	virtual void saveMessageCounters();
+	virtual void serializeMessageCounters(std::vector<uint8_t>& encodedData);
+	virtual void unserializeMessageCounters(std::shared_ptr<std::vector<char>> serializedData);
+	virtual void loadPeers();
+	virtual void savePeers(bool full);
 
 	virtual bool onPacketReceived(std::string& senderID, std::shared_ptr<BaseLib::Systems::Packet> packet);
-	virtual std::string handleCLICommand(std::string command);
-	virtual uint64_t getPeerIDFromSerial(std::string serialNumber) { std::shared_ptr<MAXPeer> peer = getPeer(serialNumber); if(peer) return peer->getID(); else return 0; }
+	virtual std::string handleCliCommand(std::string command);
+	virtual uint64_t getPeerIdFromSerial(std::string serialNumber) { std::shared_ptr<MAXPeer> peer = getPeer(serialNumber); if(peer) return peer->getID(); else return 0; }
 	virtual void enqueuePendingQueues(int32_t deviceAddress);
 	void reset(uint64_t id);
 
+	virtual void sendPacket(std::shared_ptr<BaseLib::Systems::IPhysicalInterface> physicalInterface, std::shared_ptr<MAXPacket> packet, bool stealthy = false);
+	virtual void sendOK(int32_t messageCounter, int32_t destinationAddress);
+
 	virtual void handleAck(int32_t messageCounter, std::shared_ptr<MAXPacket>);
 	virtual void handlePairingRequest(int32_t messageCounter, std::shared_ptr<MAXPacket>);
-
-	virtual bool knowsDevice(std::string serialNumber);
-	virtual bool knowsDevice(uint64_t id);
+	virtual void handleTimeRequest(int32_t messageCounter, std::shared_ptr<MAXPacket> packet);
 
 	virtual PVariable addLink(int32_t clientID, std::string senderSerialNumber, int32_t senderChannel, std::string receiverSerialNumber, int32_t receiverChannel, std::string name, std::string description);
 	virtual PVariable addLink(int32_t clientID, uint64_t senderID, int32_t senderChannel, uint64_t receiverID, int32_t receiverChannel, std::string name, std::string description);
@@ -71,6 +108,23 @@ public:
 	virtual PVariable setInstallMode(int32_t clientID, bool on, uint32_t duration = 60, bool debugOutput = true);
 	virtual PVariable setInterface(int32_t clientID, uint64_t peerID, std::string interfaceID);
 protected:
+	//In table variables
+	int32_t _firmwareVersion = 0;
+	int32_t _centralAddress = 0;
+	std::unordered_map<int32_t, uint8_t> _messageCounter;
+	std::string _physicalInterfaceID;
+	//End
+
+	bool _stopWorkerThread = false;
+	std::thread _workerThread;
+
+	bool _pairing = false;
+	QueueManager _queueManager;
+	PacketManager _receivedPackets;
+	PacketManager _sentPackets;
+	std::shared_ptr<MAXMessages> _messages;
+	std::shared_ptr<BaseLib::Systems::IPhysicalInterface> _physicalInterface;
+
 	uint32_t _timeLeftInPairingMode = 0;
 	void pairingModeTimer(int32_t duration, bool debugOutput = true);
 	bool _stopPairingModeThread = false;
@@ -87,6 +141,8 @@ protected:
 
 	void addHomegearFeatures(std::shared_ptr<MAXPeer> peer);
 	void addHomegearFeaturesValveDrive(std::shared_ptr<MAXPeer> peer);
+
+	virtual std::shared_ptr<IPhysicalInterface> getPhysicalInterface(int32_t peerAddress);
 };
 
 }

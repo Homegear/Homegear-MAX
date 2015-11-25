@@ -28,16 +28,17 @@
  */
 
 #include "MAXCentral.h"
-#include "../GD.h"
+#include "MAXDeviceTypes.h"
+#include "GD.h"
 
 namespace MAX {
 
-MAXCentral::MAXCentral(IDeviceEventSink* eventHandler) : MAXDevice(eventHandler), BaseLib::Systems::Central(GD::bl, this)
+MAXCentral::MAXCentral(ICentralEventSink* eventHandler) : BaseLib::Systems::ICentral(MAX_FAMILY_ID, GD::bl, eventHandler)
 {
 	init();
 }
 
-MAXCentral::MAXCentral(uint32_t deviceID, std::string serialNumber, int32_t address, IDeviceEventSink* eventHandler) : MAXDevice(deviceID, serialNumber, address, eventHandler), Central(GD::bl, this)
+MAXCentral::MAXCentral(uint32_t deviceID, std::string serialNumber, int32_t address, ICentralEventSink* eventHandler) : BaseLib::Systems::ICentral(MAX_FAMILY_ID, GD::bl, deviceID, serialNumber, address, eventHandler)
 {
 	init();
 }
@@ -52,18 +53,99 @@ MAXCentral::~MAXCentral()
 	}
 }
 
+void MAXCentral::dispose(bool wait)
+{
+	try
+	{
+		if(_disposing) return;
+		_disposing = true;
+		GD::out.printDebug("Removing device " + std::to_string(_deviceId) + " from physical device's event queue...");
+		for(std::map<std::string, std::shared_ptr<IPhysicalInterface>>::iterator i = GD::physicalInterfaces.begin(); i != GD::physicalInterfaces.end(); ++i)
+		{
+			//Just to make sure cycle through all physical devices. If event handler is not removed => segfault
+			i->second->removeEventHandler(_physicalInterfaceEventhandler);
+		}
+
+		stopThreads();
+
+		_queueManager.dispose(false);
+		_receivedPackets.dispose(false);
+		_sentPackets.dispose(false);
+
+		_peersMutex.lock();
+		for(std::unordered_map<int32_t, std::shared_ptr<BaseLib::Systems::Peer>>::const_iterator i = _peers.begin(); i != _peers.end(); ++i)
+		{
+			i->second->dispose();
+		}
+		_peersMutex.unlock();
+	}
+    catch(const std::exception& ex)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+	_disposed = true;
+}
+
+void MAXCentral::stopThreads()
+{
+	try
+	{
+		_stopWorkerThread = true;
+		if(_workerThread.joinable())
+		{
+			GD::out.printDebug("Debug: Waiting for worker thread of device " + std::to_string(_deviceId) + "...");
+			_workerThread.join();
+		}
+	}
+    catch(const std::exception& ex)
+    {
+    	_peersMutex.unlock();
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+    	_peersMutex.unlock();
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	_peersMutex.unlock();
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
 void MAXCentral::init()
 {
 	try
 	{
-		MAXDevice::init();
+		if(_initialized) return; //Prevent running init two times
+		_initialized = true;
 
-		_deviceType = (uint32_t)DeviceType::MAXCENTRAL;
+		_physicalInterface = GD::defaultPhysicalInterface;
+
+		_messages = std::shared_ptr<MAXMessages>(new MAXMessages());
+
+		if(_physicalInterface) _physicalInterfaceEventhandler = _physicalInterface->addEventHandler((BaseLib::Systems::IPhysicalInterface::IPhysicalInterfaceEventSink*)this);
+
+		_messageCounter[0] = 0; //Broadcast message counter
+
+		setUpMAXMessages();
 
 		for(std::map<std::string, std::shared_ptr<IPhysicalInterface>>::iterator i = GD::physicalInterfaces.begin(); i != GD::physicalInterfaces.end(); ++i)
 		{
 			i->second->addEventHandler((IPhysicalInterface::IPhysicalInterfaceEventSink*)this);
 		}
+
+		_workerThread = std::thread(&MAXCentral::worker, this);
+		BaseLib::Threads::setThreadPriority(_bl, _workerThread.native_handle(), _bl->settings.workerThreadPriority(), _bl->settings.workerThreadPolicy());
 	}
 	catch(const std::exception& ex)
 	{
@@ -79,16 +161,27 @@ void MAXCentral::init()
 	}
 }
 
+bool MAXCentral::isSwitch(BaseLib::Systems::LogicalDeviceType type)
+{
+	switch((DeviceType)type.type())
+	{
+	case DeviceType::BCTSSWPL:
+		return true;
+	default:
+		return false;
+	}
+	return false;
+}
+
 void MAXCentral::setUpMAXMessages()
 {
 	try
 	{
-		//Don't call MAXDevice::setUpMAXMessages!
-		_messages->add(std::shared_ptr<MAXMessage>(new MAXMessage(0x00, 0x04, this, ACCESSPAIREDTOSENDER, FULLACCESS, &MAXDevice::handlePairingRequest)));
+		_messages->add(std::shared_ptr<MAXMessage>(new MAXMessage(0x00, 0x04, ACCESSPAIREDTOSENDER, FULLACCESS, &MAXCentral::handlePairingRequest)));
 
-		_messages->add(std::shared_ptr<MAXMessage>(new MAXMessage(0x02, -1, this, ACCESSPAIREDTOSENDER | ACCESSDESTISME, ACCESSPAIREDTOSENDER | ACCESSDESTISME, &MAXDevice::handleAck)));
+		_messages->add(std::shared_ptr<MAXMessage>(new MAXMessage(0x02, -1, ACCESSPAIREDTOSENDER | ACCESSDESTISME, ACCESSPAIREDTOSENDER | ACCESSDESTISME, &MAXCentral::handleAck)));
 
-		_messages->add(std::shared_ptr<MAXMessage>(new MAXMessage(0x03, 0x0A, this, ACCESSPAIREDTOSENDER | ACCESSDESTISME, NOACCESS, &MAXDevice::handleTimeRequest)));
+		_messages->add(std::shared_ptr<MAXMessage>(new MAXMessage(0x03, 0x0A, ACCESSPAIREDTOSENDER | ACCESSDESTISME, NOACCESS, &MAXCentral::handleTimeRequest)));
 	}
     catch(const std::exception& ex)
     {
@@ -182,6 +275,42 @@ void MAXCentral::worker()
     }
 }
 
+std::shared_ptr<IPhysicalInterface> MAXCentral::getPhysicalInterface(int32_t peerAddress)
+{
+	try
+	{
+		std::shared_ptr<PacketQueue> queue = _queueManager.get(peerAddress);
+		if(queue) return queue->getPhysicalInterface();
+		std::shared_ptr<MAXPeer> peer = getPeer(peerAddress);
+		return peer ? peer->getPhysicalInterface() : GD::defaultPhysicalInterface;
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+    return GD::defaultPhysicalInterface;
+}
+
+void MAXCentral::setPhysicalInterfaceID(std::string id)
+{
+	if(id.empty() || (GD::physicalInterfaces.find(id) != GD::physicalInterfaces.end() && GD::physicalInterfaces.at(id)))
+	{
+		if(_physicalInterface) _physicalInterface->removeEventHandler(_physicalInterfaceEventhandler);
+		_physicalInterfaceID = id;
+		_physicalInterface = id.empty() ? GD::defaultPhysicalInterface : GD::physicalInterfaces.at(_physicalInterfaceID);
+		_physicalInterfaceEventhandler = _physicalInterface->addEventHandler((BaseLib::Systems::IPhysicalInterface::IPhysicalInterfaceEventSink*)this);
+		saveVariable(4, _physicalInterfaceID);
+	}
+}
+
 bool MAXCentral::onPacketReceived(std::string& senderID, std::shared_ptr<BaseLib::Systems::Packet> packet)
 {
 	try
@@ -189,6 +318,7 @@ bool MAXCentral::onPacketReceived(std::string& senderID, std::shared_ptr<BaseLib
 		if(_disposing) return false;
 		std::shared_ptr<MAXPacket> maxPacket(std::dynamic_pointer_cast<MAXPacket>(packet));
 		if(!maxPacket) return false;
+		if(GD::bl->debugLevel >= 4) std::cout << BaseLib::HelperFunctions::getTimeString(maxPacket->timeReceived()) << " MAX packet received (" + senderID + (maxPacket->rssiDevice() ? ", RSSI: 0x" + _bl->hf.getHexString(maxPacket->rssiDevice(), 2) : "") + "): " + maxPacket->hexString() << std::endl;
 		if(maxPacket->senderAddress() == _address) //Packet spoofed
 		{
 			std::shared_ptr<MAXPeer> peer(getPeer(maxPacket->destinationAddress()));
@@ -206,7 +336,17 @@ bool MAXCentral::onPacketReceived(std::string& senderID, std::shared_ptr<BaseLib
 		}
 		std::shared_ptr<IPhysicalInterface> physicalInterface = getPhysicalInterface(maxPacket->senderAddress());
 		if(physicalInterface->getID() != senderID) return true;
-		bool handled = MAXDevice::onPacketReceived(senderID, maxPacket);
+
+		bool handled = false;
+		if(_receivedPackets.set(maxPacket->senderAddress(), maxPacket, maxPacket->timeReceived())) handled = true;
+		std::shared_ptr<MAXMessage> message = _messages->find(maxPacket);
+		if(message && message->checkAccess(maxPacket, _queueManager.get(maxPacket->senderAddress())))
+		{
+			if(_bl->debugLevel >= 6) GD::out.printDebug("Debug: Device " + std::to_string(_deviceId) + ": Access granted for packet " + maxPacket->hexString());
+			message->invokeMessageHandler(maxPacket);
+			handled = true;
+		}
+
 		std::shared_ptr<MAXPeer> peer(getPeer(maxPacket->senderAddress()));
 		if(!peer) return false;
 		std::shared_ptr<MAXPeer> team;
@@ -253,7 +393,7 @@ void MAXCentral::reset(uint64_t id)
 		payload.push_back(0);
 		std::shared_ptr<MAXPacket> resetPacket(new MAXPacket(_messageCounter[0], 0xF0, 0, _address, peer->getAddress(), payload, false));
 		pendingQueue->push(resetPacket);
-		pendingQueue->push(_messages->find(DIRECTIONIN, 0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
+		pendingQueue->push(_messages->find(0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
 		_messageCounter[0]++; //Count resends in
 
 		while(!peer->pendingQueues->empty()) peer->pendingQueues->pop();
@@ -262,7 +402,7 @@ void MAXCentral::reset(uint64_t id)
 
 		if((peer->getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio) || (peer->getRXModes() & HomegearDevice::ReceiveModes::always))
 		{
-			std::shared_ptr<PacketQueue> queue = _queueManager.createQueue(this, peer->getPhysicalInterface(), PacketQueueType::UNPAIRING, peer->getAddress());
+			std::shared_ptr<PacketQueue> queue = _queueManager.createQueue(peer->getPhysicalInterface(), PacketQueueType::UNPAIRING, peer->getAddress());
 			queue->peer = peer;
 			queue->push(peer->pendingQueues);
 		}
@@ -279,6 +419,295 @@ void MAXCentral::reset(uint64_t id)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
     }
+}
+
+void MAXCentral::loadPeers()
+{
+	try
+	{
+		std::shared_ptr<BaseLib::Database::DataTable> rows = _bl->db->getPeers(_deviceId);
+		for(BaseLib::Database::DataTable::iterator row = rows->begin(); row != rows->end(); ++row)
+		{
+			int32_t peerID = row->second.at(0)->intValue;
+			GD::out.printMessage("Loading MAX! peer " + std::to_string(peerID));
+			int32_t address = row->second.at(2)->intValue;
+			std::shared_ptr<MAXPeer> peer(new MAXPeer(peerID, address, row->second.at(3)->textValue, _deviceId, true, this));
+			if(!peer->load(this)) continue;
+			if(!peer->getRpcDevice()) continue;
+			_peersMutex.lock();
+			_peers[peer->getAddress()] = peer;
+			if(!peer->getSerialNumber().empty()) _peersBySerial[peer->getSerialNumber()] = peer;
+			_peersById[peerID] = peer;
+			_peersMutex.unlock();
+		}
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    	_peersMutex.unlock();
+    }
+    catch(BaseLib::Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    	_peersMutex.unlock();
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    	_peersMutex.unlock();
+    }
+}
+
+void MAXCentral::loadVariables()
+{
+	try
+	{
+		std::shared_ptr<BaseLib::Database::DataTable> rows = _bl->db->getDeviceVariables(_deviceId);
+		for(BaseLib::Database::DataTable::iterator row = rows->begin(); row != rows->end(); ++row)
+		{
+			_variableDatabaseIds[row->second.at(2)->intValue] = row->second.at(0)->intValue;
+			switch(row->second.at(2)->intValue)
+			{
+			case 0:
+				_firmwareVersion = row->second.at(3)->intValue;
+				break;
+			case 1:
+				_centralAddress = row->second.at(3)->intValue;
+				break;
+			case 2:
+				unserializeMessageCounters(row->second.at(5)->binaryValue);
+				break;
+			case 4:
+				_physicalInterfaceID = row->second.at(4)->textValue;
+				if(!_physicalInterfaceID.empty() && GD::physicalInterfaces.find(_physicalInterfaceID) != GD::physicalInterfaces.end()) _physicalInterface = GD::physicalInterfaces.at(_physicalInterfaceID);
+				break;
+			}
+		}
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
+void MAXCentral::saveMessageCounters()
+{
+	try
+	{
+		std::vector<uint8_t> serializedData;
+		serializeMessageCounters(serializedData);
+		saveVariable(2, serializedData);
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
+void MAXCentral::serializeMessageCounters(std::vector<uint8_t>& encodedData)
+{
+	try
+	{
+		BaseLib::BinaryEncoder encoder(_bl);
+		encoder.encodeInteger(encodedData, _messageCounter.size());
+		for(std::unordered_map<int32_t, uint8_t>::const_iterator i = _messageCounter.begin(); i != _messageCounter.end(); ++i)
+		{
+			encoder.encodeInteger(encodedData, i->first);
+			encoder.encodeByte(encodedData, i->second);
+		}
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
+void MAXCentral::unserializeMessageCounters(std::shared_ptr<std::vector<char>> serializedData)
+{
+	try
+	{
+		BaseLib::BinaryDecoder decoder(_bl);
+		uint32_t position = 0;
+		uint32_t messageCounterSize = decoder.decodeInteger(*serializedData, position);
+		for(uint32_t i = 0; i < messageCounterSize; i++)
+		{
+			int32_t index = decoder.decodeInteger(*serializedData, position);
+			_messageCounter[index] = decoder.decodeByte(*serializedData, position);
+		}
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
+void MAXCentral::savePeers(bool full)
+{
+	try
+	{
+		_peersMutex.lock();
+		for(std::unordered_map<int32_t, std::shared_ptr<BaseLib::Systems::Peer>>::iterator i = _peers.begin(); i != _peers.end(); ++i)
+		{
+			//Necessary, because peers can be assigned to multiple virtual devices
+			if(i->second->getParentID() != _deviceId) continue;
+			//We are always printing this, because the init script needs it
+			GD::out.printMessage("(Shutdown) => Saving MAX! peer " + std::to_string(i->second->getID()));
+			i->second->save(full, full, full);
+		}
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+	_peersMutex.unlock();
+}
+
+void MAXCentral::saveVariables()
+{
+	try
+	{
+		if(_deviceId == 0) return;
+		saveVariable(0, _firmwareVersion);
+		saveVariable(1, _centralAddress);
+		saveMessageCounters(); //2
+		saveVariable(4, _physicalInterfaceID);
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
+std::shared_ptr<MAXPeer> MAXCentral::getPeer(int32_t address)
+{
+	try
+	{
+		_peersMutex.lock();
+		if(_peers.find(address) != _peers.end())
+		{
+			std::shared_ptr<MAXPeer> peer(std::dynamic_pointer_cast<MAXPeer>(_peers.at(address)));
+			_peersMutex.unlock();
+			return peer;
+		}
+	}
+	catch(const std::exception& ex)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+    _peersMutex.unlock();
+    return std::shared_ptr<MAXPeer>();
+}
+
+std::shared_ptr<MAXPeer> MAXCentral::getPeer(uint64_t id)
+{
+	try
+	{
+		_peersMutex.lock();
+		if(_peersById.find(id) != _peersById.end())
+		{
+			std::shared_ptr<MAXPeer> peer(std::dynamic_pointer_cast<MAXPeer>(_peersById.at(id)));
+			_peersMutex.unlock();
+			return peer;
+		}
+	}
+	catch(const std::exception& ex)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+    _peersMutex.unlock();
+    return std::shared_ptr<MAXPeer>();
+}
+
+std::shared_ptr<MAXPeer> MAXCentral::getPeer(std::string serialNumber)
+{
+	try
+	{
+		_peersMutex.lock();
+		if(_peersBySerial.find(serialNumber) != _peersBySerial.end())
+		{
+			std::shared_ptr<MAXPeer> peer(std::dynamic_pointer_cast<MAXPeer>(_peersBySerial.at(serialNumber)));
+			_peersMutex.unlock();
+			return peer;
+		}
+	}
+	catch(const std::exception& ex)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+    _peersMutex.unlock();
+    return std::shared_ptr<MAXPeer>();
 }
 
 void MAXCentral::deletePeer(uint64_t id)
@@ -305,7 +734,7 @@ void MAXCentral::deletePeer(uint64_t id)
 		raiseRPCDeleteDevices(deviceAddresses, deviceInfo);
 		_peersMutex.lock();
 		if(_peersBySerial.find(peer->getSerialNumber()) != _peersBySerial.end()) _peersBySerial.erase(peer->getSerialNumber());
-		if(_peersByID.find(id) != _peersByID.end()) _peersByID.erase(id);
+		if(_peersById.find(id) != _peersById.end()) _peersById.erase(id);
 		if(_peers.find(peer->getAddress()) != _peers.end()) _peers.erase(peer->getAddress());
 		_peersMutex.unlock();
 		peer->deleteFromDatabase();
@@ -328,7 +757,7 @@ void MAXCentral::deletePeer(uint64_t id)
     }
 }
 
-std::string MAXCentral::handleCLICommand(std::string command)
+std::string MAXCentral::handleCliCommand(std::string command)
 {
 	try
 	{
@@ -340,7 +769,7 @@ std::string MAXCentral::handleCLICommand(std::string command)
 				_currentPeer.reset();
 				return "Peer unselected.\n";
 			}
-			return _currentPeer->handleCLICommand(command);
+			return _currentPeer->handleCliCommand(command);
 		}
 		if(command == "help" || command == "h")
 		{
@@ -649,7 +1078,7 @@ std::string MAXCentral::handleCLICommand(std::string command)
 					<< std::setw(unreachWidth) << " "
 					<< std::endl;
 				_peersMutex.lock();
-				for(std::map<uint64_t, std::shared_ptr<BaseLib::Systems::Peer>>::iterator i = _peersByID.begin(); i != _peersByID.end(); ++i)
+				for(std::map<uint64_t, std::shared_ptr<BaseLib::Systems::Peer>>::iterator i = _peersById.begin(); i != _peersById.end(); ++i)
 				{
 					if(filterType == "id")
 					{
@@ -801,6 +1230,80 @@ std::string MAXCentral::handleCLICommand(std::string command)
     return "Error executing command. See log file for more details.\n";
 }
 
+void MAXCentral::sendPacket(std::shared_ptr<IPhysicalInterface> physicalInterface, std::shared_ptr<MAXPacket> packet, bool stealthy)
+{
+	try
+	{
+		if(!packet || !physicalInterface) return;
+		uint32_t responseDelay = physicalInterface->responseDelay();
+		std::shared_ptr<MAXPacketInfo> packetInfo = _sentPackets.getInfo(packet->destinationAddress());
+		if(!stealthy) _sentPackets.set(packet->destinationAddress(), packet);
+		if(packetInfo)
+		{
+			int64_t timeDifference = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - packetInfo->time;
+			if(timeDifference < responseDelay)
+			{
+				packetInfo->time += responseDelay - timeDifference; //Set to sending time
+				std::this_thread::sleep_for(std::chrono::milliseconds(responseDelay - timeDifference));
+			}
+		}
+		if(stealthy) _sentPackets.keepAlive(packet->destinationAddress());
+		packetInfo = _receivedPackets.getInfo(packet->destinationAddress());
+		if(packetInfo)
+		{
+			int64_t time = BaseLib::HelperFunctions::getTime();
+			int64_t timeDifference = time - packetInfo->time;
+			if(timeDifference >= 0 && timeDifference < responseDelay)
+			{
+				int64_t sleepingTime = responseDelay - timeDifference;
+				if(sleepingTime > 1) sleepingTime -= 1;
+				packet->setTimeSending(time + sleepingTime + 1);
+				std::this_thread::sleep_for(std::chrono::milliseconds(sleepingTime));
+			}
+			//Set time to now. This is necessary if two packets are sent after each other without a response in between
+			packetInfo->time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		}
+		else if(_bl->debugLevel > 4) GD::out.printDebug("Debug: Sending packet " + packet->hexString() + " immediately, because it seems it is no response (no packet information found).", 7);
+		physicalInterface->sendPacket(packet);
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
+void MAXCentral::sendOK(int32_t messageCounter, int32_t destinationAddress)
+{
+	try
+	{
+		std::vector<uint8_t> payload;
+		payload.push_back(0);
+		payload.push_back(0);
+		std::shared_ptr<MAXPacket> ok(new MAXPacket(messageCounter, 0x02, 0x02, _address, destinationAddress, payload, false));
+		sendPacket(getPhysicalInterface(destinationAddress), ok);
+	}
+	catch(const std::exception& ex)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
 void MAXCentral::enqueuePendingQueues(int32_t deviceAddress)
 {
 	try
@@ -813,7 +1316,7 @@ void MAXCentral::enqueuePendingQueues(int32_t deviceAddress)
 			return;
 		}
 		std::shared_ptr<PacketQueue> queue = _queueManager.get(deviceAddress);
-		if(!queue) queue = _queueManager.createQueue(this, peer->getPhysicalInterface(), PacketQueueType::DEFAULT, deviceAddress);
+		if(!queue) queue = _queueManager.createQueue(peer->getPhysicalInterface(), PacketQueueType::DEFAULT, deviceAddress);
 		if(!queue)
 		{
 			_enqueuePendingQueuesMutex.unlock();
@@ -841,7 +1344,7 @@ std::shared_ptr<MAXPeer> MAXCentral::createPeer(int32_t address, int32_t firmwar
 {
 	try
 	{
-		std::shared_ptr<MAXPeer> peer(new MAXPeer(_deviceID, true, this));
+		std::shared_ptr<MAXPeer> peer(new MAXPeer(_deviceId, true, this));
 		peer->setAddress(address);
 		peer->setFirmwareVersion(firmwareVersion);
 		peer->setDeviceType(deviceType);
@@ -866,61 +1369,6 @@ std::shared_ptr<MAXPeer> MAXCentral::createPeer(int32_t address, int32_t firmwar
     return std::shared_ptr<MAXPeer>();
 }
 
-bool MAXCentral::knowsDevice(std::string serialNumber)
-{
-	if(serialNumber == _serialNumber) return true;
-	_peersMutex.lock();
-	try
-	{
-		if(_peersBySerial.find(serialNumber) != _peersBySerial.end())
-		{
-			_peersMutex.unlock();
-			return true;
-		}
-	}
-	catch(const std::exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
-	_peersMutex.unlock();
-	return false;
-}
-
-bool MAXCentral::knowsDevice(uint64_t id)
-{
-	_peersMutex.lock();
-	try
-	{
-		if(_peersByID.find(id) != _peersByID.end())
-		{
-			_peersMutex.unlock();
-			return true;
-		}
-	}
-	catch(const std::exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
-	_peersMutex.unlock();
-	return false;
-}
-
 void MAXCentral::addHomegearFeatures(std::shared_ptr<MAXPeer> peer)
 {
 	try
@@ -942,7 +1390,63 @@ void MAXCentral::addHomegearFeatures(std::shared_ptr<MAXPeer> peer)
 	}
 }
 
+std::shared_ptr<MAXPacket> MAXCentral::getTimePacket(uint8_t messageCounter, int32_t receiverAddress, bool burst)
+{
+	try
+	{
+		const auto timePoint = std::chrono::system_clock::now();
+		time_t t = std::chrono::system_clock::to_time_t(timePoint);
+		tm* localTime = std::localtime(&t);
+		t = std::chrono::system_clock::to_time_t(timePoint - std::chrono::seconds(localTime->tm_gmtoff));
+		localTime = std::localtime(&t);
+
+		std::vector<uint8_t> payload;
+		payload.push_back(0);
+		payload.push_back(localTime->tm_year % 100);
+		int32_t gmtOff = localTime->tm_gmtoff / 1800;
+		payload.push_back(localTime->tm_mday + ((gmtOff & 0x38) << 2));
+		payload.push_back(localTime->tm_hour + ((gmtOff & 7) << 5));
+		payload.push_back(localTime->tm_min + (((localTime->tm_mon + 1) & 0x0C) << 4));
+		payload.push_back(localTime->tm_min + (((localTime->tm_mon + 1) & 3) << 6));
+
+		return std::shared_ptr<MAXPacket>(new MAXPacket(messageCounter, 0x03, 0, _address, receiverAddress, payload, burst));
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+    return std::shared_ptr<MAXPacket>();
+}
+
 //Packet handlers
+void MAXCentral::handleTimeRequest(int32_t messageCounter, std::shared_ptr<MAXPacket> packet)
+{
+	try
+	{
+		sendPacket(getPhysicalInterface(packet->senderAddress()), getTimePacket(messageCounter, packet->senderAddress(), false));
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
 void MAXCentral::handleAck(int32_t messageCounter, std::shared_ptr<MAXPacket> packet)
 {
 	try
@@ -978,7 +1482,7 @@ void MAXCentral::handleAck(int32_t messageCounter, std::shared_ptr<MAXPacket> pa
 						queue->peer->save(true, true, false);
 						queue->peer->initializeCentralConfig();
 						_peersMutex.lock();
-						_peersByID[queue->peer->getID()] = queue->peer;
+						_peersById[queue->peer->getID()] = queue->peer;
 						_peersMutex.unlock();
 					}
 					catch(const std::exception& ex)
@@ -1057,7 +1561,7 @@ void MAXCentral::handlePairingRequest(int32_t messageCounter, std::shared_ptr<MA
 		std::vector<uint8_t> payload;
 		if(_pairing)
 		{
-			std::shared_ptr<PacketQueue> queue = _queueManager.createQueue(this, getPhysicalInterface(packet->senderAddress()), PacketQueueType::PAIRING, packet->senderAddress());
+			std::shared_ptr<PacketQueue> queue = _queueManager.createQueue(getPhysicalInterface(packet->senderAddress()), PacketQueueType::PAIRING, packet->senderAddress());
 
 			if(!peer)
 			{
@@ -1083,7 +1587,7 @@ void MAXCentral::handlePairingRequest(int32_t messageCounter, std::shared_ptr<MA
 			payload.push_back(0);
 			std::shared_ptr<MAXPacket> configPacket(new MAXPacket(_messageCounter[0], 0x01, 0, _address, packet->senderAddress(), payload, peer->getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio));
 			queue->push(configPacket);
-			queue->push(_messages->find(DIRECTIONIN, 0x02, -1, std::vector<std::pair<uint32_t, int32_t>>()));
+			queue->push(_messages->find(0x02, -1, std::vector<std::pair<uint32_t, int32_t>>()));
 			payload.clear();
 			_messageCounter[0]++;
 
@@ -1101,7 +1605,7 @@ void MAXCentral::handlePairingRequest(int32_t messageCounter, std::shared_ptr<MA
 			{
 				//TIME
 				queue->push(getTimePacket(_messageCounter[0], packet->senderAddress(), false));
-				queue->push(_messages->find(DIRECTIONIN, 0x02, -1, std::vector<std::pair<uint32_t, int32_t>>()));
+				queue->push(_messages->find(0x02, -1, std::vector<std::pair<uint32_t, int32_t>>()));
 				payload.clear();
 				_messageCounter[0]++;
 			}
@@ -1217,7 +1721,7 @@ PVariable MAXCentral::addLink(int32_t clientID, uint64_t senderID, int32_t sende
 		payload.push_back(senderChannelIndex);
 		std::shared_ptr<MAXPacket> configPacket(new MAXPacket(_messageCounter[0], 0x20, 0, _address, sender->getAddress(), payload, sender->getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio));
 		pendingQueue->push(configPacket);
-		pendingQueue->push(_messages->find(DIRECTIONIN, 0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
+		pendingQueue->push(_messages->find(0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
 		_messageCounter[0]++;
 
 		sender->pendingQueues->push(pendingQueue);
@@ -1225,7 +1729,7 @@ PVariable MAXCentral::addLink(int32_t clientID, uint64_t senderID, int32_t sende
 
 		if((sender->getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio) || (sender->getRXModes() & HomegearDevice::ReceiveModes::always))
 		{
-			std::shared_ptr<PacketQueue> queue = _queueManager.createQueue(this, sender->getPhysicalInterface(), PacketQueueType::CONFIG, sender->getAddress());
+			std::shared_ptr<PacketQueue> queue = _queueManager.createQueue(sender->getPhysicalInterface(), PacketQueueType::CONFIG, sender->getAddress());
 			queue->peer = sender;
 			queue->push(sender->pendingQueues);
 		}
@@ -1252,7 +1756,7 @@ PVariable MAXCentral::addLink(int32_t clientID, uint64_t senderID, int32_t sende
 		payload.push_back(receiverChannelIndex);
 		configPacket.reset(new MAXPacket(_messageCounter[0], 0x20, 0, _address, receiver->getAddress(), payload, receiver->getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio));
 		pendingQueue->push(configPacket);
-		pendingQueue->push(_messages->find(DIRECTIONIN, 0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
+		pendingQueue->push(_messages->find(0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
 		_messageCounter[0]++;
 
 		receiver->pendingQueues->push(pendingQueue);
@@ -1260,7 +1764,7 @@ PVariable MAXCentral::addLink(int32_t clientID, uint64_t senderID, int32_t sende
 
 		if((receiver->getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio) || (receiver->getRXModes() & HomegearDevice::ReceiveModes::always))
 		{
-			std::shared_ptr<PacketQueue> queue = _queueManager.createQueue(this, receiver->getPhysicalInterface(), PacketQueueType::CONFIG, receiver->getAddress());
+			std::shared_ptr<PacketQueue> queue = _queueManager.createQueue(receiver->getPhysicalInterface(), PacketQueueType::CONFIG, receiver->getAddress());
 			queue->peer = receiver;
 			queue->push(receiver->pendingQueues);
 		}
@@ -1381,7 +1885,7 @@ PVariable MAXCentral::getDeviceInfo(int32_t clientID, uint64_t id, std::map<std:
 			std::vector<std::shared_ptr<MAXPeer>> peers;
 			//Copy all peers first, because listDevices takes very long and we don't want to lock _peersMutex too long
 			_peersMutex.lock();
-			for(std::map<uint64_t, std::shared_ptr<BaseLib::Systems::Peer>>::iterator i = _peersByID.begin(); i != _peersByID.end(); ++i)
+			for(std::map<uint64_t, std::shared_ptr<BaseLib::Systems::Peer>>::iterator i = _peersById.begin(); i != _peersById.end(); ++i)
 			{
 				peers.push_back(std::dynamic_pointer_cast<MAXPeer>(i->second));
 			}
@@ -1571,7 +2075,7 @@ PVariable MAXCentral::removeLink(int32_t clientID, uint64_t senderID, int32_t se
 		payload.push_back(senderChannelIndex);
 		std::shared_ptr<MAXPacket> configPacket(new MAXPacket(_messageCounter[0], 0x21, 0, _address, sender->getAddress(), payload, sender->getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio));
 		pendingQueue->push(configPacket);
-		pendingQueue->push(_messages->find(DIRECTIONIN, 0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
+		pendingQueue->push(_messages->find(0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
 		_messageCounter[0]++;
 
 		sender->pendingQueues->push(pendingQueue);
@@ -1579,7 +2083,7 @@ PVariable MAXCentral::removeLink(int32_t clientID, uint64_t senderID, int32_t se
 
 		if((sender->getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio) || (sender->getRXModes() & HomegearDevice::ReceiveModes::always))
 		{
-			std::shared_ptr<PacketQueue> queue = _queueManager.createQueue(this, sender->getPhysicalInterface(), PacketQueueType::CONFIG, sender->getAddress());
+			std::shared_ptr<PacketQueue> queue = _queueManager.createQueue(sender->getPhysicalInterface(), PacketQueueType::CONFIG, sender->getAddress());
 			queue->peer = sender;
 			queue->push(sender->pendingQueues);
 		}
@@ -1605,7 +2109,7 @@ PVariable MAXCentral::removeLink(int32_t clientID, uint64_t senderID, int32_t se
 		payload.push_back(receiverChannelIndex);
 		configPacket.reset(new MAXPacket(_messageCounter[0], 0x21, 0, _address, receiver->getAddress(), payload, receiver->getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio));
 		pendingQueue->push(configPacket);
-		pendingQueue->push(_messages->find(DIRECTIONIN, 0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
+		pendingQueue->push(_messages->find(0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
 		_messageCounter[0]++;
 
 		receiver->pendingQueues->push(pendingQueue);
@@ -1613,7 +2117,7 @@ PVariable MAXCentral::removeLink(int32_t clientID, uint64_t senderID, int32_t se
 
 		if((receiver->getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio) || (receiver->getRXModes() & HomegearDevice::ReceiveModes::always))
 		{
-			std::shared_ptr<PacketQueue> queue = _queueManager.createQueue(this, receiver->getPhysicalInterface(), PacketQueueType::CONFIG, receiver->getAddress());
+			std::shared_ptr<PacketQueue> queue = _queueManager.createQueue(receiver->getPhysicalInterface(), PacketQueueType::CONFIG, receiver->getAddress());
 			queue->peer = receiver;
 			queue->push(receiver->pendingQueues);
 		}

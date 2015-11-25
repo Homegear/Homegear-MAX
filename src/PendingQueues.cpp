@@ -67,7 +67,7 @@ void PendingQueues::serialize(std::vector<uint8_t>& encodedData)
 	_queuesMutex.unlock();
 }
 
-void PendingQueues::unserialize(std::shared_ptr<std::vector<char>> serializedData, MAXPeer* peer, MAXDevice* device)
+void PendingQueues::unserialize(std::shared_ptr<std::vector<char>> serializedData, MAXPeer* peer)
 {
 	try
 	{
@@ -79,7 +79,7 @@ void PendingQueues::unserialize(std::shared_ptr<std::vector<char>> serializedDat
 		{
 			uint32_t queueLength = decoder.decodeInteger(*serializedData, position);
 			std::shared_ptr<PacketQueue> queue(new PacketQueue());
-			queue->unserialize(serializedData, device, position);
+			queue->unserialize(serializedData, position);
 			position += queueLength;
 			queue->noSending = true;
 			queue->pendingQueueID = _currentID++;

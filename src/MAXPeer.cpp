@@ -28,12 +28,12 @@
  */
 
 #include "MAXPeer.h"
-#include "LogicalDevices/MAXCentral.h"
+#include "MAXCentral.h"
 #include "GD.h"
 
 namespace MAX
 {
-std::shared_ptr<BaseLib::Systems::Central> MAXPeer::getCentral()
+std::shared_ptr<BaseLib::Systems::ICentral> MAXPeer::getCentral()
 {
 	try
 	{
@@ -53,28 +53,7 @@ std::shared_ptr<BaseLib::Systems::Central> MAXPeer::getCentral()
 	{
 		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 	}
-	return std::shared_ptr<BaseLib::Systems::Central>();
-}
-
-std::shared_ptr<BaseLib::Systems::LogicalDevice> MAXPeer::getDevice(int32_t address)
-{
-	try
-	{
-		return GD::family->get(address);
-	}
-	catch(const std::exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
-	return std::shared_ptr<BaseLib::Systems::LogicalDevice>();
+	return std::shared_ptr<BaseLib::Systems::ICentral>();
 }
 
 void MAXPeer::setPhysicalInterfaceID(std::string id)
@@ -151,7 +130,7 @@ void MAXPeer::worker()
 				queue->noSending = true;
 
 				queue->push(central->getTimePacket(central->messageCounter()->at(0)++, _address, getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio));
-				queue->push(central->getMessages()->find(DIRECTIONIN, 0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
+				queue->push(central->getMessages()->find(0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
 				queue->parameterName = "CURRENT_TIME";
 				queue->channel = 0;
 				pendingQueues->remove("CURRENT_TIME", 0);
@@ -186,7 +165,7 @@ void MAXPeer::worker()
 	}
 }
 
-std::string MAXPeer::handleCLICommand(std::string command)
+std::string MAXPeer::handleCliCommand(std::string command)
 {
 	try
 	{
@@ -461,12 +440,12 @@ void MAXPeer::save(bool savePeer, bool variables, bool centralConfig)
     }
 }
 
-void MAXPeer::loadVariables(BaseLib::Systems::LogicalDevice* device, std::shared_ptr<BaseLib::Database::DataTable> rows)
+void MAXPeer::loadVariables(BaseLib::Systems::ICentral* central, std::shared_ptr<BaseLib::Database::DataTable>& rows)
 {
 	try
 	{
 		if(!rows) rows = _bl->db->getPeerVariables(_peerID);
-		Peer::loadVariables(device, rows);
+		Peer::loadVariables(central, rows);
 		_databaseMutex.lock();
 		for(BaseLib::Database::DataTable::iterator row = rows->begin(); row != rows->end(); ++row)
 		{
@@ -479,10 +458,10 @@ void MAXPeer::loadVariables(BaseLib::Systems::LogicalDevice* device, std::shared
 				unserializePeers(row->second.at(5)->binaryValue);
 				break;
 			case 16:
-				if(_centralFeatures && device)
+				if(_centralFeatures)
 				{
 					pendingQueues.reset(new PendingQueues());
-					pendingQueues->unserialize(row->second.at(5)->binaryValue, this, (MAXDevice*)device);
+					pendingQueues->unserialize(row->second.at(5)->binaryValue, this);
 				}
 				break;
 			case 19:
@@ -508,11 +487,12 @@ void MAXPeer::loadVariables(BaseLib::Systems::LogicalDevice* device, std::shared
 	_databaseMutex.unlock();
 }
 
-bool MAXPeer::load(BaseLib::Systems::LogicalDevice* device)
+bool MAXPeer::load(BaseLib::Systems::ICentral* central)
 {
 	try
 	{
-		loadVariables(device);
+		std::shared_ptr<BaseLib::Database::DataTable> rows;
+		loadVariables(central, rows);
 
 		_rpcDevice = GD::rpcDevices.find(_deviceType, _firmwareVersion, -1);
 		if(!_rpcDevice)
@@ -633,7 +613,7 @@ void MAXPeer::serializePeers(std::vector<uint8_t>& encodedData)
 				encoder.encodeInteger(encodedData, (*j)->address);
 				encoder.encodeInteger(encodedData, (*j)->channel);
 				encoder.encodeString(encodedData, (*j)->serialNumber);
-				encoder.encodeBoolean(encodedData, (*j)->hidden);
+				encoder.encodeBoolean(encodedData, (*j)->isVirtual);
 				encoder.encodeString(encodedData, (*j)->linkName);
 				encoder.encodeString(encodedData, (*j)->linkDescription);
 				encoder.encodeInteger(encodedData, (*j)->data.size());
@@ -674,7 +654,7 @@ void MAXPeer::unserializePeers(std::shared_ptr<std::vector<char>> serializedData
 				basicPeer->address = decoder.decodeInteger(*serializedData, position);
 				basicPeer->channel = decoder.decodeInteger(*serializedData, position);
 				basicPeer->serialNumber = decoder.decodeString(*serializedData, position);
-				basicPeer->hidden = decoder.decodeBoolean(*serializedData, position);
+				basicPeer->isVirtual = decoder.decodeBoolean(*serializedData, position);
 				_peers[channel].push_back(basicPeer);
 				basicPeer->linkName = decoder.decodeString(*serializedData, position);
 				basicPeer->linkDescription = decoder.decodeString(*serializedData, position);
@@ -1276,7 +1256,7 @@ PVariable MAXPeer::putParamset(int32_t clientID, int32_t channel, ParameterGroup
 					queue->noSending = true;
 					queue->peer = central->getPeer(_peerID);
 					queue->push(configPacket);
-					queue->push(central->getMessages()->find(DIRECTIONIN, 0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
+					queue->push(central->getMessages()->find(0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
 					payload.clear();
 					setMessageCounter(_messageCounter + 1);
 					pendingQueues->push(queue);
@@ -1501,7 +1481,7 @@ PVariable MAXPeer::setValue(int32_t clientID, uint32_t channel, std::string valu
 			while((signed)payload.size() - 1 < frame->channelIndex - 9) payload.push_back(0);
 			payload.at(frame->channelIndex - 9) = (uint8_t)channel;
 		}
-		std::shared_ptr<MAXPacket> packet(new MAXPacket(_messageCounter, (uint8_t)frame->type, frame->subtype, getCentral()->physicalAddress(), _address, payload, getRXModes() & HomegearDevice::ReceiveModes::Enum::wakeOnRadio));
+		std::shared_ptr<MAXPacket> packet(new MAXPacket(_messageCounter, (uint8_t)frame->type, frame->subtype, getCentral()->getAddress(), _address, payload, getRXModes() & HomegearDevice::ReceiveModes::Enum::wakeOnRadio));
 
 		for(BinaryPayloads::iterator i = frame->binaryPayloads.begin(); i != frame->binaryPayloads.end(); ++i)
 		{
@@ -1576,10 +1556,10 @@ PVariable MAXPeer::setValue(int32_t clientID, uint32_t channel, std::string valu
 		queue->parameterName = valueKey;
 		queue->channel = channel;
 		queue->push(packet);
-		queue->push(central->getMessages()->find(DIRECTIONIN, 0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
+		queue->push(central->getMessages()->find(0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
 		pendingQueues->remove(valueKey, channel);
 		pendingQueues->push(queue);
-		if(MAXDevice::isSwitch(_deviceType)) queue->retries = 12;
+		if(MAXCentral::isSwitch(_deviceType)) queue->retries = 12;
 		central->enqueuePendingQueues(_address);
 
 		if(!valueKeys->empty())

@@ -43,7 +43,6 @@ using namespace BaseLib::Systems;
 
 namespace MAX
 {
-class MAXDevice;
 enum class PacketQueueType;
 
 class QueueData
@@ -73,7 +72,7 @@ public:
 	virtual ~QueueManager();
 
 	std::shared_ptr<PacketQueue> get(int32_t address);
-	std::shared_ptr<PacketQueue> createQueue(MAXDevice* device, std::shared_ptr<BaseLib::Systems::IPhysicalInterface> physicalInterface, PacketQueueType queueType, int32_t address);
+	std::shared_ptr<PacketQueue> createQueue(std::shared_ptr<BaseLib::Systems::IPhysicalInterface> physicalInterface, PacketQueueType queueType, int32_t address);
 	void resetQueue(int32_t address, uint32_t id);
 	void dispose(bool wait = true);
 protected:

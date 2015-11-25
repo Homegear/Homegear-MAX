@@ -52,7 +52,7 @@ void MAXMessages::add(std::shared_ptr<MAXMessage> message)
 	}
 }
 
-std::shared_ptr<MAXMessage> MAXMessages::find(int32_t direction, std::shared_ptr<MAXPacket> packet)
+std::shared_ptr<MAXMessage> MAXMessages::find(std::shared_ptr<MAXPacket> packet)
 {
 	try
 	{
@@ -61,7 +61,7 @@ std::shared_ptr<MAXMessage> MAXMessages::find(int32_t direction, std::shared_ptr
 		std::shared_ptr<MAXMessage>* elementToReturn = nullptr;
 		for(uint32_t i = 0; i < _messages.size(); i++)
 		{
-			if(_messages[i]->getDirection() == direction && _messages[i]->typeIsEqual(packet))
+			if(_messages[i]->typeIsEqual(packet))
 			{
 				if((signed)_messages[i]->subtypeCount() > subtypeMax)
 				{
@@ -87,13 +87,13 @@ std::shared_ptr<MAXMessage> MAXMessages::find(int32_t direction, std::shared_ptr
 	return std::shared_ptr<MAXMessage>();
 }
 
-std::shared_ptr<MAXMessage> MAXMessages::find(int32_t direction, int32_t messageType, int32_t messageSubtype, std::vector<std::pair<uint32_t, int32_t>> subtypes)
+std::shared_ptr<MAXMessage> MAXMessages::find(int32_t messageType, int32_t messageSubtype, std::vector<std::pair<uint32_t, int32_t>> subtypes)
 {
 	try
 	{
 		for(uint32_t i = 0; i < _messages.size(); i++)
 		{
-			if(_messages[i]->getDirection() == direction && _messages[i]->typeIsEqual(messageType, messageSubtype, &subtypes)) return _messages[i];
+			if(_messages[i]->typeIsEqual(messageType, messageSubtype, &subtypes)) return _messages[i];
 		}
 	}
 	catch(const std::exception& ex)

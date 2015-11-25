@@ -36,7 +36,6 @@ using namespace BaseLib;
 
 namespace MAX
 {
-class MAXDevice;
 class MAXCentral;
 
 class MAX : public BaseLib::Systems::DeviceFamily
@@ -48,18 +47,11 @@ public:
 	virtual void dispose();
 
 	virtual void load();
-	virtual std::shared_ptr<MAXDevice> getDevice(uint32_t address);
-	virtual std::shared_ptr<MAXDevice> getDevice(std::string serialNumber);
-	virtual std::shared_ptr<BaseLib::Systems::Central> getCentral();
-	virtual std::string handleCLICommand(std::string& command);
+	virtual std::shared_ptr<BaseLib::Systems::ICentral> getCentral();
+	virtual std::string handleCliCommand(std::string& command);
 	virtual PVariable getPairingMethods();
 private:
-	std::shared_ptr<MAXCentral> _central;
-
 	void createCentral();
-	void createSpyDevice();
-	uint32_t getUniqueAddress(uint32_t seed);
-	std::string getUniqueSerialNumber(std::string seedPrefix, uint32_t seedNumber);
 };
 
 }

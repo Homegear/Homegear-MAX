@@ -44,8 +44,8 @@
 namespace MAX
 {
 class MAXPeer;
+class MAXCentral;
 class MAXMessage;
-class MAXDevice;
 class PendingQueues;
 
 enum class QueueEntryType { UNDEFINED, MESSAGE, PACKET };
@@ -107,7 +107,7 @@ class PacketQueue
         std::mutex _pushPendingQueueThreadMutex;
         bool _workingOnPendingQueue = false;
         int64_t _lastPop = 0;
-        void (MAXDevice::*_queueProcessed)() = nullptr;
+        void (MAXCentral::*_queueProcessed)() = nullptr;
         void pushPendingQueue();
         void sleepAndPushPendingQueue();
         void resend(uint32_t threadId, bool burst);
@@ -122,7 +122,6 @@ class PacketQueue
         uint32_t pendingQueueID = 0;
         std::shared_ptr<int64_t> lastAction;
         bool noSending = false;
-        MAXDevice* device = nullptr;
         std::shared_ptr<MAXPeer> peer;
         PacketQueueType getQueueType() { return _queueType; }
         std::list<PacketQueueEntry>* getQueue() { return &_queue; }
@@ -132,7 +131,6 @@ class PacketQueue
         int32_t channel = -1;
 
         void push(std::shared_ptr<MAXMessage> message, bool forceResend = false);
-        void push(std::shared_ptr<MAXMessage> message, std::shared_ptr<MAXPacket> packet, bool forceResend = false);
         void pushFront(std::shared_ptr<MAXPacket> packet, bool stealthy = false, bool popBeforePushing = false, bool forceResend = false);
         void push(std::shared_ptr<MAXPacket> packet, bool forceResend = false, bool stealthy = false);
         void push(std::shared_ptr<PendingQueues>& pendingQueues);
@@ -149,7 +147,7 @@ class PacketQueue
         void longKeepAlive();
         void dispose();
         void serialize(std::vector<uint8_t>& encodedData);
-        void unserialize(std::shared_ptr<std::vector<char>> serializedData, MAXDevice* device, uint32_t position = 0);
+        void unserialize(std::shared_ptr<std::vector<char>> serializedData, uint32_t position = 0);
 
         PacketQueue();
         PacketQueue(std::shared_ptr<BaseLib::Systems::IPhysicalInterface> physicalInterface);

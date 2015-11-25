@@ -36,54 +36,27 @@ MAXMessage::MAXMessage()
 {
 }
 
-MAXMessage::MAXMessage(int32_t messageType, int32_t messageSubtype, MAXDevice* device, int32_t access, void (MAXDevice::*messageHandler)(int32_t, std::shared_ptr<MAXPacket>)) : _messageType(messageType), _messageSubtype(messageSubtype), _device(device), _access(access), _messageHandlerIncoming(messageHandler)
+MAXMessage::MAXMessage(int32_t messageType, int32_t messageSubtype, int32_t access, void (MAXCentral::*messageHandler)(int32_t, std::shared_ptr<MAXPacket>)) : _messageType(messageType), _messageSubtype(messageSubtype), _access(access), _messageHandler(messageHandler)
 {
-    _direction = DIRECTIONIN;
+
 }
 
-MAXMessage::MAXMessage(int32_t messageType, int32_t messageSubtype, MAXDevice* device, int32_t access, int32_t accessPairing, void (MAXDevice::*messageHandler)(int32_t, std::shared_ptr<MAXPacket>)) : _messageType(messageType), _messageSubtype(messageSubtype), _device(device), _access(access), _accessPairing(accessPairing), _messageHandlerIncoming(messageHandler)
+MAXMessage::MAXMessage(int32_t messageType, int32_t messageSubtype, int32_t access, int32_t accessPairing, void (MAXCentral::*messageHandler)(int32_t, std::shared_ptr<MAXPacket>)) : _messageType(messageType), _messageSubtype(messageSubtype), _access(access), _accessPairing(accessPairing), _messageHandler(messageHandler)
 {
-    _direction = DIRECTIONIN;
-}
 
-MAXMessage::MAXMessage(int32_t messageType, int32_t messageSubtype, MAXDevice* device, void (MAXDevice::*messageHandler)(int32_t, int32_t, std::shared_ptr<MAXPacket>)) : _messageType(messageType), _messageSubtype(messageSubtype), _device(device), _messageHandlerOutgoing(messageHandler)
-{
-    _direction = DIRECTIONOUT;
 }
 
 MAXMessage::~MAXMessage()
 {
 }
 
-void MAXMessage::invokeMessageHandlerIncoming(std::shared_ptr<MAXPacket> packet)
+void MAXMessage::invokeMessageHandler(std::shared_ptr<MAXPacket> packet)
 {
 	try
 	{
-		if(_device == nullptr || _messageHandlerIncoming == nullptr || packet == nullptr) return;
-		((_device)->*(_messageHandlerIncoming))(packet->messageCounter(), packet);
-	}
-	catch(const std::exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
-}
-
-void MAXMessage::invokeMessageHandlerOutgoing(std::shared_ptr<MAXPacket> packet)
-{
-	try
-	{
-		if(_device == nullptr || _messageHandlerOutgoing == nullptr || packet == nullptr) return;
-		//Actually the message counter implementation is not correct. See https://sathya.de/HMCWiki/index.php/Examples:Message_Counter
-		_device->messageCounter()->at(packet->senderAddress())++;
-		((_device)->*(_messageHandlerOutgoing))(_device->messageCounter()->at(packet->senderAddress()), _messageSubtype, packet);
+		std::shared_ptr<MAXCentral> central(std::dynamic_pointer_cast<MAXCentral>(GD::family->getCentral()));
+		if(!central || _messageHandler == nullptr || packet == nullptr) return;
+		(central.get()->*(_messageHandler))((int32_t)packet->messageCounter(), packet);
 	}
 	catch(const std::exception& ex)
 	{
@@ -221,11 +194,12 @@ bool MAXMessage::checkAccess(std::shared_ptr<MAXPacket> packet, std::shared_ptr<
 {
 	try
 	{
-		if(_device == nullptr || !packet) return false;
+		std::shared_ptr<MAXCentral> central(std::dynamic_pointer_cast<MAXCentral>(GD::family->getCentral()));
+		if(!central || !packet) return false;
 
-		int32_t access = _device->isInPairingMode() ? _accessPairing : _access;
+		int32_t access = central->isInPairingMode() ? _accessPairing : _access;
 		if(access == NOACCESS) return false;
-		if(queue && !queue->isEmpty() && packet->destinationAddress() == _device->getAddress())
+		if(queue && !queue->isEmpty() && packet->destinationAddress() == central->getAddress())
 		{
 			if(queue->front()->getType() == QueueEntryType::PACKET)
 			{
@@ -239,7 +213,7 @@ bool MAXMessage::checkAccess(std::shared_ptr<MAXPacket> packet, std::shared_ptr<
 			}
 		}
 		if(access & FULLACCESS) return true;
-		if((access & ACCESSDESTISME) && packet->destinationAddress() != _device->getAddress())
+		if((access & ACCESSDESTISME) && packet->destinationAddress() != central->getAddress())
 		{
 			//GD::out.printMessage( "Access denied, because the destination address is not me: " << packet->hexString() << std::endl;
 			return false;
@@ -251,11 +225,11 @@ bool MAXMessage::checkAccess(std::shared_ptr<MAXPacket> packet, std::shared_ptr<
 		if(access & ACCESSPAIREDTOSENDER)
 		{
 			std::shared_ptr<MAXPeer> currentPeer;
-			if(_device->isInPairingMode() && queue && queue->peer && queue->peer->getAddress() == packet->senderAddress()) currentPeer = queue->peer;
-			if(!currentPeer) currentPeer = _device->getPeer(packet->senderAddress());
+			if(central->isInPairingMode() && queue && queue->peer && queue->peer->getAddress() == packet->senderAddress()) currentPeer = queue->peer;
+			if(!currentPeer) currentPeer = central->getPeer(packet->senderAddress());
 			if(!currentPeer) return false;
 		}
-		if((access & ACCESSCENTRAL) && _device->getCentralAddress() != packet->senderAddress())
+		if((access & ACCESSCENTRAL) && central->getCentralAddress() != packet->senderAddress())
 		{
 			//GD::out.printMessage( "Access denied, because it is only granted to a paired central: " << packet->hexString() << std::endl;
 			return false;

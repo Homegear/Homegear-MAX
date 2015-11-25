@@ -41,14 +41,12 @@
 
 namespace MAX
 {
-class MAXDevice;
-
 class PendingQueues {
 public:
 	PendingQueues();
 	virtual ~PendingQueues() {}
 	void serialize(std::vector<uint8_t>& encodedData);
-	void unserialize(std::shared_ptr<std::vector<char>> serializedData, MAXPeer* peer, MAXDevice* device);
+	void unserialize(std::shared_ptr<std::vector<char>> serializedData, MAXPeer* peer);
 
 	void push(std::shared_ptr<PacketQueue> queue);
 	void pop();

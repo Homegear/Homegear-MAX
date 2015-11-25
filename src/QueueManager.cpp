@@ -165,7 +165,7 @@ void QueueManager::worker()
     }
 }
 
-std::shared_ptr<PacketQueue> QueueManager::createQueue(MAXDevice* device, std::shared_ptr<IPhysicalInterface> physicalInterface, PacketQueueType queueType, int32_t address)
+std::shared_ptr<PacketQueue> QueueManager::createQueue(std::shared_ptr<IPhysicalInterface> physicalInterface, PacketQueueType queueType, int32_t address)
 {
 	try
 	{
@@ -211,7 +211,6 @@ std::shared_ptr<PacketQueue> QueueManager::createQueue(MAXDevice* device, std::s
 		_queueMutex.lock();
 		std::shared_ptr<QueueData> queueData(new QueueData(physicalInterface));
 		queueData->queue->setQueueType(queueType);
-		queueData->queue->device = device;
 		queueData->queue->lastAction = queueData->lastAction;
 		queueData->queue->id = _id++;
 		queueData->id = queueData->queue->id;

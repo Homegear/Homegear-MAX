@@ -28,7 +28,7 @@
  */
 
 #include "PacketQueue.h"
-#include "MAXMessage.h"
+#include "MAXMessages.h"
 #include "PendingQueues.h"
 #include "homegear-base/BaseLib.h"
 #include "GD.h"
@@ -107,7 +107,8 @@ void PacketQueue::serialize(std::vector<uint8_t>& encodedData)
 			else
 			{
 				encoder.encodeBoolean(encodedData, true);
-				encoder.encodeByte(encodedData, message->getDirection());
+				uint8_t dummy = 0;
+				encoder.encodeByte(encodedData, dummy);
 				encoder.encodeByte(encodedData, message->getMessageType());
 				encoder.encodeByte(encodedData, message->getMessageSubtype());
 				std::vector<std::pair<uint32_t, int32_t>>* subtypes = message->getSubtypes();
@@ -139,7 +140,7 @@ void PacketQueue::serialize(std::vector<uint8_t>& encodedData)
 	_queueMutex.unlock();
 }
 
-void PacketQueue::unserialize(std::shared_ptr<std::vector<char>> serializedData, MAXDevice* device, uint32_t position)
+void PacketQueue::unserialize(std::shared_ptr<std::vector<char>> serializedData, uint32_t position)
 {
 	try
 	{
@@ -168,7 +169,7 @@ void PacketQueue::unserialize(std::shared_ptr<std::vector<char>> serializedData,
 			int32_t messageExists = decoder.decodeBoolean(*serializedData, position);
 			if(messageExists)
 			{
-				int32_t direction = decoder.decodeByte(*serializedData, position);
+				decoder.decodeByte(*serializedData, position);
 				int32_t messageType = decoder.decodeByte(*serializedData, position);
 				int32_t messageSubtype = decoder.decodeByte(*serializedData, position);
 				uint32_t subtypeSize = decoder.decodeByte(*serializedData, position);
@@ -177,7 +178,8 @@ void PacketQueue::unserialize(std::shared_ptr<std::vector<char>> serializedData,
 				{
 					subtypes.push_back(std::pair<uint32_t, int32_t>(decoder.decodeByte(*serializedData, position), decoder.decodeByte(*serializedData, position)));
 				}
-				entry->setMessage(device->getMessages()->find(direction, messageType, messageSubtype, subtypes), false);
+				std::shared_ptr<MAXCentral> central(std::dynamic_pointer_cast<MAXCentral>(GD::family->getCentral()));
+				if(central) entry->setMessage(central->getMessages()->find(messageType, messageSubtype, subtypes), false);
 			}
 			parameterName = decoder.decodeString(*serializedData, position);
 			channel = decoder.decodeInteger(*serializedData, position);
@@ -341,38 +343,19 @@ void PacketQueue::resend(uint32_t threadId, bool burst)
 				GD::out.printDebug("Sending from resend thread " + std::to_string(threadId) + " of queue " + std::to_string(id) + ".");
 				std::shared_ptr<MAXPacket> packet = _queue.front().getPacket();
 				if(!packet) return;
-				if(_queue.front().getType() == QueueEntryType::MESSAGE)
+				bool stealthy = _queue.front().stealthy;
+				_queueMutex.unlock();
+				_sendThreadMutex.lock();
+				if(_sendThread.joinable()) _sendThread.join();
+				if(_stopResendThread || _disposing)
 				{
-					GD::out.printDebug("Invoking outgoing message handler from MAX! queue.");
-					MAXMessage* message = _queue.front().getMessage().get();
-					_queueMutex.unlock();
-					_sendThreadMutex.lock();
-					if(_sendThread.joinable()) _sendThread.join();
-					if(_stopResendThread || _disposing)
-					{
-						_sendThreadMutex.unlock();
-						return;
-					}
-					_sendThread = std::thread(&MAXMessage::invokeMessageHandlerOutgoing, message, packet);
-					BaseLib::Threads::setThreadPriority(GD::bl, _sendThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
 					_sendThreadMutex.unlock();
+					return;
 				}
-				else
-				{
-					bool stealthy = _queue.front().stealthy;
-					_queueMutex.unlock();
-					_sendThreadMutex.lock();
-					if(_sendThread.joinable()) _sendThread.join();
-					if(_stopResendThread || _disposing)
-					{
-						_sendThreadMutex.unlock();
-						return;
-					}
-					if(burst) packet->setBurst(true);
-					_sendThread = std::thread(&PacketQueue::send, this, packet, stealthy);
-					BaseLib::Threads::setThreadPriority(GD::bl, _sendThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
-					_sendThreadMutex.unlock();
-				}
+				if(burst) packet->setBurst(true);
+				_sendThread = std::thread(&PacketQueue::send, this, packet, stealthy);
+				BaseLib::Threads::setThreadPriority(GD::bl, _sendThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
+				_sendThreadMutex.unlock();
 			}
 			else _queueMutex.unlock(); //Has to be unlocked before startResendThread
 			if(_stopResendThread) return;
@@ -426,7 +409,7 @@ void PacketQueue::push(std::shared_ptr<MAXPacket> packet, bool stealthy, bool fo
 		entry.stealthy = stealthy;
 		entry.forceResend = forceResend;
 		_queueMutex.lock();
-		if(!noSending && (_queue.size() == 0 || (_queue.size() == 1 && _queue.front().getType() == QueueEntryType::MESSAGE && _queue.front().getMessage()->getDirection() == DIRECTIONIN)))
+		if(!noSending && (_queue.size() == 0 || (_queue.size() == 1 && _queue.front().getType() == QueueEntryType::MESSAGE)))
 		{
 			_queue.push_back(entry);
 			_queueMutex.unlock();
@@ -538,100 +521,18 @@ void PacketQueue::push(std::shared_ptr<PacketQueue> pendingQueue, bool popImmedi
     _queueMutex.unlock();
 }
 
-void PacketQueue::push(std::shared_ptr<MAXMessage> message, std::shared_ptr<MAXPacket> packet, bool forceResend)
-{
-	try
-	{
-		if(_disposing) return;
-		if(!message || !packet) return;
-		if(message->getDirection() != DIRECTIONOUT) GD::out.printWarning("Warning: Wrong push method used. Packet is not necessary for incoming messages");
-		PacketQueueEntry entry;
-		entry.setMessage(message, true);
-		entry.setPacket(packet, false);
-		entry.forceResend = forceResend;
-		_queueMutex.lock();
-		if(!noSending && entry.getMessage()->getDirection() == DIRECTIONOUT && (_queue.size() == 0 || (_queue.size() == 1 && _queue.front().getType() == QueueEntryType::MESSAGE && _queue.front().getMessage()->getDirection() == DIRECTIONIN)))
-		{
-			_queue.push_back(entry);
-			_queueMutex.unlock();
-			_resendCounter = 0;
-			if(!noSending)
-			{
-				_sendThreadMutex.lock();
-				if(_disposing)
-				{
-					_sendThreadMutex.unlock();
-					return;
-				}
-				if(_sendThread.joinable()) _sendThread.join();
-				_sendThread = std::thread(&MAXMessage::invokeMessageHandlerOutgoing, message.get(), entry.getPacket());
-				BaseLib::Threads::setThreadPriority(GD::bl, _sendThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
-				_sendThreadMutex.unlock();
-				startResendThread(forceResend);
-			}
-		}
-		else
-		{
-			_queue.push_back(entry);
-			_queueMutex.unlock();
-		}
-	}
-	catch(const std::exception& ex)
-    {
-		_queueMutex.unlock();
-		_sendThreadMutex.unlock();
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(BaseLib::Exception& ex)
-    {
-    	_queueMutex.unlock();
-    	_sendThreadMutex.unlock();
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	_queueMutex.unlock();
-    	_sendThreadMutex.unlock();
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
-}
-
 void PacketQueue::push(std::shared_ptr<MAXMessage> message, bool forceResend)
 {
 	try
 	{
 		if(_disposing) return;
 		if(!message) return;
-		if(message->getDirection() == DIRECTIONOUT) GD::out.printCritical("Critical: Wrong push method used. Please provide the received packet for outgoing messages");
 		PacketQueueEntry entry;
 		entry.setMessage(message, true);
 		entry.forceResend = forceResend;
 		_queueMutex.lock();
-		if(!noSending && entry.getMessage()->getDirection() == DIRECTIONOUT && (_queue.size() == 0 || (_queue.size() == 1 && _queue.front().getType() == QueueEntryType::MESSAGE && _queue.front().getMessage()->getDirection() == DIRECTIONIN)))
-		{
-			_queue.push_back(entry);
-			_queueMutex.unlock();
-			_resendCounter = 0;
-			if(!noSending)
-			{
-				_sendThreadMutex.lock();
-				if(_disposing)
-				{
-					_sendThreadMutex.unlock();
-					return;
-				}
-				if(_sendThread.joinable()) _sendThread.join();
-				_sendThread = std::thread(&MAXMessage::invokeMessageHandlerOutgoing, message.get(), entry.getPacket());
-				BaseLib::Threads::setThreadPriority(GD::bl, _sendThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
-				_sendThreadMutex.unlock();
-				startResendThread(forceResend);
-			}
-		}
-		else
-		{
-			_queue.push_back(entry);
-			_queueMutex.unlock();
-		}
+		_queue.push_back(entry);
+		_queueMutex.unlock();
 	}
 	catch(const std::exception& ex)
     {
@@ -834,8 +735,9 @@ void PacketQueue::send(std::shared_ptr<MAXPacket> packet, bool stealthy)
 	{
 		if(noSending || _disposing) return;
 		if(packet->getBurst()) std::this_thread::sleep_for(std::chrono::milliseconds(100));
-		if(device) device->sendPacket(_physicalInterface, packet, stealthy);
-		else GD::out.printError("Error: Device pointer of queue " + std::to_string(id) + " is null.");
+		std::shared_ptr<MAXCentral> central(std::dynamic_pointer_cast<MAXCentral>(GD::family->getCentral()));
+		if(central) central->sendPacket(_physicalInterface, packet, stealthy);
+		else GD::out.printError("Error: Central pointer of queue " + std::to_string(id) + " is null.");
 	}
 	catch(const std::exception& ex)
     {
@@ -1015,29 +917,7 @@ void PacketQueue::pushPendingQueue()
 		pendingQueueID = queue->pendingQueueID;
 		for(std::list<PacketQueueEntry>::iterator i = queue->getQueue()->begin(); i != queue->getQueue()->end(); ++i)
 		{
-			if(!noSending && i->getType() == QueueEntryType::MESSAGE && i->getMessage()->getDirection() == DIRECTIONOUT && (_queue.size() == 0 || (_queue.size() == 1 && _queue.front().getType() == QueueEntryType::MESSAGE && _queue.front().getMessage()->getDirection() == DIRECTIONIN)))
-			{
-				_queueMutex.lock();
-				_queue.push_back(*i);
-				_queueMutex.unlock();
-				_resendCounter = 0;
-				if(!noSending)
-				{
-					_sendThreadMutex.lock();
-					if(_disposing)
-					{
-						_sendThreadMutex.unlock();
-						return;
-					}
-					if(_sendThread.joinable()) _sendThread.join();
-					_lastPop = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-					_sendThread = std::thread(&MAXMessage::invokeMessageHandlerOutgoing, i->getMessage().get(), i->getPacket());
-					_sendThreadMutex.unlock();
-					BaseLib::Threads::setThreadPriority(GD::bl, _sendThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
-					startResendThread(i->forceResend);
-				}
-			}
-			else if(!noSending && i->getType() == QueueEntryType::PACKET && (_queue.size() == 0 || (_queue.size() == 1 && _queue.front().getType() == QueueEntryType::MESSAGE && _queue.front().getMessage()->getDirection() == DIRECTIONIN)))
+			if(!noSending && i->getType() == QueueEntryType::PACKET && (_queue.size() == 0 || (_queue.size() == 1 && _queue.front().getType() == QueueEntryType::MESSAGE)))
 			{
 				_queueMutex.lock();
 				_queue.push_back(*i);
@@ -1133,41 +1013,24 @@ void PacketQueue::nextQueueEntry()
 				return;
 			}
 		}
-		if((_queue.front().getType() == QueueEntryType::MESSAGE && _queue.front().getMessage()->getDirection() == DIRECTIONOUT) || _queue.front().getType() == QueueEntryType::PACKET)
+		if(_queue.front().getType() == QueueEntryType::PACKET)
 		{
 			_resendCounter = 0;
 			if(!noSending)
 			{
 				bool forceResend = _queue.front().forceResend;
 				std::shared_ptr<MAXPacket> packet = _queue.front().getPacket();
-				if(_queue.front().getType() == QueueEntryType::MESSAGE)
+				bool stealthy = _queue.front().stealthy;
+				_queueMutex.unlock();
+				_sendThreadMutex.lock();
+				if(_disposing)
 				{
-					MAXMessage* message = _queue.front().getMessage().get();
-					_queueMutex.unlock();
-					_sendThreadMutex.lock();
-					if(_disposing)
-					{
-						_sendThreadMutex.unlock();
-						return;
-					}
-					if(_sendThread.joinable()) _sendThread.join();
-					_sendThread = std::thread(&MAXMessage::invokeMessageHandlerOutgoing, message, packet);
 					_sendThreadMutex.unlock();
+					return;
 				}
-				else
-				{
-					bool stealthy = _queue.front().stealthy;
-					_queueMutex.unlock();
-					_sendThreadMutex.lock();
-					if(_disposing)
-					{
-						_sendThreadMutex.unlock();
-						return;
-					}
-					if(_sendThread.joinable()) _sendThread.join();
-					_sendThread = std::thread(&PacketQueue::send, this, packet, stealthy);
-					_sendThreadMutex.unlock();
-				}
+				if(_sendThread.joinable()) _sendThread.join();
+				_sendThread = std::thread(&PacketQueue::send, this, packet, stealthy);
+				_sendThreadMutex.unlock();
 				BaseLib::Threads::setThreadPriority(GD::bl, _sendThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
 				startResendThread(forceResend);
 			}
