@@ -43,7 +43,6 @@ class MAX : public BaseLib::Systems::DeviceFamily
 public:
 	MAX(BaseLib::Obj* bl, BaseLib::Systems::DeviceFamily::IFamilyEventSink* eventHandler);
 	virtual ~MAX();
-	virtual bool init();
 	virtual void dispose();
 
 	virtual PVariable getPairingMethods();

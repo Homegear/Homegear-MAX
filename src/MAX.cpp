@@ -47,21 +47,12 @@ MAX::MAX(BaseLib::Obj* bl, BaseLib::Systems::DeviceFamily::IFamilyEventSink* eve
 	GD::out.init(bl);
 	GD::out.setPrefix("Module MAX: ");
 	GD::out.printDebug("Debug: Loading module...");
-	GD::rpcDevices.init(_bl, this);
 	_physicalInterfaces.reset(new Interfaces(bl, _settings->getPhysicalInterfaceSettings()));
 }
 
 MAX::~MAX()
 {
 
-}
-
-bool MAX::init()
-{
-	GD::out.printInfo("Loading XML RPC devices...");
-	GD::rpcDevices.load();
-	if(GD::rpcDevices.empty()) return false;
-	return true;
 }
 
 void MAX::dispose()
@@ -71,7 +62,6 @@ void MAX::dispose()
 
 	GD::physicalInterfaces.clear();
 	GD::defaultPhysicalInterface.reset();
-	GD::rpcDevices.clear();
 }
 
 void MAX::createCentral()

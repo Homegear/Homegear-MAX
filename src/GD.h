@@ -47,7 +47,6 @@ public:
 	static MAX* family;
 	static std::map<std::string, std::shared_ptr<BaseLib::Systems::IPhysicalInterface>> physicalInterfaces;
 	static std::shared_ptr<BaseLib::Systems::IPhysicalInterface> defaultPhysicalInterface;
-	static BaseLib::DeviceDescription::Devices rpcDevices;
 	static BaseLib::Output out;
 private:
 	GD();
