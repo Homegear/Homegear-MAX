@@ -815,7 +815,7 @@ std::string MAXCentral::handleCliCommand(std::string command)
 				index++;
 			}
 
-			setInstallMode(-1, true, duration, false);
+			setInstallMode(nullptr, true, duration, false);
 			stringStream << "Pairing mode enabled." << std::endl;
 			return stringStream.str();
 		}
@@ -846,7 +846,7 @@ std::string MAXCentral::handleCliCommand(std::string command)
 				index++;
 			}
 
-			setInstallMode(-1, false, -1, false);
+			setInstallMode(nullptr, false, -1, false);
 			stringStream << "Pairing mode disabled." << std::endl;
 			return stringStream.str();
 		}
@@ -1500,7 +1500,7 @@ void MAXCentral::handleAck(int32_t messageCounter, std::shared_ptr<MAXPacket> pa
 						GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 					}
 					PVariable deviceDescriptions(new Variable(VariableType::tArray));
-					deviceDescriptions->arrayValue = queue->peer->getDeviceDescriptions(-1, true, std::map<std::string, bool>());
+					deviceDescriptions->arrayValue = queue->peer->getDeviceDescriptions(nullptr, true, std::map<std::string, bool>());
 					raiseRPCNewDevices(deviceDescriptions);
 					GD::out.printMessage("Added peer 0x" + BaseLib::HelperFunctions::getHexString(queue->peer->getAddress()) + ".");
 					addHomegearFeatures(queue->peer);
@@ -1626,7 +1626,7 @@ void MAXCentral::handlePairingRequest(int32_t messageCounter, std::shared_ptr<MA
 //End packet handlers
 
 //RPC functions
-PVariable MAXCentral::addLink(int32_t clientID, std::string senderSerialNumber, int32_t senderChannelIndex, std::string receiverSerialNumber, int32_t receiverChannelIndex, std::string name, std::string description)
+PVariable MAXCentral::addLink(BaseLib::PRpcClientInfo clientInfo, std::string senderSerialNumber, int32_t senderChannelIndex, std::string receiverSerialNumber, int32_t receiverChannelIndex, std::string name, std::string description)
 {
 	try
 	{
@@ -1636,7 +1636,7 @@ PVariable MAXCentral::addLink(int32_t clientID, std::string senderSerialNumber, 
 		std::shared_ptr<MAXPeer> receiver = getPeer(receiverSerialNumber);
 		if(!sender) return Variable::createError(-2, "Sender device not found.");
 		if(!receiver) return Variable::createError(-2, "Receiver device not found.");
-		return addLink(clientID, sender->getID(), senderChannelIndex, receiver->getID(), receiverChannelIndex, name, description);
+		return addLink(clientInfo, sender->getID(), senderChannelIndex, receiver->getID(), receiverChannelIndex, name, description);
 	}
 	catch(const std::exception& ex)
 	{
@@ -1653,7 +1653,7 @@ PVariable MAXCentral::addLink(int32_t clientID, std::string senderSerialNumber, 
 	return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MAXCentral::addLink(int32_t clientID, uint64_t senderID, int32_t senderChannelIndex, uint64_t receiverID, int32_t receiverChannelIndex, std::string name, std::string description)
+PVariable MAXCentral::addLink(BaseLib::PRpcClientInfo clientInfo, uint64_t senderID, int32_t senderChannelIndex, uint64_t receiverID, int32_t receiverChannelIndex, std::string name, std::string description)
 {
 	try
 	{
@@ -1795,7 +1795,7 @@ PVariable MAXCentral::addLink(int32_t clientID, uint64_t senderID, int32_t sende
 	return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MAXCentral::deleteDevice(int32_t clientID, std::string serialNumber, int32_t flags)
+PVariable MAXCentral::deleteDevice(BaseLib::PRpcClientInfo clientInfo, std::string serialNumber, int32_t flags)
 {
 	try
 	{
@@ -1803,7 +1803,7 @@ PVariable MAXCentral::deleteDevice(int32_t clientID, std::string serialNumber, i
 		if(serialNumber[0] == '*') return Variable::createError(-2, "Cannot delete virtual device.");
 		std::shared_ptr<MAXPeer> peer = getPeer(serialNumber);
 		if(!peer) return PVariable(new Variable(VariableType::tVoid));
-		return deleteDevice(clientID, peer->getID(), flags);
+		return deleteDevice(clientInfo, peer->getID(), flags);
 	}
 	catch(const std::exception& ex)
     {
@@ -1820,7 +1820,7 @@ PVariable MAXCentral::deleteDevice(int32_t clientID, std::string serialNumber, i
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MAXCentral::deleteDevice(int32_t clientID, uint64_t peerID, int32_t flags)
+PVariable MAXCentral::deleteDevice(BaseLib::PRpcClientInfo clientInfo, uint64_t peerID, int32_t flags)
 {
 	try
 	{
@@ -1866,7 +1866,7 @@ PVariable MAXCentral::deleteDevice(int32_t clientID, uint64_t peerID, int32_t fl
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MAXCentral::getDeviceInfo(int32_t clientID, uint64_t id, std::map<std::string, bool> fields)
+PVariable MAXCentral::getDeviceInfo(BaseLib::PRpcClientInfo clientInfo, uint64_t id, std::map<std::string, bool> fields)
 {
 	try
 	{
@@ -1875,7 +1875,7 @@ PVariable MAXCentral::getDeviceInfo(int32_t clientID, uint64_t id, std::map<std:
 			std::shared_ptr<MAXPeer> peer(getPeer(id));
 			if(!peer) return Variable::createError(-2, "Unknown device.");
 
-			return peer->getDeviceInfo(clientID, fields);
+			return peer->getDeviceInfo(clientInfo, fields);
 		}
 		else
 		{
@@ -1894,7 +1894,7 @@ PVariable MAXCentral::getDeviceInfo(int32_t clientID, uint64_t id, std::map<std:
 			{
 				//listDevices really needs a lot of resources, so wait a little bit after each device
 				std::this_thread::sleep_for(std::chrono::milliseconds(3));
-				PVariable info = (*i)->getDeviceInfo(clientID, fields);
+				PVariable info = (*i)->getDeviceInfo(clientInfo, fields);
 				if(!info) continue;
 				array->arrayValue->push_back(info);
 			}
@@ -1920,7 +1920,7 @@ PVariable MAXCentral::getDeviceInfo(int32_t clientID, uint64_t id, std::map<std:
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-std::shared_ptr<Variable> MAXCentral::getInstallMode(int32_t clientID)
+std::shared_ptr<Variable> MAXCentral::getInstallMode(BaseLib::PRpcClientInfo clientInfo)
 {
 	try
 	{
@@ -1941,7 +1941,7 @@ std::shared_ptr<Variable> MAXCentral::getInstallMode(int32_t clientID)
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MAXCentral::putParamset(int32_t clientID, std::string serialNumber, int32_t channel, ParameterGroup::Type::Enum type, std::string remoteSerialNumber, int32_t remoteChannel, PVariable paramset)
+PVariable MAXCentral::putParamset(BaseLib::PRpcClientInfo clientInfo, std::string serialNumber, int32_t channel, ParameterGroup::Type::Enum type, std::string remoteSerialNumber, int32_t remoteChannel, PVariable paramset)
 {
 	try
 	{
@@ -1957,7 +1957,7 @@ PVariable MAXCentral::putParamset(int32_t clientID, std::string serialNumber, in
 			}
 			else remoteID = remotePeer->getID();
 		}
-		PVariable result = peer->putParamset(clientID, channel, type, remoteID, remoteChannel, paramset);
+		PVariable result = peer->putParamset(clientInfo, channel, type, remoteID, remoteChannel, paramset);
 		if(result->errorStruct) return result;
 		int32_t waitIndex = 0;
 		while(_queueManager.get(peer->getAddress()) && waitIndex < 50)
@@ -1983,13 +1983,13 @@ PVariable MAXCentral::putParamset(int32_t clientID, std::string serialNumber, in
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MAXCentral::putParamset(int32_t clientID, uint64_t peerID, int32_t channel, ParameterGroup::Type::Enum type, uint64_t remoteID, int32_t remoteChannel, PVariable paramset)
+PVariable MAXCentral::putParamset(BaseLib::PRpcClientInfo clientInfo, uint64_t peerID, int32_t channel, ParameterGroup::Type::Enum type, uint64_t remoteID, int32_t remoteChannel, PVariable paramset)
 {
 	try
 	{
 		std::shared_ptr<MAXPeer> peer(getPeer(peerID));
 		if(!peer) return Variable::createError(-2, "Unknown device.");
-		PVariable result = peer->putParamset(clientID, channel, type, remoteID, remoteChannel, paramset);
+		PVariable result = peer->putParamset(clientInfo, channel, type, remoteID, remoteChannel, paramset);
 		if(result->errorStruct) return result;
 		int32_t waitIndex = 0;
 		while(_queueManager.get(peer->getAddress()) && waitIndex < 50)
@@ -2015,7 +2015,7 @@ PVariable MAXCentral::putParamset(int32_t clientID, uint64_t peerID, int32_t cha
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MAXCentral::removeLink(int32_t clientID, std::string senderSerialNumber, int32_t senderChannelIndex, std::string receiverSerialNumber, int32_t receiverChannelIndex)
+PVariable MAXCentral::removeLink(BaseLib::PRpcClientInfo clientInfo, std::string senderSerialNumber, int32_t senderChannelIndex, std::string receiverSerialNumber, int32_t receiverChannelIndex)
 {
 	try
 	{
@@ -2025,7 +2025,7 @@ PVariable MAXCentral::removeLink(int32_t clientID, std::string senderSerialNumbe
 		std::shared_ptr<MAXPeer> receiver = getPeer(receiverSerialNumber);
 		if(!sender) return Variable::createError(-2, "Sender device not found.");
 		if(!receiver) return Variable::createError(-2, "Receiver device not found.");
-		return removeLink(clientID, sender->getID(), senderChannelIndex, receiver->getID(), receiverChannelIndex);
+		return removeLink(clientInfo, sender->getID(), senderChannelIndex, receiver->getID(), receiverChannelIndex);
 	}
 	catch(const std::exception& ex)
 	{
@@ -2042,7 +2042,7 @@ PVariable MAXCentral::removeLink(int32_t clientID, std::string senderSerialNumbe
 	return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MAXCentral::removeLink(int32_t clientID, uint64_t senderID, int32_t senderChannelIndex, uint64_t receiverID, int32_t receiverChannelIndex)
+PVariable MAXCentral::removeLink(BaseLib::PRpcClientInfo clientInfo, uint64_t senderID, int32_t senderChannelIndex, uint64_t receiverID, int32_t receiverChannelIndex)
 {
 	try
 	{
@@ -2181,7 +2181,7 @@ void MAXCentral::pairingModeTimer(int32_t duration, bool debugOutput)
     }
 }
 
-std::shared_ptr<Variable> MAXCentral::setInstallMode(int32_t clientID, bool on, uint32_t duration, bool debugOutput)
+std::shared_ptr<Variable> MAXCentral::setInstallMode(BaseLib::PRpcClientInfo clientInfo, bool on, uint32_t duration, bool debugOutput)
 {
 	try
 	{
@@ -2219,13 +2219,13 @@ std::shared_ptr<Variable> MAXCentral::setInstallMode(int32_t clientID, bool on, 
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MAXCentral::setInterface(int32_t clientID, uint64_t peerID, std::string interfaceID)
+PVariable MAXCentral::setInterface(BaseLib::PRpcClientInfo clientInfo, uint64_t peerID, std::string interfaceID)
 {
 	try
 	{
 		std::shared_ptr<MAXPeer> peer(getPeer(peerID));
 		if(!peer) return Variable::createError(-2, "Unknown device.");
-		return peer->setInterface(clientID, interfaceID);
+		return peer->setInterface(clientInfo, interfaceID);
 	}
 	catch(const std::exception& ex)
     {

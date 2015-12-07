@@ -95,18 +95,18 @@ public:
 	virtual void handlePairingRequest(int32_t messageCounter, std::shared_ptr<MAXPacket>);
 	virtual void handleTimeRequest(int32_t messageCounter, std::shared_ptr<MAXPacket> packet);
 
-	virtual PVariable addLink(int32_t clientID, std::string senderSerialNumber, int32_t senderChannel, std::string receiverSerialNumber, int32_t receiverChannel, std::string name, std::string description);
-	virtual PVariable addLink(int32_t clientID, uint64_t senderID, int32_t senderChannel, uint64_t receiverID, int32_t receiverChannel, std::string name, std::string description);
-	virtual PVariable deleteDevice(int32_t clientID, std::string serialNumber, int32_t flags);
-	virtual PVariable deleteDevice(int32_t clientID, uint64_t peerID, int32_t flags);
-	virtual PVariable getDeviceInfo(int32_t clientID, uint64_t id, std::map<std::string, bool> fields);
-	virtual PVariable getInstallMode(int32_t clientID);
-	virtual PVariable putParamset(int32_t clientID, std::string serialNumber, int32_t channel, ParameterGroup::Type::Enum type, std::string remoteSerialNumber, int32_t remoteChannel, PVariable paramset);
-	virtual PVariable putParamset(int32_t clientID, uint64_t peerID, int32_t channel, ParameterGroup::Type::Enum type, uint64_t remoteID, int32_t remoteChannel, PVariable paramset);
-	virtual PVariable removeLink(int32_t clientID, std::string senderSerialNumber, int32_t senderChannel, std::string receiverSerialNumber, int32_t receiverChannel);
-	virtual PVariable removeLink(int32_t clientID, uint64_t senderID, int32_t senderChannel, uint64_t receiverID, int32_t receiverChannel);
-	virtual PVariable setInstallMode(int32_t clientID, bool on, uint32_t duration = 60, bool debugOutput = true);
-	virtual PVariable setInterface(int32_t clientID, uint64_t peerID, std::string interfaceID);
+	virtual PVariable addLink(BaseLib::PRpcClientInfo clientInfo, std::string senderSerialNumber, int32_t senderChannel, std::string receiverSerialNumber, int32_t receiverChannel, std::string name, std::string description);
+	virtual PVariable addLink(BaseLib::PRpcClientInfo clientInfo, uint64_t senderID, int32_t senderChannel, uint64_t receiverID, int32_t receiverChannel, std::string name, std::string description);
+	virtual PVariable deleteDevice(BaseLib::PRpcClientInfo clientInfo, std::string serialNumber, int32_t flags);
+	virtual PVariable deleteDevice(BaseLib::PRpcClientInfo clientInfo, uint64_t peerID, int32_t flags);
+	virtual PVariable getDeviceInfo(BaseLib::PRpcClientInfo clientInfo, uint64_t id, std::map<std::string, bool> fields);
+	virtual PVariable getInstallMode(BaseLib::PRpcClientInfo clientInfo);
+	virtual PVariable putParamset(BaseLib::PRpcClientInfo clientInfo, std::string serialNumber, int32_t channel, ParameterGroup::Type::Enum type, std::string remoteSerialNumber, int32_t remoteChannel, PVariable paramset);
+	virtual PVariable putParamset(BaseLib::PRpcClientInfo clientInfo, uint64_t peerID, int32_t channel, ParameterGroup::Type::Enum type, uint64_t remoteID, int32_t remoteChannel, PVariable paramset);
+	virtual PVariable removeLink(BaseLib::PRpcClientInfo clientInfo, std::string senderSerialNumber, int32_t senderChannel, std::string receiverSerialNumber, int32_t receiverChannel);
+	virtual PVariable removeLink(BaseLib::PRpcClientInfo clientInfo, uint64_t senderID, int32_t senderChannel, uint64_t receiverID, int32_t receiverChannel);
+	virtual PVariable setInstallMode(BaseLib::PRpcClientInfo clientInfo, bool on, uint32_t duration = 60, bool debugOutput = true);
+	virtual PVariable setInterface(BaseLib::PRpcClientInfo clientInfo, uint64_t peerID, std::string interfaceID);
 protected:
 	//In table variables
 	int32_t _firmwareVersion = 0;
