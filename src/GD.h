@@ -31,6 +31,7 @@
 #define GD_H_
 
 #define MAX_FAMILY_ID 4
+#define MAX_FAMILY_NAME "MAX!"
 
 #include "homegear-base/BaseLib.h"
 #include "MAX.h"

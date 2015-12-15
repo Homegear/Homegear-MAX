@@ -46,6 +46,11 @@ int32_t getFamilyId()
 	return MAX_FAMILY_ID;
 }
 
+std::string getFamilyName()
+{
+	return MAX_FAMILY_NAME;
+}
+
 BaseLib::Systems::SystemFactory* getFactory()
 {
 	return (BaseLib::Systems::SystemFactory*)(new MAXFactory);
