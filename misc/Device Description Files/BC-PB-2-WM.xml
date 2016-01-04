@@ -10,6 +10,11 @@
 			<typeNumber>0x50F</typeNumber>
 			<minFirmwareVersion>0x10</minFirmwareVersion>
 		</device>
+		<device id="BC-PB-2-WM">
+			<description>MAX! Eco Switch</description>
+			<typeNumber>0x502</typeNumber>
+			<minFirmwareVersion>0x10</minFirmwareVersion>
+		</device>
 	</supportedDevices>
 	<properties>
 		<receiveMode>wakeUp</receiveMode>
