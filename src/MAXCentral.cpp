@@ -1499,6 +1499,7 @@ void MAXCentral::handleAck(int32_t messageCounter, std::shared_ptr<MAXPacket> pa
 						_peersMutex.unlock();
 						GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 					}
+					setInstallMode(nullptr, false, -1, false);
 					PVariable deviceDescriptions(new Variable(VariableType::tArray));
 					deviceDescriptions->arrayValue = queue->peer->getDeviceDescriptions(nullptr, true, std::map<std::string, bool>());
 					raiseRPCNewDevices(deviceDescriptions);
