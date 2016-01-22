@@ -49,8 +49,6 @@ class MAXCentral : public BaseLib::Systems::ICentral
 {
 public:
 	//In table variables
-	int32_t getFirmwareVersion() { return _firmwareVersion; }
-	void setFirmwareVersion(int32_t value) { _firmwareVersion = value; saveVariable(0, value); }
 	int32_t getCentralAddress() { return _centralAddress; }
 	void setCentralAddress(int32_t value) { _centralAddress = value; saveVariable(1, value); }
 	std::string getPhysicalInterfaceID() { return _physicalInterfaceID; }
@@ -109,7 +107,6 @@ public:
 	virtual PVariable setInterface(BaseLib::PRpcClientInfo clientInfo, uint64_t peerID, std::string interfaceID);
 protected:
 	//In table variables
-	int32_t _firmwareVersion = 0;
 	int32_t _centralAddress = 0;
 	std::unordered_map<int32_t, uint8_t> _messageCounter;
 	std::string _physicalInterfaceID;

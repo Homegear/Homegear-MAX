@@ -428,7 +428,7 @@ void MAXCentral::loadPeers()
 			int32_t peerID = row->second.at(0)->intValue;
 			GD::out.printMessage("Loading MAX! peer " + std::to_string(peerID));
 			int32_t address = row->second.at(2)->intValue;
-			std::shared_ptr<MAXPeer> peer(new MAXPeer(peerID, address, row->second.at(3)->textValue, _deviceId, true, this));
+			std::shared_ptr<MAXPeer> peer(new MAXPeer(peerID, address, row->second.at(3)->textValue, _deviceId, this));
 			if(!peer->load(this)) continue;
 			if(!peer->getRpcDevice()) continue;
 			_peersMutex.lock();
@@ -465,9 +465,6 @@ void MAXCentral::loadVariables()
 			_variableDatabaseIds[row->second.at(2)->intValue] = row->second.at(0)->intValue;
 			switch(row->second.at(2)->intValue)
 			{
-			case 0:
-				_firmwareVersion = row->second.at(3)->intValue;
-				break;
 			case 1:
 				_centralAddress = row->second.at(3)->intValue;
 				break;
@@ -604,7 +601,6 @@ void MAXCentral::saveVariables()
 	try
 	{
 		if(_deviceId == 0) return;
-		saveVariable(0, _firmwareVersion);
 		saveVariable(1, _centralAddress);
 		saveMessageCounters(); //2
 		saveVariable(4, _physicalInterfaceID);
@@ -1358,7 +1354,7 @@ std::shared_ptr<MAXPeer> MAXCentral::createPeer(int32_t address, int32_t firmwar
 {
 	try
 	{
-		std::shared_ptr<MAXPeer> peer(new MAXPeer(_deviceId, true, this));
+		std::shared_ptr<MAXPeer> peer(new MAXPeer(_deviceId, this));
 		peer->setAddress(address);
 		peer->setFirmwareVersion(firmwareVersion);
 		peer->setDeviceType(deviceType);

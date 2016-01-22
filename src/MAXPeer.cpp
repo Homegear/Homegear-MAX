@@ -87,18 +87,15 @@ void MAXPeer::setPhysicalInterface(std::shared_ptr<IPhysicalInterface> interface
     }
 }
 
-MAXPeer::MAXPeer(uint32_t parentID, bool centralFeatures, IPeerEventSink* eventHandler) : Peer(GD::bl, parentID, centralFeatures, eventHandler)
+MAXPeer::MAXPeer(uint32_t parentID, IPeerEventSink* eventHandler) : Peer(GD::bl, parentID, eventHandler)
 {
-	if(centralFeatures)
-	{
-		pendingQueues.reset(new PendingQueues());
-	}
+	pendingQueues.reset(new PendingQueues());
 	setPhysicalInterface(GD::defaultPhysicalInterface);
 	_lastTimePacket = BaseLib::HelperFunctions::getTime() + (BaseLib::HelperFunctions::getRandomNumber(1, 1000) * 10000);
 	_randomSleep = BaseLib::HelperFunctions::getRandomNumber(0, 1800000);
 }
 
-MAXPeer::MAXPeer(int32_t id, int32_t address, std::string serialNumber, uint32_t parentID, bool centralFeatures, IPeerEventSink* eventHandler) : Peer(GD::bl, id, address, serialNumber, parentID, centralFeatures, eventHandler)
+MAXPeer::MAXPeer(int32_t id, int32_t address, std::string serialNumber, uint32_t parentID, IPeerEventSink* eventHandler) : Peer(GD::bl, id, address, serialNumber, parentID, eventHandler)
 {
 	setPhysicalInterface(GD::defaultPhysicalInterface);
 	_lastTimePacket = BaseLib::HelperFunctions::getTime() + (BaseLib::HelperFunctions::getRandomNumber(1, 1000) * 10000);
@@ -112,7 +109,7 @@ MAXPeer::~MAXPeer()
 
 void MAXPeer::worker()
 {
-	if(!_centralFeatures || _disposing) return;
+	if(_disposing) return;
 	std::vector<uint32_t> positionsToDelete;
 	int64_t time;
 	try
@@ -464,11 +461,8 @@ void MAXPeer::loadVariables(BaseLib::Systems::ICentral* central, std::shared_ptr
 				unserializePeers(row->second.at(5)->binaryValue);
 				break;
 			case 16:
-				if(_centralFeatures)
-				{
-					pendingQueues.reset(new PendingQueues());
-					pendingQueues->unserialize(row->second.at(5)->binaryValue, this);
-				}
+				pendingQueues.reset(new PendingQueues());
+				pendingQueues->unserialize(row->second.at(5)->binaryValue, this);
 				break;
 			case 19:
 				_physicalInterfaceID = row->second.at(4)->textValue;
@@ -476,7 +470,7 @@ void MAXPeer::loadVariables(BaseLib::Systems::ICentral* central, std::shared_ptr
 				break;
 			}
 		}
-		if(_centralFeatures && !pendingQueues) pendingQueues.reset(new PendingQueues());
+		if(!pendingQueues) pendingQueues.reset(new PendingQueues());
 	}
 	catch(const std::exception& ex)
     {
@@ -582,7 +576,7 @@ void MAXPeer::savePendingQueues()
 {
 	try
 	{
-		if(!_centralFeatures || !pendingQueues) return;
+		if(!pendingQueues) return;
 		std::vector<uint8_t> serializedData;
 		pendingQueues->serialize(serializedData);
 		saveVariable(16, serializedData);
@@ -953,7 +947,7 @@ void MAXPeer::packetReceived(std::shared_ptr<MAXPacket> packet)
 	try
 	{
 		if(!packet) return;
-		if(!_centralFeatures || _disposing) return;
+		if(_disposing) return;
 		if(packet->senderAddress() != _address) return;
 		if(!_rpcDevice) return;
 		std::shared_ptr<MAXCentral> central = std::dynamic_pointer_cast<MAXCentral>(getCentral());
@@ -1085,7 +1079,7 @@ void MAXPeer::setRSSIDevice(uint8_t rssi)
 {
 	try
 	{
-		if(!_centralFeatures || _disposing || rssi == 0) return;
+		if(_disposing || rssi == 0) return;
 		uint32_t time = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 		if(valuesCentral.find(0) != valuesCentral.end() && valuesCentral.at(0).find("RSSI_DEVICE") != valuesCentral.at(0).end() && (time - _lastRSSIDevice) > 10)
 		{
@@ -1178,7 +1172,6 @@ PVariable MAXPeer::putParamset(BaseLib::PRpcClientInfo clientInfo, int32_t chann
 	try
 	{
 		if(_disposing) return Variable::createError(-32500, "Peer is disposing.");
-		if(!_centralFeatures) return Variable::createError(-2, "Not a central peer.");
 		if(channel < 0) channel = 0;
 		if(remoteChannel < 0) remoteChannel = 0;
 		Functions::iterator functionIterator = _rpcDevice->functions.find(channel);
@@ -1404,7 +1397,6 @@ PVariable MAXPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel
 	{
 		Peer::setValue(clientInfo, channel, valueKey, value, wait); //Ignore result, otherwise setHomegerValue might not be executed
 		if(_disposing) return Variable::createError(-32500, "Peer is disposing.");
-		if(!_centralFeatures) return Variable::createError(-2, "Not a central peer.");
 		if(valueKey.empty()) return Variable::createError(-5, "Value key is empty.");
 		if(channel == 0 && serviceMessages->set(valueKey, value->booleanValue)) return PVariable(new Variable(VariableType::tVoid));
 		std::unordered_map<uint32_t, std::unordered_map<std::string, RPCConfigurationParameter>>::iterator channelIterator = valuesCentral.find(channel);

@@ -65,8 +65,8 @@ class MAXPeer : public BaseLib::Systems::Peer
 public:
 	bool ignorePackets = false;
 
-	MAXPeer(uint32_t parentID, bool centralFeatures, IPeerEventSink* eventHandler);
-	MAXPeer(int32_t id, int32_t address, std::string serialNumber, uint32_t parentID, bool centralFeatures, IPeerEventSink* eventHandler);
+	MAXPeer(uint32_t parentID, IPeerEventSink* eventHandler);
+	MAXPeer(int32_t id, int32_t address, std::string serialNumber, uint32_t parentID, IPeerEventSink* eventHandler);
 	virtual ~MAXPeer();
 
 	//Features
