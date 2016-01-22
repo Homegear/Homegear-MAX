@@ -85,7 +85,7 @@ public:
 	virtual bool onPacketReceived(std::string& senderID, std::shared_ptr<BaseLib::Systems::Packet> packet);
 	virtual std::string handleCliCommand(std::string command);
 	virtual uint64_t getPeerIdFromSerial(std::string serialNumber) { std::shared_ptr<MAXPeer> peer = getPeer(serialNumber); if(peer) return peer->getID(); else return 0; }
-	virtual void enqueuePendingQueues(int32_t deviceAddress);
+	virtual bool enqueuePendingQueues(int32_t deviceAddress, bool wait = false);
 	void reset(uint64_t id);
 
 	virtual void sendPacket(std::shared_ptr<BaseLib::Systems::IPhysicalInterface> physicalInterface, std::shared_ptr<MAXPacket> packet, bool stealthy = false);
@@ -130,6 +130,8 @@ protected:
 	bool _stopPairingModeThread = false;
 	std::mutex _pairingModeThreadMutex;
 	std::thread _pairingModeThread;
+	std::mutex _unpairThreadMutex;
+	std::thread _unpairThread;
 
 	std::shared_ptr<MAXPeer> createPeer(int32_t address, int32_t firmwareVersion, BaseLib::Systems::LogicalDeviceType deviceType, std::string serialNumber, bool save = true);
 	void deletePeer(uint64_t id);

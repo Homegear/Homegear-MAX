@@ -49,11 +49,8 @@ CUL::~CUL()
 {
 	try
 	{
-		if(_listenThread.joinable())
-		{
-			_stopCallbackThread = true;
-			_listenThread.join();
-		}
+		_stopCallbackThread = true;
+		_bl->threadManager.join(_listenThread);
 		closeDevice();
 	}
     catch(const std::exception& ex)
@@ -348,8 +345,8 @@ void CUL::startListening()
 		_stopped = false;
 		writeToDevice("X21\nZr\n", false);
 		std::this_thread::sleep_for(std::chrono::milliseconds(400));
-		_listenThread = std::thread(&CUL::listen, this);
-		BaseLib::Threads::setThreadPriority(_bl, _listenThread.native_handle(), _settings->listenThreadPriority, _settings->listenThreadPolicy);
+		if(_settings->listenThreadPriority > -1) _bl->threadManager.start(_listenThread, true, _settings->listenThreadPriority, _settings->listenThreadPolicy, &CUL::listen, this);
+		else _bl->threadManager.start(_listenThread, true, &CUL::listen, this);
 		IPhysicalInterface::startListening();
 	}
     catch(const std::exception& ex)
@@ -370,11 +367,8 @@ void CUL::stopListening()
 {
 	try
 	{
-		if(_listenThread.joinable())
-		{
-			_stopCallbackThread = true;
-			_listenThread.join();
-		}
+		_stopCallbackThread = true;
+		_bl->threadManager.join(_listenThread);
 		_stopCallbackThread = false;
 		if(_fileDescriptor->descriptor > -1)
 		{

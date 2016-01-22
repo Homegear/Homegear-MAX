@@ -99,6 +99,7 @@ public:
 	virtual std::string getFirmwareVersionString(int32_t firmwareVersion);
     virtual bool firmwareUpdateAvailable() { return false; }
     std::string printConfig();
+    virtual bool pendingQueuesEmpty();
 
     std::shared_ptr<IPhysicalInterface> getPhysicalInterface() { return _physicalInterface; }
     void setRSSIDevice(uint8_t rssi);
@@ -111,7 +112,7 @@ public:
 	virtual PVariable getParamset(BaseLib::PRpcClientInfo clientInfo, int32_t channel, ParameterGroup::Type::Enum type, uint64_t remoteID, int32_t remoteChannel);
 	virtual PVariable putParamset(BaseLib::PRpcClientInfo clientInfo, int32_t channel, ParameterGroup::Type::Enum type, uint64_t remoteID, int32_t remoteChannel, PVariable variables, bool onlyPushing = false);
 	PVariable setInterface(BaseLib::PRpcClientInfo clientInfo, std::string interfaceID);
-	virtual PVariable setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel, std::string valueKey, PVariable value);
+	virtual PVariable setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel, std::string valueKey, PVariable value, bool wait);
 	//End RPC methods
 protected:
 	uint32_t _lastRSSIDevice = 0;

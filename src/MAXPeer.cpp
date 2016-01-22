@@ -440,6 +440,12 @@ void MAXPeer::save(bool savePeer, bool variables, bool centralConfig)
     }
 }
 
+bool MAXPeer::pendingQueuesEmpty()
+{
+	if(!pendingQueues) return true;
+	return pendingQueues->empty();
+}
+
 void MAXPeer::loadVariables(BaseLib::Systems::ICentral* central, std::shared_ptr<BaseLib::Database::DataTable>& rows)
 {
 	try
@@ -1272,7 +1278,7 @@ PVariable MAXPeer::putParamset(BaseLib::PRpcClientInfo clientInfo, int32_t chann
 			for(Struct::iterator i = variables->structValue->begin(); i != variables->structValue->end(); ++i)
 			{
 				if(i->first.empty() || !i->second) continue;
-				setValue(clientInfo, channel, i->first, i->second);
+				setValue(clientInfo, channel, i->first, i->second, true);
 			}
 		}
 		else
@@ -1392,11 +1398,11 @@ PVariable MAXPeer::setInterface(BaseLib::PRpcClientInfo clientInfo, std::string 
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MAXPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel, std::string valueKey, PVariable value)
+PVariable MAXPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel, std::string valueKey, PVariable value, bool wait)
 {
 	try
 	{
-		Peer::setValue(clientInfo, channel, valueKey, value); //Ignore result, otherwise setHomegerValue might not be executed
+		Peer::setValue(clientInfo, channel, valueKey, value, wait); //Ignore result, otherwise setHomegerValue might not be executed
 		if(_disposing) return Variable::createError(-32500, "Peer is disposing.");
 		if(!_centralFeatures) return Variable::createError(-2, "Not a central peer.");
 		if(valueKey.empty()) return Variable::createError(-5, "Value key is empty.");
@@ -1453,7 +1459,7 @@ PVariable MAXPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel
 				toggleValue = toggleParam->rpcParameter->convertFromPacket(temp);
 			}
 			else return Variable::createError(-6, "Toggle parameter has to be of type boolean, float or integer.");
-			return setValue(clientInfo, channel, toggleCast->parameter, toggleValue);
+			return setValue(clientInfo, channel, toggleCast->parameter, toggleValue, wait);
 		}
 		if(rpcParameter->setPackets.empty()) return Variable::createError(-6, "parameter is read only");
 		std::string setRequest = rpcParameter->setPackets.front()->id;
@@ -1560,7 +1566,7 @@ PVariable MAXPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel
 		pendingQueues->remove(valueKey, channel);
 		pendingQueues->push(queue);
 		if(MAXCentral::isSwitch(_deviceType)) queue->retries = 12;
-		central->enqueuePendingQueues(_address);
+		if(!central->enqueuePendingQueues(_address, wait)) return Variable::createError(-100, "No answer from device.");
 
 		if(!valueKeys->empty())
 		{

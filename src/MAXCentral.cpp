@@ -46,11 +46,6 @@ MAXCentral::MAXCentral(uint32_t deviceID, std::string serialNumber, int32_t addr
 MAXCentral::~MAXCentral()
 {
 	dispose();
-	if(_pairingModeThread.joinable())
-	{
-		_stopPairingModeThread = true;
-		_pairingModeThread.join();
-	}
 }
 
 void MAXCentral::dispose(bool wait)
@@ -97,12 +92,16 @@ void MAXCentral::stopThreads()
 {
 	try
 	{
+		_unpairThreadMutex.lock();
+		_bl->threadManager.join(_unpairThread);
+		_unpairThreadMutex.unlock();
+		_pairingModeThreadMutex.lock();
+		_stopPairingModeThread = true;
+		_bl->threadManager.join(_pairingModeThread);
+		_pairingModeThreadMutex.unlock();
 		_stopWorkerThread = true;
-		if(_workerThread.joinable())
-		{
-			GD::out.printDebug("Debug: Waiting for worker thread of device " + std::to_string(_deviceId) + "...");
-			_workerThread.join();
-		}
+		GD::out.printDebug("Debug: Waiting for worker thread of device " + std::to_string(_deviceId) + "...");
+		_bl->threadManager.join(_workerThread);
 	}
     catch(const std::exception& ex)
     {
@@ -143,8 +142,7 @@ void MAXCentral::init()
 			i->second->addEventHandler((IPhysicalInterface::IPhysicalInterfaceEventSink*)this);
 		}
 
-		_workerThread = std::thread(&MAXCentral::worker, this);
-		BaseLib::Threads::setThreadPriority(_bl, _workerThread.native_handle(), _bl->settings.workerThreadPriority(), _bl->settings.workerThreadPolicy());
+		GD::bl->threadManager.start(_workerThread, true, _bl->settings.workerThreadPriority(), _bl->settings.workerThreadPolicy(), &MAXCentral::worker, this);
 	}
 	catch(const std::exception& ex)
 	{
@@ -1303,7 +1301,7 @@ void MAXCentral::sendOK(int32_t messageCounter, int32_t destinationAddress)
     }
 }
 
-void MAXCentral::enqueuePendingQueues(int32_t deviceAddress)
+bool MAXCentral::enqueuePendingQueues(int32_t deviceAddress, bool wait)
 {
 	try
 	{
@@ -1312,17 +1310,33 @@ void MAXCentral::enqueuePendingQueues(int32_t deviceAddress)
 		if(!peer || !peer->pendingQueues)
 		{
 			_enqueuePendingQueuesMutex.unlock();
-			return;
+			return true;
 		}
 		std::shared_ptr<PacketQueue> queue = _queueManager.get(deviceAddress);
 		if(!queue) queue = _queueManager.createQueue(peer->getPhysicalInterface(), PacketQueueType::DEFAULT, deviceAddress);
 		if(!queue)
 		{
 			_enqueuePendingQueuesMutex.unlock();
-			return;
+			return true;
 		}
 		if(!queue->peer) queue->peer = peer;
 		if(queue->pendingQueuesEmpty()) queue->push(peer->pendingQueues);
+		_enqueuePendingQueuesMutex.unlock();
+
+		if(wait)
+		{
+			int32_t waitIndex = 0;
+			std::this_thread::sleep_for(std::chrono::milliseconds(50));
+			while(!peer->pendingQueuesEmpty() && waitIndex < 200)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(50));
+				waitIndex++;
+			}
+
+			if(!peer->pendingQueuesEmpty()) return false;
+		}
+
+		return true;
 	}
 	catch(const std::exception& ex)
     {
@@ -1337,6 +1351,7 @@ void MAXCentral::enqueuePendingQueues(int32_t deviceAddress)
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
     }
     _enqueuePendingQueuesMutex.unlock();
+    return false;
 }
 
 std::shared_ptr<MAXPeer> MAXCentral::createPeer(int32_t address, int32_t firmwareVersion, BaseLib::Systems::LogicalDeviceType deviceType, std::string serialNumber, bool save)
@@ -1833,8 +1848,10 @@ PVariable MAXCentral::deleteDevice(BaseLib::PRpcClientInfo clientInfo, uint64_t 
 
 		bool defer = flags & 0x04;
 		bool force = flags & 0x02;
-		std::thread t(&MAXCentral::reset, this, id);
-		t.detach();
+		_unpairThreadMutex.lock();
+		_bl->threadManager.join(_unpairThread);
+		_bl->threadManager.start(_unpairThread, false, &MAXCentral::reset, this, id);
+		_unpairThreadMutex.unlock();
 		//Force delete
 		if(force) deletePeer(peer->getID());
 		else
@@ -2193,13 +2210,13 @@ std::shared_ptr<Variable> MAXCentral::setInstallMode(BaseLib::PRpcClientInfo cli
 			return Variable::createError(-32500, "Central is disposing.");
 		}
 		_stopPairingModeThread = true;
-		if(_pairingModeThread.joinable()) _pairingModeThread.join();
+		_bl->threadManager.join(_pairingModeThread);
 		_stopPairingModeThread = false;
 		_timeLeftInPairingMode = 0;
 		if(on && duration >= 5)
 		{
 			_timeLeftInPairingMode = duration; //It's important to set it here, because the thread often doesn't completely initialize before getInstallMode requests _timeLeftInPairingMode
-			_pairingModeThread = std::thread(&MAXCentral::pairingModeTimer, this, duration, debugOutput);
+			_bl->threadManager.start(_pairingModeThread, true, &MAXCentral::pairingModeTimer, this, duration, debugOutput);
 		}
 		_pairingModeThreadMutex.unlock();
 		return PVariable(new Variable(VariableType::tVoid));

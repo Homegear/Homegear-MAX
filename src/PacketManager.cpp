@@ -41,8 +41,7 @@ PacketManager::PacketManager()
 {
 	try
 	{
-		_workerThread = std::thread(&PacketManager::worker, this);
-		BaseLib::Threads::setThreadPriority(GD::bl, _workerThread.native_handle(), GD::bl->settings.workerThreadPriority(), GD::bl->settings.workerThreadPolicy());
+		GD::bl->threadManager.start(_workerThread, true, GD::bl->settings.workerThreadPriority(), GD::bl->settings.workerThreadPolicy(), &PacketManager::worker, this);
 	}
 	catch(const std::exception& ex)
     {
@@ -61,7 +60,7 @@ PacketManager::PacketManager()
 PacketManager::~PacketManager()
 {
 	if(!_disposing) dispose();
-	if(_workerThread.joinable()) _workerThread.join();
+	GD::bl->threadManager.join(_workerThread);
 }
 
 void PacketManager::dispose(bool wait)

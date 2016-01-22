@@ -217,13 +217,13 @@ void PacketQueue::dispose()
 		if(_disposing) return;
 		_disposing = true;
 		_startResendThreadMutex.lock();
-		if(_startResendThread.joinable()) _startResendThread.join();
+		GD::bl->threadManager.join(_startResendThread);
 		_startResendThreadMutex.unlock();
 		_pushPendingQueueThreadMutex.lock();
-		if(_pushPendingQueueThread.joinable()) _pushPendingQueueThread.join();
+		GD::bl->threadManager.join(_pushPendingQueueThread);
 		_pushPendingQueueThreadMutex.unlock();
 		_sendThreadMutex.lock();
-        if(_sendThread.joinable()) _sendThread.join();
+		GD::bl->threadManager.join(_sendThread);
         _sendThreadMutex.unlock();
 		stopResendThread();
 		stopPopWaitThread();
@@ -346,15 +346,14 @@ void PacketQueue::resend(uint32_t threadId, bool burst)
 				bool stealthy = _queue.front().stealthy;
 				_queueMutex.unlock();
 				_sendThreadMutex.lock();
-				if(_sendThread.joinable()) _sendThread.join();
+				GD::bl->threadManager.join(_sendThread);
 				if(_stopResendThread || _disposing)
 				{
 					_sendThreadMutex.unlock();
 					return;
 				}
 				if(burst) packet->setBurst(true);
-				_sendThread = std::thread(&PacketQueue::send, this, packet, stealthy);
-				BaseLib::Threads::setThreadPriority(GD::bl, _sendThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
+				GD::bl->threadManager.start(_sendThread, true, GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy(), &PacketQueue::send, this, packet, stealthy);
 				_sendThreadMutex.unlock();
 			}
 			else _queueMutex.unlock(); //Has to be unlocked before startResendThread
@@ -368,8 +367,8 @@ void PacketQueue::resend(uint32_t threadId, bool burst)
 					_startResendThreadMutex.unlock();
 					return;
 				}
-				if(_startResendThread.joinable()) _startResendThread.join();
-				_startResendThread = std::thread(&PacketQueue::startResendThread, this, forceResend);
+				GD::bl->threadManager.join(_startResendThread);
+				GD::bl->threadManager.start(_startResendThread, true, &PacketQueue::startResendThread, this, forceResend);
 				_startResendThreadMutex.unlock();
 			}
 			else _resendCounter = 0;
@@ -422,9 +421,8 @@ void PacketQueue::push(std::shared_ptr<MAXPacket> packet, bool stealthy, bool fo
 					_sendThreadMutex.unlock();
 					return;
 				}
-				if(_sendThread.joinable()) _sendThread.join();
-				_sendThread = std::thread(&PacketQueue::send, this, entry.getPacket(), entry.stealthy);
-				BaseLib::Threads::setThreadPriority(GD::bl, _sendThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
+				GD::bl->threadManager.join(_sendThread);
+				GD::bl->threadManager.start(_sendThread, true, GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy(), &PacketQueue::send, this, entry.getPacket(), entry.stealthy);
 				_sendThreadMutex.unlock();
 				startResendThread(forceResend);
 			}
@@ -589,9 +587,8 @@ void PacketQueue::pushFront(std::shared_ptr<MAXPacket> packet, bool stealthy, bo
 					_sendThreadMutex.unlock();
 					return;
 				}
-				if(_sendThread.joinable()) _sendThread.join();
-				_sendThread = std::thread(&PacketQueue::send, this, entry.getPacket(), entry.stealthy);
-				BaseLib::Threads::setThreadPriority(GD::bl, _sendThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
+				GD::bl->threadManager.join(_sendThread);
+				GD::bl->threadManager.start(_sendThread, true, GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy(), &PacketQueue::send, this, entry.getPacket(), entry.stealthy);
 				_sendThreadMutex.unlock();
 				startResendThread(forceResend);
 			}
@@ -628,7 +625,7 @@ void PacketQueue::stopPopWaitThread()
 	try
 	{
 		_stopPopWaitThread = true;
-		if(_popWaitThread.joinable()) _popWaitThread.join();
+		GD::bl->threadManager.join(_popWaitThread);
 		_stopPopWaitThread = false;
 	}
 	catch(const std::exception& ex)
@@ -652,8 +649,7 @@ void PacketQueue::popWait(uint32_t waitingTime)
 		if(_disposing) return;
 		stopResendThread();
 		stopPopWaitThread();
-		_popWaitThread = std::thread(&PacketQueue::popWaitThread, this, _popWaitThreadId++, waitingTime);
-		BaseLib::Threads::setThreadPriority(GD::bl, _popWaitThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
+		GD::bl->threadManager.start(_popWaitThread, true, GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy(), &PacketQueue::popWaitThread, this, _popWaitThreadId++, waitingTime);
 	}
 	catch(const std::exception& ex)
     {
@@ -759,7 +755,7 @@ void PacketQueue::stopResendThread()
 	{
 		_resendThreadMutex.lock();
 		_stopResendThread = true;
-		if(_resendThread.joinable()) _resendThread.join();
+		GD::bl->threadManager.join(_resendThread);
 		_stopResendThread = false;
 	}
 	catch(const std::exception& ex)
@@ -804,10 +800,9 @@ void PacketQueue::startResendThread(bool force)
 			try
 			{
 				_stopResendThread = true;
-				if(_resendThread.joinable()) _resendThread.join();
+				GD::bl->threadManager.join(_resendThread);
 				_stopResendThread = false;
-				_resendThread = std::thread(&PacketQueue::resend, this, _resendThreadId++, burst);
-				BaseLib::Threads::setThreadPriority(GD::bl, _resendThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
+				GD::bl->threadManager.start(_resendThread, true, GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy(), &PacketQueue::resend, this, _resendThreadId++, burst);
 			}
 			catch(const std::exception& ex)
 			{
@@ -931,11 +926,10 @@ void PacketQueue::pushPendingQueue()
 						_sendThreadMutex.unlock();
 						return;
 					}
-					if(_sendThread.joinable()) _sendThread.join();
+					GD::bl->threadManager.join(_sendThread);
 					_lastPop = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-					_sendThread = std::thread(&PacketQueue::send, this, i->getPacket(), i->stealthy);
+					GD::bl->threadManager.start(_sendThread, true, GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy(), &PacketQueue::send, this, i->getPacket(), i->stealthy);
 					_sendThreadMutex.unlock();
-					BaseLib::Threads::setThreadPriority(GD::bl, _sendThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
 					startResendThread(i->forceResend);
 				}
 			}
@@ -1006,9 +1000,8 @@ void PacketQueue::nextQueueEntry()
 					_pushPendingQueueThreadMutex.unlock();
 					return;
 				}
-				if(_pushPendingQueueThread.joinable()) _pushPendingQueueThread.join();
-				_pushPendingQueueThread = std::thread(&PacketQueue::pushPendingQueue, this);
-				BaseLib::Threads::setThreadPriority(GD::bl, _pushPendingQueueThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
+				GD::bl->threadManager.join(_pushPendingQueueThread);
+				GD::bl->threadManager.start(_pushPendingQueueThread, true, GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy(), &PacketQueue::pushPendingQueue, this);
 				_pushPendingQueueThreadMutex.unlock();
 				return;
 			}
@@ -1028,10 +1021,9 @@ void PacketQueue::nextQueueEntry()
 					_sendThreadMutex.unlock();
 					return;
 				}
-				if(_sendThread.joinable()) _sendThread.join();
-				_sendThread = std::thread(&PacketQueue::send, this, packet, stealthy);
+				GD::bl->threadManager.join(_sendThread);
+				GD::bl->threadManager.start(_sendThread, true, GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy(), &PacketQueue::send, this, packet, stealthy);
 				_sendThreadMutex.unlock();
-				BaseLib::Threads::setThreadPriority(GD::bl, _sendThread.native_handle(), GD::bl->settings.packetQueueThreadPriority(), GD::bl->settings.packetQueueThreadPolicy());
 				startResendThread(forceResend);
 			}
 			else _queueMutex.unlock();

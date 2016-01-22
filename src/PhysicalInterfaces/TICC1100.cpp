@@ -80,7 +80,7 @@ TICC1100::~TICC1100()
 	try
 	{
 		_stopCallbackThread = true;
-		if(_listenThread.joinable()) _listenThread.join();
+		_bl->threadManager.join(_listenThread);
 		closeDevice();
 		closeGPIO(1);
 	}
@@ -736,6 +736,33 @@ void TICC1100::startListening()
 	try
 	{
 		stopListening();
+		initDevice();
+
+		_stopped = false;
+		_firstPacket = true;
+		_stopCallbackThread = false;
+		if(_settings->listenThreadPriority > -1) GD::bl->threadManager.start(_listenThread, true, _settings->listenThreadPriority, _settings->listenThreadPolicy, &TICC1100::mainThread, this);
+		else GD::bl->threadManager.start(_listenThread, true, &TICC1100::mainThread, this);
+		IPhysicalInterface::startListening();
+	}
+    catch(const std::exception& ex)
+    {
+        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
+void TICC1100::initDevice()
+{
+	try
+	{
 		openDevice();
 		if(!_fileDescriptor || _fileDescriptor->descriptor == -1) return;
 
@@ -752,17 +779,6 @@ void TICC1100::startListening()
 			if(!getGPIO(2)) setGPIO(2, true);
 			closeGPIO(2);
 		}
-
-		_stopped = false;
-		_firstPacket = true;
-		_stopCallbackThread = false;
-		_listenThread = std::thread(&TICC1100::mainThread, this);
-		BaseLib::Threads::setThreadPriority(_bl, _listenThread.native_handle(), _settings->listenThreadPriority, _settings->listenThreadPolicy);
-		IPhysicalInterface::startListening();
-
-		//For sniffing update packets
-		//std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-		//enableUpdateMode();
 	}
     catch(const std::exception& ex)
     {
@@ -782,11 +798,8 @@ void TICC1100::stopListening()
 {
 	try
 	{
-		if(_listenThread.joinable())
-		{
-			_stopCallbackThread = true;
-			_listenThread.join();
-		}
+		_stopCallbackThread = true;
+		_bl->threadManager.join(_listenThread);
 		_stopCallbackThread = false;
 		if(_fileDescriptor->descriptor != -1) closeDevice();
 		closeGPIO(1);
@@ -839,104 +852,111 @@ void TICC1100::mainThread()
 		int32_t bytesRead;
 		std::vector<char> readBuffer({'0'});
 
-        while(!_stopCallbackThread && _fileDescriptor->descriptor > -1 && _gpioDescriptors[1]->descriptor > -1)
+        while(!_stopCallbackThread)
         {
-        	if(_stopped)
+        	try
         	{
-        		std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        		continue;
-        	}
-        	pollfd pollstruct {
-				(int)_gpioDescriptors[1]->descriptor,
-				(short)(POLLPRI | POLLERR),
-				(short)0
-			};
+				if(_stopped)
+				{
+					std::this_thread::sleep_for(std::chrono::milliseconds(200));
+					continue;
+				}
+				if(!_stopCallbackThread && (_fileDescriptor->descriptor == -1 || _gpioDescriptors[1]->descriptor == -1))
+				{
+					_out.printError("Connection to TI CC1101 closed unexpectedly... Trying to reconnect...");
+					_stopped = true; //Set to true, so that sendPacket aborts
+					if(_sending)
+					{
+						std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+						_sending = false;
+					}
+					_txMutex.unlock(); //Make sure _txMutex is unlocked
 
-			pollResult = poll(&pollstruct, 1, 100);
-			/*if(pollstruct.revents & POLLERR)
-			{
-				_out.printWarning("Warning: Error polling GPIO. Reopening...");
-				closeGPIO();
-				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-				openGPIO(_settings->gpio1);
-			}*/
-			if(pollResult > 0)
-			{
-				if(lseek(_gpioDescriptors[1]->descriptor, 0, SEEK_SET) == -1) throw BaseLib::Exception("Could not poll gpio: " + std::string(strerror(errno)));
-				bytesRead = read(_gpioDescriptors[1]->descriptor, &readBuffer[0], 1);
-				if(!bytesRead) continue;
-				if(readBuffer.at(0) == 0x30)
-				{
-					if(!_sending) _txMutex.try_lock(); //We are receiving, don't send now
-					continue; //Packet is being received. Wait for GDO high
+					initDevice();
+					_stopped = false;
+					continue;
 				}
-				if(_sending) endSending();
-				else
+
+				pollfd pollstruct {
+					(int)_gpioDescriptors[1]->descriptor,
+					(short)(POLLPRI | POLLERR),
+					(short)0
+				};
+
+				pollResult = poll(&pollstruct, 1, 100);
+				/*if(pollstruct.revents & POLLERR)
 				{
-					//sendCommandStrobe(CommandStrobes::Enum::SIDLE);
-					std::shared_ptr<MAXPacket> packet;
-					if(crcOK())
+					_out.printWarning("Warning: Error polling GPIO. Reopening...");
+					closeGPIO();
+					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+					openGPIO(_settings->gpio1);
+				}*/
+				if(pollResult > 0)
+				{
+					if(lseek(_gpioDescriptors[1]->descriptor, 0, SEEK_SET) == -1) throw BaseLib::Exception("Could not poll gpio: " + std::string(strerror(errno)));
+					bytesRead = read(_gpioDescriptors[1]->descriptor, &readBuffer[0], 1);
+					if(!bytesRead) continue;
+					if(readBuffer.at(0) == 0x30)
 					{
-						uint8_t firstByte = readRegister(Registers::Enum::FIFO);
-						std::vector<uint8_t> packetBytes = readRegisters(Registers::Enum::FIFO, firstByte + 1); //Read packet + RSSI
-						packetBytes[0] = firstByte;
-						if(packetBytes.size() >= 9) packet.reset(new MAXPacket(packetBytes, true, BaseLib::HelperFunctions::getTime()));
-						else _out.printWarning("Warning: Too small packet received: " + BaseLib::HelperFunctions::getHexString(packetBytes));
+						if(!_sending) _txMutex.try_lock(); //We are receiving, don't send now
+						continue; //Packet is being received. Wait for GDO high
 					}
-					else _out.printDebug("Debug: MAX! packet received, but CRC failed.");
-					if(!_sendingPending)
+					if(_sending) endSending();
+					else
 					{
-						sendCommandStrobe(CommandStrobes::Enum::SFRX);
-						sendCommandStrobe(CommandStrobes::Enum::SRX);
+						//sendCommandStrobe(CommandStrobes::Enum::SIDLE);
+						std::shared_ptr<MAXPacket> packet;
+						if(crcOK())
+						{
+							uint8_t firstByte = readRegister(Registers::Enum::FIFO);
+							std::vector<uint8_t> packetBytes = readRegisters(Registers::Enum::FIFO, firstByte + 1); //Read packet + RSSI
+							packetBytes[0] = firstByte;
+							if(packetBytes.size() >= 9) packet.reset(new MAXPacket(packetBytes, true, BaseLib::HelperFunctions::getTime()));
+							else _out.printWarning("Warning: Too small packet received: " + BaseLib::HelperFunctions::getHexString(packetBytes));
+						}
+						else _out.printDebug("Debug: MAX! packet received, but CRC failed.");
+						if(!_sendingPending)
+						{
+							sendCommandStrobe(CommandStrobes::Enum::SFRX);
+							sendCommandStrobe(CommandStrobes::Enum::SRX);
+						}
+						if(packet)
+						{
+							if(_firstPacket) _firstPacket = false;
+							else raisePacketReceived(packet);
+						}
 					}
-					if(packet)
-					{
-						if(_firstPacket) _firstPacket = false;
-						else raisePacketReceived(packet);
-					}
+					_txMutex.unlock(); //Packet sent or received, now we can send again
 				}
-				_txMutex.unlock(); //Packet sent or received, now we can send again
+				else if(pollResult < 0)
+				{
+					_txMutex.unlock();
+					_out.printError("Error: Could not poll gpio: " + std::string(strerror(errno)) + ". Reopening...");
+					closeGPIO(1);
+					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+					openGPIO(1, true);
+				}
+				//pollResult == 0 is timeout
 			}
-			else if(pollResult < 0)
+			catch(const std::exception& ex)
 			{
 				_txMutex.unlock();
-				_out.printError("Error: Could not poll gpio: " + std::string(strerror(errno)) + ". Reopening...");
-				closeGPIO(1);
-				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-				openGPIO(1, true);
+				_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 			}
-			//pollResult == 0 is timeout
+			catch(BaseLib::Exception& ex)
+			{
+				_txMutex.unlock();
+				_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+			}
+			catch(...)
+			{
+				_txMutex.unlock();
+				_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+			}
         }
     }
     catch(const std::exception& ex)
     {
-    	_txMutex.unlock();
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(BaseLib::Exception& ex)
-    {
-    	_txMutex.unlock();
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	_txMutex.unlock();
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
-    try
-    {
-		if(!_stopCallbackThread && (_fileDescriptor->descriptor == -1 || _gpioDescriptors[1]->descriptor == -1))
-		{
-			_out.printError("Connection to TI CC1101 closed inexpectedly... Trying to reconnect...");
-			_stopCallbackThread = true; //Set to true, so that sendPacket aborts
-			_txMutex.unlock(); //Make sure _txMutex is unlocked
-			std::thread thread(&TICC1100::startListening, this);
-			thread.detach();
-		}
-		else _txMutex.unlock(); //Make sure _txMutex is unlocked
-	}
-    catch(const std::exception& ex)
-    {
         _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
     catch(BaseLib::Exception& ex)
@@ -947,6 +967,7 @@ void TICC1100::mainThread()
     {
         _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
     }
+    _txMutex.unlock();
 }
 }
 #endif
