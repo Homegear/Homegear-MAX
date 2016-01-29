@@ -31,6 +31,7 @@
 #include "GD.h"
 #include "PhysicalInterfaces/CUL.h"
 #include "PhysicalInterfaces/COC.h"
+#include "PhysicalInterfaces/Cunx.h"
 #include "PhysicalInterfaces/TICC1100.h"
 
 namespace MAX
@@ -57,6 +58,7 @@ void Interfaces::create()
 			GD::out.printDebug("Debug: Creating physical device. Type defined in max.conf is: " + (*i)->type);
 			if((*i)->type == "cul") device.reset(new CUL(*i));
 			else if((*i)->type == "coc") device.reset(new COC(*i));
+			else if((*i)->type == "cunx") device.reset(new Cunx(*i));
 #ifdef SPIINTERFACES
 			else if((*i)->type == "cc1100") device.reset(new TICC1100(*i));
 #endif
