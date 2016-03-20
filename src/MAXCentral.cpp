@@ -1704,6 +1704,7 @@ PVariable MAXCentral::addLink(BaseLib::PRpcClientInfo clientInfo, uint64_t sende
 		senderPeer->channel = senderChannelIndex;
 		senderPeer->id = sender->getID();
 		senderPeer->serialNumber = sender->getSerialNumber();
+		senderPeer->isSender = true;
 		senderPeer->linkDescription = description;
 		senderPeer->linkName = name;
 
