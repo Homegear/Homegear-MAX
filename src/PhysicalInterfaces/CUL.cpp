@@ -38,11 +38,14 @@ CUL::CUL(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings) 
 {
 	_out.init(GD::bl);
 	_out.setPrefix(GD::out.getPrefix() + "CUL \"" + settings->id + "\": ");
+
 	if(settings->listenThreadPriority == -1)
 	{
 		settings->listenThreadPriority = 45;
 		settings->listenThreadPolicy = SCHED_FIFO;
 	}
+
+	memset(&_termios, 0, sizeof(termios));
 }
 
 CUL::~CUL()
