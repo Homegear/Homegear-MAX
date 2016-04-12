@@ -406,15 +406,15 @@ std::vector<uint8_t> MAXPacket::getPosition(double index, double size, int32_t m
 
 			uint32_t bitSize = std::lround(size * 10);
 			uint32_t intIndex = std::lround(std::floor(index));
-			if(intIndex == 0) result.push_back((_messageCounter >> (std::lround(index * 10) % 8)) & _bitmask[bitSize]);
-			else if(intIndex == 1) result.push_back((_messageSubtype >> (std::lround(index * 10) % 8)) & _bitmask[bitSize]);
-			else if(intIndex == 2) result.push_back((_messageType >> (std::lround(index * 10) % 8)) & _bitmask[bitSize]);
-			else if(intIndex == 3) result.push_back(((_senderAddress >> 16) >> (std::lround(index * 10) % 8)) & _bitmask[bitSize]);
-			else if(intIndex == 4) result.push_back(((_senderAddress >> 8) >> (std::lround(index * 10) % 8)) & _bitmask[bitSize]);
-			else if(intIndex == 5) result.push_back((_senderAddress >> (std::lround(index * 10) % 8)) & _bitmask[bitSize]);
-			else if(intIndex == 6) result.push_back(((_destinationAddress >> 16) >> (std::lround(index * 10) % 8)) & _bitmask[bitSize]);
-			else if(intIndex == 7) result.push_back(((_destinationAddress >> 8) >> (std::lround(index * 10) % 8)) & _bitmask[bitSize]);
-			else if(intIndex == 8) result.push_back((_destinationAddress >> (std::lround(index * 10) % 8)) & _bitmask[bitSize]);
+			if(intIndex == 0) result.push_back((_messageCounter >> (std::lround(index * 10) % 10)) & _bitmask[bitSize]);
+			else if(intIndex == 1) result.push_back((_messageSubtype >> (std::lround(index * 10) % 10)) & _bitmask[bitSize]);
+			else if(intIndex == 2) result.push_back((_messageType >> (std::lround(index * 10) % 10)) & _bitmask[bitSize]);
+			else if(intIndex == 3) result.push_back(((_senderAddress >> 16) >> (std::lround(index * 10) % 10)) & _bitmask[bitSize]);
+			else if(intIndex == 4) result.push_back(((_senderAddress >> 8) >> (std::lround(index * 10) % 10)) & _bitmask[bitSize]);
+			else if(intIndex == 5) result.push_back((_senderAddress >> (std::lround(index * 10) % 10)) & _bitmask[bitSize]);
+			else if(intIndex == 6) result.push_back(((_destinationAddress >> 16) >> (std::lround(index * 10) % 10)) & _bitmask[bitSize]);
+			else if(intIndex == 7) result.push_back(((_destinationAddress >> 8) >> (std::lround(index * 10) % 10)) & _bitmask[bitSize]);
+			else if(intIndex == 8) result.push_back((_destinationAddress >> (std::lround(index * 10) % 10)) & _bitmask[bitSize]);
 			return result;
 		}
 		index -= 9;
@@ -436,7 +436,7 @@ std::vector<uint8_t> MAXPacket::getPosition(double index, double size, int32_t m
 			//The round is necessary, because for example (uint32_t)(0.2 * 10) is 1
 			uint32_t bitSize = std::lround(size * 10);
 			if(bitSize > 8) bitSize = 8;
-			result.push_back((_payload.at(intByteIndex) >> (std::lround(index * 10) % 8)) & _bitmask[bitSize]);
+			result.push_back((_payload.at(intByteIndex) >> (std::lround(index * 10) % 10)) & _bitmask[bitSize]);
 		}
 		else
 		{
