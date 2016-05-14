@@ -321,7 +321,7 @@ void Cunx::processData(std::vector<uint8_t>& data)
 		std::string packetHex;
 		while(std::getline(stringStream, packetHex))
 		{
-			if(packetHex.size() > 21) //21 is minimal packet length (=10 Byte + CUNX "A")
+			if(packetHex.size() > 21) //21 is minimal packet length (=10 Byte + CUNX "Z" + "\n")
         	{
 				std::shared_ptr<MAXPacket> packet(new MAXPacket(packetHex, BaseLib::HelperFunctions::getTime()));
 				raisePacketReceived(packet);

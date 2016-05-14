@@ -223,7 +223,7 @@ void COC::lineReceived(const std::string& data)
 			if(data.substr(0, stackPrefix.size()) != stackPrefix || data.at(stackPrefix.size()) == '*') return;
 			else packetHex = data.substr(stackPrefix.size());
 		}
-		if(packetHex.size() > 21) //21 is minimal packet length (=10 Byte + COC "Z")
+		if(packetHex.size() > 21) //21 is minimal packet length (=10 Byte + COC "Z" + "\n")
 		{
 			std::shared_ptr<MAXPacket> packet(new MAXPacket(packetHex, BaseLib::HelperFunctions::getTime()));
 			raisePacketReceived(packet);

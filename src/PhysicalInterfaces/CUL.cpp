@@ -410,7 +410,7 @@ void CUL::listen()
         		continue;
         	}
         	std::string packetHex = readFromDevice();
-        	if(packetHex.size() > 21) //21 is minimal packet length (=10 Byte + CUL "Z")
+        	if(packetHex.size() > 21) //21 is minimal packet length (=10 Byte + CUL "Z" + "\n")
         	{
 				std::shared_ptr<MAXPacket> packet(new MAXPacket(packetHex, BaseLib::HelperFunctions::getTime()));
 				raisePacketReceived(packet);
