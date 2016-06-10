@@ -914,7 +914,17 @@ void TICC1100::mainThread()
 							uint8_t firstByte = readRegister(Registers::Enum::FIFO);
 							std::vector<uint8_t> packetBytes = readRegisters(Registers::Enum::FIFO, firstByte + 1); //Read packet + RSSI
 							packetBytes[0] = firstByte;
-							if(packetBytes.size() >= 9) packet.reset(new MAXPacket(packetBytes, true, BaseLib::HelperFunctions::getTime()));
+							if(packetBytes.size() > 100)
+							{
+								if(!_firstPacket)
+								{
+									_out.printWarning("Warning: Too large packet received: " + BaseLib::HelperFunctions::getHexString(packetBytes));
+									closeDevice();
+									_txMutex.unlock();
+									continue;
+								}
+							}
+							else if(packetBytes.size() >= 9) packet.reset(new MAXPacket(packetBytes, true, BaseLib::HelperFunctions::getTime()));
 							else if(!_firstPacket)
 							{
 								_out.printWarning("Warning: Too small packet received: " + BaseLib::HelperFunctions::getHexString(packetBytes));
