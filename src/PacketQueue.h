@@ -31,7 +31,7 @@
 #define PACKETQUEUE_H
 
 #include "delegate.hpp"
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 #include "MAXPacket.h"
 
 #include <iostream>

@@ -30,7 +30,7 @@
 #include "PacketQueue.h"
 #include "MAXMessages.h"
 #include "PendingQueues.h"
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 #include "GD.h"
 
 namespace MAX

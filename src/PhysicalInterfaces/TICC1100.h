@@ -34,7 +34,7 @@
 
 #ifdef SPIINTERFACES
 
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 
 #include <thread>
 #include <iostream>

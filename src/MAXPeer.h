@@ -30,7 +30,7 @@
 #ifndef MAXPEER_H_
 #define MAXPEER_H_
 
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 #include "MAXPacket.h"
 #include "PendingQueues.h"
 

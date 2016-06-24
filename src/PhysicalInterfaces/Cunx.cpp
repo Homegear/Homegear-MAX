@@ -29,7 +29,7 @@
 
 #include "Cunx.h"
 #include "../MAXPacket.h"
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 #include "../GD.h"
 
 namespace MAX

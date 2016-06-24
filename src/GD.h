@@ -33,7 +33,7 @@
 #define MAX_FAMILY_ID 4
 #define MAX_FAMILY_NAME "MAX!"
 
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 #include "MAX.h"
 
 namespace MAX

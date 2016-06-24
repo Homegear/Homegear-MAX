@@ -30,7 +30,7 @@
 #ifndef MAXCENTRAL_H_
 #define MAXCENTRAL_H_
 
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 #include "MAXPeer.h"
 #include "MAXPacket.h"
 #include "MAXMessages.h"
