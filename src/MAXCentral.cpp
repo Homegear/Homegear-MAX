@@ -58,7 +58,7 @@ void MAXCentral::dispose(bool wait)
 		for(std::map<std::string, std::shared_ptr<IPhysicalInterface>>::iterator i = GD::physicalInterfaces.begin(); i != GD::physicalInterfaces.end(); ++i)
 		{
 			//Just to make sure cycle through all physical devices. If event handler is not removed => segfault
-			i->second->removeEventHandler(_physicalInterfaceEventhandler);
+			i->second->removeEventHandler(_physicalInterfaceEventhandlers[i->first]);
 		}
 
 		stopThreads();
@@ -127,11 +127,7 @@ void MAXCentral::init()
 		if(_initialized) return; //Prevent running init two times
 		_initialized = true;
 
-		_physicalInterface = GD::defaultPhysicalInterface;
-
 		_messages = std::shared_ptr<MAXMessages>(new MAXMessages());
-
-		if(_physicalInterface) _physicalInterfaceEventhandler = _physicalInterface->addEventHandler((BaseLib::Systems::IPhysicalInterface::IPhysicalInterfaceEventSink*)this);
 
 		_messageCounter[0] = 0; //Broadcast message counter
 
@@ -139,7 +135,7 @@ void MAXCentral::init()
 
 		for(std::map<std::string, std::shared_ptr<IPhysicalInterface>>::iterator i = GD::physicalInterfaces.begin(); i != GD::physicalInterfaces.end(); ++i)
 		{
-			i->second->addEventHandler((IPhysicalInterface::IPhysicalInterfaceEventSink*)this);
+			_physicalInterfaceEventhandlers[i->first] = i->second->addEventHandler((IPhysicalInterface::IPhysicalInterfaceEventSink*)this);
 		}
 
 		GD::bl->threadManager.start(_workerThread, true, _bl->settings.workerThreadPriority(), _bl->settings.workerThreadPolicy(), &MAXCentral::worker, this);
@@ -294,18 +290,6 @@ std::shared_ptr<IPhysicalInterface> MAXCentral::getPhysicalInterface(int32_t pee
     	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
     }
     return GD::defaultPhysicalInterface;
-}
-
-void MAXCentral::setPhysicalInterfaceID(std::string id)
-{
-	if(id.empty() || (GD::physicalInterfaces.find(id) != GD::physicalInterfaces.end() && GD::physicalInterfaces.at(id)))
-	{
-		if(_physicalInterface) _physicalInterface->removeEventHandler(_physicalInterfaceEventhandler);
-		_physicalInterfaceID = id;
-		_physicalInterface = id.empty() ? GD::defaultPhysicalInterface : GD::physicalInterfaces.at(_physicalInterfaceID);
-		_physicalInterfaceEventhandler = _physicalInterface->addEventHandler((BaseLib::Systems::IPhysicalInterface::IPhysicalInterfaceEventSink*)this);
-		saveVariable(4, _physicalInterfaceID);
-	}
 }
 
 bool MAXCentral::onPacketReceived(std::string& senderID, std::shared_ptr<BaseLib::Systems::Packet> packet)
@@ -471,10 +455,6 @@ void MAXCentral::loadVariables()
 			case 2:
 				unserializeMessageCounters(row->second.at(5)->binaryValue);
 				break;
-			case 4:
-				_physicalInterfaceID = row->second.at(4)->textValue;
-				if(!_physicalInterfaceID.empty() && GD::physicalInterfaces.find(_physicalInterfaceID) != GD::physicalInterfaces.end()) _physicalInterface = GD::physicalInterfaces.at(_physicalInterfaceID);
-				break;
 			}
 		}
 	}
@@ -603,7 +583,6 @@ void MAXCentral::saveVariables()
 		if(_deviceId == 0) return;
 		saveVariable(1, _centralAddress);
 		saveMessageCounters(); //2
-		saveVariable(4, _physicalInterfaceID);
 	}
 	catch(const std::exception& ex)
     {

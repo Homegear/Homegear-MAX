@@ -873,6 +873,9 @@ void TICC1100::mainThread()
 					_txMutex.unlock(); //Make sure _txMutex is unlocked
 
 					initDevice();
+					closeGPIO(1);
+					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+					openGPIO(1, true);
 					_stopped = false;
 					continue;
 				}
@@ -911,8 +914,24 @@ void TICC1100::mainThread()
 							uint8_t firstByte = readRegister(Registers::Enum::FIFO);
 							std::vector<uint8_t> packetBytes = readRegisters(Registers::Enum::FIFO, firstByte + 1); //Read packet + RSSI
 							packetBytes[0] = firstByte;
-							if(packetBytes.size() >= 9) packet.reset(new MAXPacket(packetBytes, true, BaseLib::HelperFunctions::getTime()));
-							else _out.printWarning("Warning: Too small packet received: " + BaseLib::HelperFunctions::getHexString(packetBytes));
+							if(packetBytes.size() > 100)
+							{
+								if(!_firstPacket)
+								{
+									_out.printWarning("Warning: Too large packet received: " + BaseLib::HelperFunctions::getHexString(packetBytes));
+									closeDevice();
+									_txMutex.unlock();
+									continue;
+								}
+							}
+							else if(packetBytes.size() >= 9) packet.reset(new MAXPacket(packetBytes, true, BaseLib::HelperFunctions::getTime()));
+							else if(!_firstPacket)
+							{
+								_out.printWarning("Warning: Too small packet received: " + BaseLib::HelperFunctions::getHexString(packetBytes));
+								closeDevice();
+								_txMutex.unlock();
+								continue;
+							}
 						}
 						else _out.printDebug("Debug: MAX! packet received, but CRC failed.");
 						if(!_sendingPending)

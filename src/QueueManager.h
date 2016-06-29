@@ -30,7 +30,7 @@
 #ifndef QUEUEMANAGER_H_
 #define QUEUEMANAGER_H_
 
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 #include "PacketQueue.h"
 #include "MAXPeer.h"
 

@@ -30,7 +30,7 @@
 #ifndef MAXCENTRAL_H_
 #define MAXCENTRAL_H_
 
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 #include "MAXPeer.h"
 #include "MAXPacket.h"
 #include "MAXMessages.h"
@@ -51,8 +51,6 @@ public:
 	//In table variables
 	int32_t getCentralAddress() { return _centralAddress; }
 	void setCentralAddress(int32_t value) { _centralAddress = value; saveVariable(1, value); }
-	std::string getPhysicalInterfaceID() { return _physicalInterfaceID; }
-	void setPhysicalInterfaceID(std::string);
 	//End
 
 	MAXCentral(ICentralEventSink* eventHandler);
@@ -109,7 +107,6 @@ protected:
 	//In table variables
 	int32_t _centralAddress = 0;
 	std::unordered_map<int32_t, uint8_t> _messageCounter;
-	std::string _physicalInterfaceID;
 	//End
 
 	bool _stopWorkerThread = false;
@@ -120,7 +117,6 @@ protected:
 	PacketManager _receivedPackets;
 	PacketManager _sentPackets;
 	std::shared_ptr<MAXMessages> _messages;
-	std::shared_ptr<BaseLib::Systems::IPhysicalInterface> _physicalInterface;
 
 	uint32_t _timeLeftInPairingMode = 0;
 	void pairingModeTimer(int32_t duration, bool debugOutput = true);

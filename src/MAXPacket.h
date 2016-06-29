@@ -30,7 +30,7 @@
 #ifndef MAXPACKET_H_
 #define MAXPACKET_H_
 
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 
 #include <map>
 

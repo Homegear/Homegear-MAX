@@ -30,7 +30,7 @@
 #ifndef CUNX_H
 #define CUNX_H
 
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 
 namespace MAX
 {
