@@ -864,7 +864,7 @@ void MAXPeer::getValuesFromPacket(std::shared_ptr<MAXPacket> packet, std::vector
 						if(frame->channel == -2)
 						{
 							startChannel = 0;
-							endChannel = (_rpcDevice->functions.end()--)->first;
+							endChannel = _rpcDevice->functions.rbegin()->first;
 						}
 						else endChannel = startChannel;
 						for(int32_t l = startChannel; l <= endChannel; l++)
