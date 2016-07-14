@@ -34,7 +34,7 @@
 namespace MAX
 {
 
-CUL::CUL(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings) : IPhysicalInterface(GD::bl, settings)
+CUL::CUL(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings) : IPhysicalInterface(GD::bl, GD::family->getFamily(), settings)
 {
 	_out.init(GD::bl);
 	_out.setPrefix(GD::out.getPrefix() + "CUL \"" + settings->id + "\": ");
