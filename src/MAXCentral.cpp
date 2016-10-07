@@ -154,9 +154,9 @@ void MAXCentral::init()
 	}
 }
 
-bool MAXCentral::isSwitch(BaseLib::Systems::LogicalDeviceType type)
+bool MAXCentral::isSwitch(uint32_t type)
 {
-	switch((DeviceType)type.type())
+	switch((DeviceType)type)
 	{
 	case DeviceType::BCTSSWPL:
 		return true;
@@ -1075,7 +1075,7 @@ std::string MAXCentral::handleCliCommand(std::string command)
 					else if(filterType == "type")
 					{
 						int32_t deviceType = BaseLib::Math::getNumber(filterValue, true);
-						if((int32_t)i->second->getDeviceType().type() != deviceType) continue;
+						if((int32_t)i->second->getDeviceType() != deviceType) continue;
 					}
 					else if(filterType == "unreach")
 					{
@@ -1097,7 +1097,7 @@ std::string MAXCentral::handleCliCommand(std::string command)
 					stringStream << name << bar
 						<< std::setw(addressWidth) << BaseLib::HelperFunctions::getHexString(i->second->getAddress(), 6) << bar
 						<< std::setw(serialWidth) << i->second->getSerialNumber() << bar
-						<< std::setw(typeWidth1) << BaseLib::HelperFunctions::getHexString(i->second->getDeviceType().type(), 4) << bar;
+						<< std::setw(typeWidth1) << BaseLib::HelperFunctions::getHexString(i->second->getDeviceType(), 4) << bar;
 					if(i->second->getRpcDevice())
 					{
 						PSupportedDevice type = i->second->getRpcDevice()->getType(i->second->getDeviceType(), i->second->getFirmwareVersion());
@@ -1181,7 +1181,7 @@ std::string MAXCentral::handleCliCommand(std::string command)
 			if(!_currentPeer) stringStream << "This peer is not paired to this central." << std::endl;
 			else
 			{
-				stringStream << "Peer with id " << std::hex << std::to_string(id) << " and device type 0x" << (int32_t)_currentPeer->getDeviceType().type() << " selected." << std::dec << std::endl;
+				stringStream << "Peer with id " << std::hex << std::to_string(id) << " and device type 0x" << (int32_t)_currentPeer->getDeviceType() << " selected." << std::dec << std::endl;
 				stringStream << "For information about the peer's commands type: \"help\"" << std::endl;
 			}
 			return stringStream.str();
@@ -1330,7 +1330,7 @@ bool MAXCentral::enqueuePendingQueues(int32_t deviceAddress, bool wait)
     return false;
 }
 
-std::shared_ptr<MAXPeer> MAXCentral::createPeer(int32_t address, int32_t firmwareVersion, BaseLib::Systems::LogicalDeviceType deviceType, std::string serialNumber, bool save)
+std::shared_ptr<MAXPeer> MAXCentral::createPeer(int32_t address, int32_t firmwareVersion, uint32_t deviceType, std::string serialNumber, bool save)
 {
 	try
 	{
@@ -1539,8 +1539,7 @@ void MAXCentral::handlePairingRequest(int32_t messageCounter, std::shared_ptr<MA
 		}
 
 		std::string serialNumber((char*)&packet->payload()->at(4), 10);
-		uint32_t rawType = (packet->payload()->at(2) << 8) + packet->payload()->at(3);
-		LogicalDeviceType deviceType(MAX_FAMILY_ID, rawType);
+		uint32_t deviceType = (packet->payload()->at(2) << 8) + packet->payload()->at(3);
 
 		std::shared_ptr<MAXPeer> peer(getPeer(packet->senderAddress()));
 		if(peer && (peer->getSerialNumber() != serialNumber || peer->getDeviceType() != deviceType))
@@ -1561,7 +1560,7 @@ void MAXCentral::handlePairingRequest(int32_t messageCounter, std::shared_ptr<MA
 				queue->peer = createPeer(packet->senderAddress(), firmwareVersion, deviceType, serialNumber, false);
 				if(!queue->peer)
 				{
-					GD::out.printWarning("Warning: Device type 0x" + GD::bl->hf.getHexString(deviceType.type(), 4) + " with firmware version 0x" + BaseLib::HelperFunctions::getHexString(firmwareVersion, 4) + " not supported. Sender address 0x" + BaseLib::HelperFunctions::getHexString(packet->senderAddress(), 6) + ".");
+					GD::out.printWarning("Warning: Device type 0x" + GD::bl->hf.getHexString(deviceType, 4) + " with firmware version 0x" + BaseLib::HelperFunctions::getHexString(firmwareVersion, 4) + " not supported. Sender address 0x" + BaseLib::HelperFunctions::getHexString(packet->senderAddress(), 6) + ".");
 					return;
 				}
 				peer = queue->peer;

@@ -60,7 +60,7 @@ public:
 	virtual void dispose(bool wait = true);
 
 	std::unordered_map<int32_t, uint8_t>* messageCounter() { return &_messageCounter; }
-	static bool isSwitch(BaseLib::Systems::LogicalDeviceType type);
+	static bool isSwitch(uint32_t type);
 
 	std::shared_ptr<MAXPeer> getPeer(int32_t address);
 	std::shared_ptr<MAXPeer> getPeer(uint64_t id);
@@ -126,7 +126,7 @@ protected:
 	std::mutex _unpairThreadMutex;
 	std::thread _unpairThread;
 
-	std::shared_ptr<MAXPeer> createPeer(int32_t address, int32_t firmwareVersion, BaseLib::Systems::LogicalDeviceType deviceType, std::string serialNumber, bool save = true);
+	std::shared_ptr<MAXPeer> createPeer(int32_t address, int32_t firmwareVersion, uint32_t deviceType, std::string serialNumber, bool save = true);
 	void deletePeer(uint64_t id);
 	std::mutex _peerInitMutex;
 	std::mutex _enqueuePendingQueuesMutex;
