@@ -84,19 +84,19 @@ enum class PacketQueueType { EMPTY, DEFAULT, CONFIG, PAIRING, PAIRINGCENTRAL, UN
 class PacketQueue
 {
     protected:
-		bool _disposing = false;
+		std::atomic_bool _disposing;
 		//I'm using list, so iterators are not invalidated
         std::list<PacketQueueEntry> _queue;
         std::shared_ptr<BaseLib::Systems::IPhysicalInterface> _physicalInterface;
         std::shared_ptr<PendingQueues> _pendingQueues;
         std::mutex _queueMutex;
         PacketQueueType _queueType;
-        bool _stopResendThread = false;
+        std::atomic_bool _stopResendThread;
         std::mutex _resendThreadMutex;
         std::thread _resendThread;
         int32_t _resendCounter = 0;
         uint32_t _resendThreadId = 0;
-        bool _stopPopWaitThread = false;
+        std::atomic_bool _stopPopWaitThread;
         uint32_t _popWaitThreadId = 0;
         std::thread _popWaitThread;
         std::thread _sendThread;
@@ -105,7 +105,7 @@ class PacketQueue
         std::mutex _startResendThreadMutex;
         std::thread _pushPendingQueueThread;
         std::mutex _pushPendingQueueThreadMutex;
-        bool _workingOnPendingQueue = false;
+        std::atomic_bool _workingOnPendingQueue;
         int64_t _lastPop = 0;
         void (MAXCentral::*_queueProcessed)() = nullptr;
         void pushPendingQueue();
@@ -121,7 +121,7 @@ class PacketQueue
         uint32_t id = 0;
         uint32_t pendingQueueID = 0;
         std::shared_ptr<int64_t> lastAction;
-        bool noSending = false;
+        std::atomic_bool noSending;
         std::shared_ptr<MAXPeer> peer;
         PacketQueueType getQueueType() { return _queueType; }
         std::list<PacketQueueEntry>* getQueue() { return &_queue; }

@@ -35,7 +35,7 @@
 namespace MAX
 {
 
-MAX::MAX(BaseLib::Obj* bl, BaseLib::Systems::DeviceFamily::IFamilyEventSink* eventHandler) : BaseLib::Systems::DeviceFamily(bl, eventHandler, MAX_FAMILY_ID, MAX_FAMILY_NAME)
+MAX::MAX(BaseLib::SharedObjects* bl, BaseLib::Systems::DeviceFamily::IFamilyEventSink* eventHandler) : BaseLib::Systems::DeviceFamily(bl, eventHandler, MAX_FAMILY_ID, MAX_FAMILY_NAME)
 {
 	if(!bl || !eventHandler)
 	{

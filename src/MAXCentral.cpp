@@ -130,6 +130,10 @@ void MAXCentral::init()
 		_messages = std::shared_ptr<MAXMessages>(new MAXMessages());
 
 		_messageCounter[0] = 0; //Broadcast message counter
+		_stopWorkerThread = false;
+		_pairing = false;
+		_stopPairingModeThread = false;
+		_timeLeftInPairingMode = 0;
 
 		setUpMAXMessages();
 
