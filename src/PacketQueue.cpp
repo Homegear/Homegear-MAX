@@ -40,14 +40,16 @@ PacketQueue::PacketQueue()
 	_queueType = PacketQueueType::EMPTY;
 	_lastPop = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	_physicalInterface = GD::defaultPhysicalInterface;
+	_disposing = false;
+	_stopResendThread = false;
+	_stopPopWaitThread = false;
+	_workingOnPendingQueue = false;
+	noSending = false;
 }
 
-PacketQueue::PacketQueue(std::shared_ptr<BaseLib::Systems::IPhysicalInterface> physicalInterface)
+PacketQueue::PacketQueue(std::shared_ptr<BaseLib::Systems::IPhysicalInterface> physicalInterface) : PacketQueue()
 {
-	_queueType = PacketQueueType::EMPTY;
-	_lastPop = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	if(physicalInterface) _physicalInterface = physicalInterface;
-	else _physicalInterface = GD::defaultPhysicalInterface;
 }
 
 PacketQueue::PacketQueue(std::shared_ptr<BaseLib::Systems::IPhysicalInterface> physicalInterface, PacketQueueType queueType) : PacketQueue(physicalInterface)

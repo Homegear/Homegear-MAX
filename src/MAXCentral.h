@@ -109,18 +109,18 @@ protected:
 	std::unordered_map<int32_t, uint8_t> _messageCounter;
 	//End
 
-	bool _stopWorkerThread = false;
+	std::atomic_bool _stopWorkerThread;
 	std::thread _workerThread;
 
-	bool _pairing = false;
+	std::atomic_bool _pairing;
 	QueueManager _queueManager;
 	PacketManager _receivedPackets;
 	PacketManager _sentPackets;
 	std::shared_ptr<MAXMessages> _messages;
 
-	uint32_t _timeLeftInPairingMode = 0;
+	std::atomic<uint32_t> _timeLeftInPairingMode;
 	void pairingModeTimer(int32_t duration, bool debugOutput = true);
-	bool _stopPairingModeThread = false;
+	std::atomic_bool _stopPairingModeThread;
 	std::mutex _pairingModeThreadMutex;
 	std::thread _pairingModeThread;
 	std::mutex _unpairThreadMutex;

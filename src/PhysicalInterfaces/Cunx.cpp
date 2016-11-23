@@ -184,6 +184,8 @@ void Cunx::reconnect()
 		_socket->close();
 		_out.printDebug("Connecting to CUNX device with hostname " + _settings->host + " on port " + _settings->port + "...");
 		_socket->open();
+		_hostname = _settings->host;
+		_ipAddress = _socket->getIpAddress();
 		_stopped = false;
 		send("X21\nZr\n");
 		_out.printInfo("Connected to CUNX device with hostname " + _settings->host + " on port " + _settings->port + ".");

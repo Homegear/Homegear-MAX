@@ -46,7 +46,6 @@ class Cunx : public BaseLib::Systems::IPhysicalInterface
         virtual bool isOpen() { return _socket->connected(); }
     protected:
         BaseLib::Output _out;
-        std::string _hostname;
         std::string _port;
         std::unique_ptr<BaseLib::TcpSocket> _socket;
 

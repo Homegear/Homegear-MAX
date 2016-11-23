@@ -41,7 +41,7 @@ class MAXCentral;
 class MAX : public BaseLib::Systems::DeviceFamily
 {
 public:
-	MAX(BaseLib::Obj* bl, BaseLib::Systems::DeviceFamily::IFamilyEventSink* eventHandler);
+	MAX(BaseLib::SharedObjects* bl, BaseLib::Systems::DeviceFamily::IFamilyEventSink* eventHandler);
 	virtual ~MAX();
 	virtual void dispose();
 

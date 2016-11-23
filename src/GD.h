@@ -44,7 +44,7 @@ class GD
 public:
 	virtual ~GD();
 
-	static BaseLib::Obj* bl;
+	static BaseLib::SharedObjects* bl;
 	static MAX* family;
 	static std::map<std::string, std::shared_ptr<BaseLib::Systems::IPhysicalInterface>> physicalInterfaces;
 	static std::shared_ptr<BaseLib::Systems::IPhysicalInterface> defaultPhysicalInterface;
