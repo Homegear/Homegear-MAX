@@ -43,7 +43,7 @@ class COC : public BaseLib::Systems::IPhysicalInterface, public BaseLib::SerialR
         void startListening();
         void stopListening();
         void sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet);
-        virtual void setup(int32_t userID, int32_t groupID);
+        virtual void setup(int32_t userID, int32_t groupID, bool setPermissions);
         bool isOpen() { return _socket && _socket->isOpen(); }
     protected:
         // {{{ Event handling

@@ -437,11 +437,11 @@ void CUL::listen()
     }
 }
 
-void CUL::setup(int32_t userID, int32_t groupID)
+void CUL::setup(int32_t userID, int32_t groupID, bool setPermissions)
 {
     try
     {
-    	setDevicePermission(userID, groupID);
+    	if(setPermissions) setDevicePermission(userID, groupID);
     }
     catch(const std::exception& ex)
     {

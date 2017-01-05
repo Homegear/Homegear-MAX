@@ -198,7 +198,7 @@ public:
 	void startListening();
 	void stopListening();
 	void sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet);
-	virtual void setup(int32_t userID, int32_t groupID);
+	virtual void setup(int32_t userID, int32_t groupID, bool setPermissions);
 protected:
 	BaseLib::Output _out;
 	std::vector<uint8_t> _config;
