@@ -122,6 +122,9 @@ void COC::writeToDevice(std::string data)
     		return;
     	}
         _socket->writeLine(data);
+
+        bool wor = data.at(1) == 's';
+        if(wor) std::this_thread::sleep_for(std::chrono::milliseconds(1100));
     }
     catch(const std::exception& ex)
     {

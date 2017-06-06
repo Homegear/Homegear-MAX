@@ -309,7 +309,8 @@ void CUL::writeToDevice(std::string data, bool printSending)
         if(_fileDescriptor->descriptor == -1) throw(BaseLib::Exception("Couldn't write to CUL device, because the file descriptor is not valid: " + _settings->device));
         int32_t bytesWritten = 0;
         int32_t i;
-        if(_bl->debugLevel > 3 && printSending) _out.printInfo("Info: Sending (" + _settings->id + ", WOR: " + (data.at(1) == 's' ? "yes" : "no") + "): " + data.substr(2, data.size() - 3));
+        bool wor = data.at(1) == 's';
+        if(_bl->debugLevel > 3 && printSending) _out.printInfo("Info: Sending (" + _settings->id + ", WOR: " + (wor ? "yes" : "no") + "): " + data.substr(2, data.size() - 3));
         _sendMutex.lock();
         while(bytesWritten < (signed)data.length())
         {
@@ -321,6 +322,7 @@ void CUL::writeToDevice(std::string data, bool printSending)
             }
             bytesWritten += i;
         }
+        if(wor) std::this_thread::sleep_for(std::chrono::milliseconds(1100));
     }
     catch(const std::exception& ex)
     {
