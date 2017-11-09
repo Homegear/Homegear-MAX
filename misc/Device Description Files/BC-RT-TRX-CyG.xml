@@ -383,8 +383,9 @@
 					<parameterId>PARTY_STOP_DAY</parameterId>
 				</element>
 				<element>
-					<index>11.4</index>
-					<size>0.4</size>
+					<index>11.5</index>
+					<size>0.3</size>
+					<index2Offset>1</index2Offset>
 					<parameterId>PARTY_STOP_MONTH</parameterId>
 				</element>
 				<element>
