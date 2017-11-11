@@ -3241,7 +3241,7 @@
 					<defaultValue>1</defaultValue>
 				</logicalInteger>
 				<physicalInteger groupId="PARTY_STOP_MONTH">
-					<size>0.1</size>
+					<size>0.4</size>
 					<operationType>command</operationType>
 				</physicalInteger>
 				<packets>
