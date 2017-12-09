@@ -1518,6 +1518,7 @@ PVariable MAXPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel
 			else if((*i)->parameterId == rpcParameter->physical->groupId)
 			{
 				std::vector<uint8_t> data = valuesCentral[channel][valueKey].getBinaryData();
+                if((*i)->index2Offset != -1 && data.size() == 1) data.at(0) = data.at(0) >> (*i)->index2Offset;
 				packet->setPosition((*i)->index, (*i)->size, data);
 			}
 			//Search for all other parameters
@@ -1530,6 +1531,7 @@ PVariable MAXPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel
 					if((*i)->parameterId == j->second.rpcParameter->physical->groupId)
 					{
 						std::vector<uint8_t> data = j->second.getBinaryData();
+                        if((*i)->index2Offset != -1 && data.size() == 1) data.at(0) = data.at(0) >> (*i)->index2Offset;
 						packet->setPosition((*i)->index, (*i)->size, data);
 						paramFound = true;
 						break;
