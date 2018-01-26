@@ -98,7 +98,7 @@ std::shared_ptr<BaseLib::Systems::ICentral> MAX::initializeCentral(uint32_t devi
 	return std::shared_ptr<MAXCentral>(new MAXCentral(deviceId, serialNumber, address, this));
 }
 
-PVariable MAX::getPairingMethods()
+PVariable MAX::getPairingInfo()
 {
 	try
 	{
