@@ -36,7 +36,7 @@
 namespace MAX
 {
 
-TICC1100::TICC1100(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings) : IPhysicalInterface(GD::bl, GD::family->getFamily(), settings)
+TICC1100::TICC1100(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings) : IMaxInterface(settings)
 {
 	try
 	{

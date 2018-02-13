@@ -27,39 +27,26 @@
  * files in the program, then also delete it here.
  */
 
-#ifndef COC_H
-#define COC_H
-
-#include <homegear-base/BaseLib.h>
-
 #include "IMaxInterface.h"
+#include "../GD.h"
 
 namespace MAX
 {
 
-class COC : public IMaxInterface, public BaseLib::SerialReaderWriter::ISerialReaderWriterEventSink
+IMaxInterface::IMaxInterface(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings) : IPhysicalInterface(GD::bl, GD::family->getFamily(), settings)
 {
-    public:
-		COC(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings);
-        virtual ~COC();
-        void startListening();
-        void stopListening();
-        void sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet);
-        virtual void setup(int32_t userID, int32_t groupID, bool setPermissions);
-        bool isOpen() { return _socket && _socket->isOpen(); }
-    protected:
-        // {{{ Event handling
-        BaseLib::PEventHandler _eventHandlerSelf;
-        virtual void lineReceived(const std::string& data);
-        // }}}
+    _bl = GD::bl;
 
-        BaseLib::Output _out;
-        std::shared_ptr<BaseLib::SerialReaderWriter> _socket;
-        std::string stackPrefix;
+    if(settings->listenThreadPriority == -1)
+    {
+        settings->listenThreadPriority = 0;
+        settings->listenThreadPolicy = SCHED_OTHER;
+    }
+}
 
-        void writeToDevice(std::string data);
-    private:
-};
+IMaxInterface::~IMaxInterface()
+{
 
 }
-#endif
+
+}

@@ -42,7 +42,7 @@ set(SOURCE_FILES
         src/PendingQueues.h
         src/QueueManager.cpp
         src/QueueManager.h
-        config.h)
+        config.h src/PhysicalInterfaces/IMaxInterface.cpp src/PhysicalInterfaces/IMaxInterface.h)
 
 add_custom_target(homegear-gateway COMMAND ../makeDebug.sh SOURCES ${SOURCE_FILES})
 

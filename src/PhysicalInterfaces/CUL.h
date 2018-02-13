@@ -32,6 +32,8 @@
 
 #include <homegear-base/BaseLib.h>
 
+#include "IMaxInterface.h"
+
 #include <thread>
 #include <iostream>
 #include <fstream>
@@ -50,7 +52,7 @@
 namespace MAX
 {
 
-class CUL : public BaseLib::Systems::IPhysicalInterface
+class CUL : public IMaxInterface
 {
     public:
 		CUL(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings);

@@ -31,11 +31,12 @@
 #define CUNX_H
 
 #include <homegear-base/BaseLib.h>
+#include "IMaxInterface.h"
 
 namespace MAX
 {
 
-class Cunx : public BaseLib::Systems::IPhysicalInterface
+class Cunx : public IMaxInterface
 {
     public:
 		Cunx(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings);
