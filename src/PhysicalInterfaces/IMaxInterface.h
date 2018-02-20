@@ -27,39 +27,29 @@
  * files in the program, then also delete it here.
  */
 
-#ifndef COC_H
-#define COC_H
+#ifndef HOMEGEAR_MAX_IMAXINTERFACE_H
+#define HOMEGEAR_MAX_IMAXINTERFACE_H
 
 #include <homegear-base/BaseLib.h>
-
-#include "IMaxInterface.h"
 
 namespace MAX
 {
 
-class COC : public IMaxInterface, public BaseLib::SerialReaderWriter::ISerialReaderWriterEventSink
+class IMaxInterface : public BaseLib::Systems::IPhysicalInterface
 {
-    public:
-		COC(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings);
-        virtual ~COC();
-        void startListening();
-        void stopListening();
-        void sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet);
-        virtual void setup(int32_t userID, int32_t groupID, bool setPermissions);
-        bool isOpen() { return _socket && _socket->isOpen(); }
-    protected:
-        // {{{ Event handling
-        BaseLib::PEventHandler _eventHandlerSelf;
-        virtual void lineReceived(const std::string& data);
-        // }}}
+public:
+    IMaxInterface(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings);
+    virtual ~IMaxInterface();
 
-        BaseLib::Output _out;
-        std::shared_ptr<BaseLib::SerialReaderWriter> _socket;
-        std::string stackPrefix;
+    virtual void startListening() {}
+    virtual void stopListening() {}
 
-        void writeToDevice(std::string data);
-    private:
+    virtual void sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet) {}
+protected:
+    BaseLib::SharedObjects* _bl = nullptr;
+    BaseLib::Output _out;
 };
 
 }
-#endif
+
+#endif //HOMEGEAR_MAX_IMAXINTERFACE_H

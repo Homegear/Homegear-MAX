@@ -34,7 +34,7 @@
 namespace MAX
 {
 
-COC::COC(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings) : IPhysicalInterface(GD::bl, GD::family->getFamily(), settings)
+COC::COC(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings) : IMaxInterface(settings)
 {
 	_out.init(GD::bl);
 	_out.setPrefix(GD::out.getPrefix() + "COC \"" + settings->id + "\": ");

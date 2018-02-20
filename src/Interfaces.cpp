@@ -50,10 +50,9 @@ void Interfaces::create()
 {
 	try
 	{
-
 		for(std::map<std::string, Systems::PPhysicalInterfaceSettings>::iterator i = _physicalInterfaceSettings.begin(); i != _physicalInterfaceSettings.end(); ++i)
 		{
-			std::shared_ptr<BaseLib::Systems::IPhysicalInterface> device;
+			std::shared_ptr<IMaxInterface> device;
 			if(!i->second) continue;
 			GD::out.printDebug("Debug: Creating physical device. Type defined in max.conf is: " + i->second->type);
 			if(i->second->type == "cul") device.reset(new CUL(i->second));
@@ -71,6 +70,7 @@ void Interfaces::create()
 				if(i->second->isDefault || !GD::defaultPhysicalInterface) GD::defaultPhysicalInterface = device;
 			}
 		}
+		if(!GD::defaultPhysicalInterface) GD::defaultPhysicalInterface = std::make_shared<IMaxInterface>(std::make_shared<BaseLib::Systems::PhysicalInterfaceSettings>());
 	}
 	catch(const std::exception& ex)
 	{

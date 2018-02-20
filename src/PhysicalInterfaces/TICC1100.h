@@ -31,6 +31,7 @@
 #define TICC1100_H_
 
 #include "../../config.h"
+#include "IMaxInterface.h"
 
 #ifdef SPIINTERFACES
 
@@ -59,7 +60,7 @@ using namespace BaseLib::Systems;
 
 namespace MAX
 {
-class TICC1100 : public IPhysicalInterface
+class TICC1100 : public IMaxInterface
 {
 public:
 	struct CommandStrobes
