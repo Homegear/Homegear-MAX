@@ -708,7 +708,8 @@ void MAXCentral::deletePeer(uint64_t id)
 			channels->arrayValue->push_back(PVariable(new Variable(i->first)));
 		}
 
-		raiseRPCDeleteDevices(deviceAddresses, deviceInfo);
+        std::vector<uint64_t> deletedIds{ id };
+		raiseRPCDeleteDevices(deletedIds, deviceAddresses, deviceInfo);
 
 		{
 			std::lock_guard<std::mutex> peersGuard(_peersMutex);
@@ -1513,7 +1514,8 @@ void MAXCentral::handleAck(int32_t messageCounter, std::shared_ptr<MAXPacket> pa
 					setInstallMode(nullptr, false, -1, nullptr, false);
 					PVariable deviceDescriptions(new Variable(VariableType::tArray));
 					deviceDescriptions->arrayValue = queue->peer->getDeviceDescriptions(nullptr, true, std::map<std::string, bool>());
-					raiseRPCNewDevices(deviceDescriptions);
+                    std::vector<uint64_t> newIds{ queue->peer->getID() };
+					raiseRPCNewDevices(newIds, deviceDescriptions);
 					GD::out.printMessage("Added peer 0x" + BaseLib::HelperFunctions::getHexString(queue->peer->getAddress()) + ".");
 					addHomegearFeatures(queue->peer);
 				}
@@ -1882,60 +1884,6 @@ PVariable MAXCentral::deleteDevice(BaseLib::PRpcClientInfo clientInfo, uint64_t 
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MAXCentral::getDeviceInfo(BaseLib::PRpcClientInfo clientInfo, uint64_t id, std::map<std::string, bool> fields)
-{
-	try
-	{
-		if(id > 0)
-		{
-			std::shared_ptr<MAXPeer> peer(getPeer(id));
-			if(!peer) return Variable::createError(-2, "Unknown device.");
-
-			return peer->getDeviceInfo(clientInfo, fields);
-		}
-		else
-		{
-			PVariable array(new Variable(VariableType::tArray));
-
-			std::vector<std::shared_ptr<MAXPeer>> peers;
-			//Copy all peers first, because listDevices takes very long and we don't want to lock _peersMutex too long
-			_peersMutex.lock();
-			for(std::map<uint64_t, std::shared_ptr<BaseLib::Systems::Peer>>::iterator i = _peersById.begin(); i != _peersById.end(); ++i)
-			{
-				peers.push_back(std::dynamic_pointer_cast<MAXPeer>(i->second));
-			}
-			_peersMutex.unlock();
-
-			for(std::vector<std::shared_ptr<MAXPeer>>::iterator i = peers.begin(); i != peers.end(); ++i)
-			{
-				//listDevices really needs a lot of resources, so wait a little bit after each device
-				std::this_thread::sleep_for(std::chrono::milliseconds(3));
-				PVariable info = (*i)->getDeviceInfo(clientInfo, fields);
-				if(!info) continue;
-				array->arrayValue->push_back(info);
-			}
-
-			return array;
-		}
-	}
-	catch(const std::exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-        _peersMutex.unlock();
-    }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-        _peersMutex.unlock();
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-        _peersMutex.unlock();
-    }
-    return Variable::createError(-32500, "Unknown application error.");
-}
-
 std::shared_ptr<Variable> MAXCentral::getInstallMode(BaseLib::PRpcClientInfo clientInfo)
 {
 	try
@@ -1973,7 +1921,7 @@ PVariable MAXCentral::putParamset(BaseLib::PRpcClientInfo clientInfo, std::strin
 			}
 			else remoteID = remotePeer->getID();
 		}
-		PVariable result = peer->putParamset(clientInfo, channel, type, remoteID, remoteChannel, paramset);
+		PVariable result = peer->putParamset(clientInfo, channel, type, remoteID, remoteChannel, paramset, false);
 		if(result->errorStruct) return result;
 		int32_t waitIndex = 0;
 		while(_queueManager.get(peer->getAddress()) && waitIndex < 50)
@@ -1999,13 +1947,13 @@ PVariable MAXCentral::putParamset(BaseLib::PRpcClientInfo clientInfo, std::strin
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MAXCentral::putParamset(BaseLib::PRpcClientInfo clientInfo, uint64_t peerID, int32_t channel, ParameterGroup::Type::Enum type, uint64_t remoteID, int32_t remoteChannel, PVariable paramset)
+PVariable MAXCentral::putParamset(BaseLib::PRpcClientInfo clientInfo, uint64_t peerID, int32_t channel, ParameterGroup::Type::Enum type, uint64_t remoteID, int32_t remoteChannel, PVariable paramset, bool checkAcls)
 {
 	try
 	{
 		std::shared_ptr<MAXPeer> peer(getPeer(peerID));
 		if(!peer) return Variable::createError(-2, "Unknown device.");
-		PVariable result = peer->putParamset(clientInfo, channel, type, remoteID, remoteChannel, paramset);
+		PVariable result = peer->putParamset(clientInfo, channel, type, remoteID, remoteChannel, paramset, checkAcls);
 		if(result->errorStruct) return result;
 		int32_t waitIndex = 0;
 		while(_queueManager.get(peer->getAddress()) && waitIndex < 50)
