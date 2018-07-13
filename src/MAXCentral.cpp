@@ -1838,36 +1838,44 @@ PVariable MAXCentral::deleteDevice(BaseLib::PRpcClientInfo clientInfo, std::stri
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MAXCentral::deleteDevice(BaseLib::PRpcClientInfo clientInfo, uint64_t peerID, int32_t flags)
+PVariable MAXCentral::deleteDevice(BaseLib::PRpcClientInfo clientInfo, uint64_t peerId, int32_t flags)
 {
 	try
 	{
-		if(peerID == 0) return Variable::createError(-2, "Unknown device.");
-		if(peerID & 0x80000000) return Variable::createError(-2, "Cannot delete virtual device.");
-		std::shared_ptr<MAXPeer> peer = getPeer(peerID);
-		if(!peer) return PVariable(new Variable(VariableType::tVoid));
-		uint64_t id = peer->getID();
+		if(peerId == 0) return Variable::createError(-2, "Unknown device.");
+		if(peerId & 0x80000000) return Variable::createError(-2, "Cannot delete virtual device.");
+
+		int32_t address = 0;
+
+        {
+            std::shared_ptr<MAXPeer> peer = getPeer(peerId);
+            if(!peer) return PVariable(new Variable(VariableType::tVoid));
+			address = peer->getAddress();
+        }
 
 		bool defer = flags & 0x04;
 		bool force = flags & 0x02;
-		_unpairThreadMutex.lock();
-		_bl->threadManager.join(_unpairThread);
-		_bl->threadManager.start(_unpairThread, false, &MAXCentral::reset, this, id);
-		_unpairThreadMutex.unlock();
+
+        {
+            std::lock_guard<std::mutex> unpairGuard(_unpairThreadMutex);
+            _bl->threadManager.join(_unpairThread);
+            _bl->threadManager.start(_unpairThread, false, &MAXCentral::reset, this, peerId);
+        }
+
 		//Force delete
-		if(force) deletePeer(peer->getID());
+		if(force) deletePeer(peerId);
 		else
 		{
 			int32_t waitIndex = 0;
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
-			while(_queueManager.get(peer->getAddress()) && peerExists(id) && waitIndex < 20)
+			while(_queueManager.get(address) && peerExists(peerId) && waitIndex < 20)
 			{
 				std::this_thread::sleep_for(std::chrono::milliseconds(100));
 				waitIndex++;
 			}
 		}
 
-		if(!defer && !force && peerExists(id)) return Variable::createError(-1, "No answer from device.");
+		if(!defer && !force && peerExists(peerId)) return Variable::createError(-1, "No answer from device.");
 
 		return PVariable(new Variable(VariableType::tVoid));
 	}
