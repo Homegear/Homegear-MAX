@@ -44,6 +44,7 @@ MAX::MAX(BaseLib::SharedObjects* bl, BaseLib::Systems::DeviceFamily::IFamilyEven
 	}
 	GD::bl = _bl;
 	GD::family = this;
+    GD::settings = _settings;
 	GD::out.init(bl);
 	GD::out.setPrefix("Module MAX: ");
 	GD::out.printDebug("Debug: Loading module...");
@@ -95,6 +96,25 @@ void MAX::createCentral()
 
 std::shared_ptr<BaseLib::Systems::ICentral> MAX::initializeCentral(uint32_t deviceId, int32_t address, std::string serialNumber)
 {
+	int32_t addressFromSettings = 0;
+	std::string addressHex = GD::settings->getString("centraladdress");
+	if(!addressHex.empty()) addressFromSettings = BaseLib::Math::getNumber(addressHex);
+	if(addressFromSettings != 0)
+	{
+		std::shared_ptr<MAXCentral> central(new MAXCentral(deviceId, serialNumber, addressFromSettings, this));
+		if(address != addressFromSettings) central->save(true);
+		GD::out.printInfo("Info: Central address set to 0x" + BaseLib::HelperFunctions::getHexString(addressFromSettings, 6) + ".");
+		return central;
+	}
+	if(address == 0)
+	{
+		address = (0xfd << 16) + BaseLib::HelperFunctions::getRandomNumber(0, 0xFFFF);
+		std::shared_ptr<MAXCentral> central(new MAXCentral(deviceId, serialNumber, address, this));
+		central->save(true);
+		GD::out.printInfo("Info: Central address set to 0x" + BaseLib::HelperFunctions::getHexString(address, 6) + ".");
+		return central;
+	}
+	GD::out.printInfo("Info: Central address set to 0x" + BaseLib::HelperFunctions::getHexString(address, 6) + ".");
 	return std::shared_ptr<MAXCentral>(new MAXCentral(deviceId, serialNumber, address, this));
 }
 
