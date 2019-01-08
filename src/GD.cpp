@@ -33,6 +33,7 @@ namespace MAX
 {
 	BaseLib::SharedObjects* GD::bl = nullptr;
 	MAX* GD::family = nullptr;
+	std::shared_ptr<Systems::FamilySettings> GD::settings;
 	std::map<std::string, std::shared_ptr<BaseLib::Systems::IPhysicalInterface>> GD::physicalInterfaces;
 	std::shared_ptr<BaseLib::Systems::IPhysicalInterface> GD::defaultPhysicalInterface;
 	BaseLib::Output GD::out;

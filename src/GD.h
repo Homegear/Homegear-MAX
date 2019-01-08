@@ -46,6 +46,7 @@ public:
 
 	static BaseLib::SharedObjects* bl;
 	static MAX* family;
+	static std::shared_ptr<Systems::FamilySettings> settings;
 	static std::map<std::string, std::shared_ptr<BaseLib::Systems::IPhysicalInterface>> physicalInterfaces;
 	static std::shared_ptr<BaseLib::Systems::IPhysicalInterface> defaultPhysicalInterface;
 	static BaseLib::Output out;
