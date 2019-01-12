@@ -36,7 +36,7 @@
 class MAXFactory : BaseLib::Systems::SystemFactory
 {
 public:
-	virtual BaseLib::Systems::DeviceFamily* createDeviceFamily(BaseLib::SharedObjects* bl, BaseLib::Systems::DeviceFamily::IFamilyEventSink* eventHandler);
+	virtual BaseLib::Systems::DeviceFamily* createDeviceFamily(BaseLib::SharedObjects* bl, BaseLib::Systems::IFamilyEventSink* eventHandler);
 };
 
 extern "C" std::string getVersion();
