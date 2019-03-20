@@ -943,7 +943,6 @@ void TICC1100::mainThread()
 								if(!_firstPacket)
 								{
 									_out.printWarning("Warning: Too large packet received: " + BaseLib::HelperFunctions::getHexString(packetBytes));
-									closeDevice();
 									_txMutex.unlock();
 									continue;
 								}
@@ -952,7 +951,6 @@ void TICC1100::mainThread()
 							else if(!_firstPacket)
 							{
 								_out.printWarning("Warning: Too small packet received: " + BaseLib::HelperFunctions::getHexString(packetBytes));
-								closeDevice();
 								_txMutex.unlock();
 								continue;
 							}
