@@ -10,6 +10,8 @@ set(SOURCE_FILES
         src/PhysicalInterfaces/CUL.h
         src/PhysicalInterfaces/Cunx.cpp
         src/PhysicalInterfaces/Cunx.h
+        src/PhysicalInterfaces/HomegearGateway.cpp
+        src/PhysicalInterfaces/HomegearGateway.h
         src/PhysicalInterfaces/TICC1100.cpp
         src/PhysicalInterfaces/TICC1100.h
         src/delegate.hpp

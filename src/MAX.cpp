@@ -152,12 +152,58 @@ PVariable MAX::getPairingInfo()
 		//{{{ interfaces
 		PVariable interfaces = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 
-		//{{{ CUL
+		//{{{ Gateway
 		auto interface = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		interface->structValue->emplace("name", std::make_shared<BaseLib::Variable>(std::string("Homegear Gateway")));
+		interface->structValue->emplace("ipDevice", std::make_shared<BaseLib::Variable>(true));
+
+		auto field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(0));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.pairingInfo.id")));
+		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
+		interface->structValue->emplace("id", field);
+
+		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(1));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.pairingInfo.hostname")));
+		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
+		interface->structValue->emplace("host", field);
+
+		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(2));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.pairingInfo.password")));
+		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
+		interface->structValue->emplace("password", field);
+
+		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
+		field->structValue->emplace("const", std::make_shared<BaseLib::Variable>(std::string("2017")));
+		interface->structValue->emplace("port", field);
+
+		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
+		field->structValue->emplace("const", std::make_shared<BaseLib::Variable>(std::string("/etc/homegear/ca/cacert.pem")));
+		interface->structValue->emplace("caFile", field);
+
+		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
+		field->structValue->emplace("const", std::make_shared<BaseLib::Variable>(std::string("/etc/homegear/ca/certs/gateway-client.crt")));
+		interface->structValue->emplace("certFile", field);
+
+		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
+		field->structValue->emplace("const", std::make_shared<BaseLib::Variable>(std::string("/etc/homegear/ca/private/gateway-client.key")));
+		interface->structValue->emplace("keyFile", field);
+
+		interfaces->structValue->emplace("homegeargateway", interface);
+		//}}}
+
+		//{{{ CUL
+		interface = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		interface->structValue->emplace("name", std::make_shared<BaseLib::Variable>(std::string("CUL")));
 		interface->structValue->emplace("ipDevice", std::make_shared<BaseLib::Variable>(false));
 
-		auto field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(0));
 		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.id")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
