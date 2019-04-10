@@ -186,7 +186,7 @@ void HomegearGateway::listen()
                     catch(BaseLib::Rpc::BinaryRpcException& ex)
                     {
                         _binaryRpc->reset();
-                        _out.printError("Error processing packet: " + ex.what());
+                        _out.printError("Error processing packet: " + std::string(ex.what()));
                     }
                 }
             }
@@ -290,7 +290,7 @@ PVariable HomegearGateway::invoke(std::string methodName, PArray& parameters)
             }
             catch(BaseLib::SocketOperationException& ex)
             {
-                _out.printError("Error: " + ex.what());
+                _out.printError("Error: " + std::string(ex.what()));
                 if(i == 5) return BaseLib::Variable::createError(-32500, ex.what());
                 _tcpSocket->open();
             }
