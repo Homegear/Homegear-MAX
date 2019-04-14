@@ -31,6 +31,8 @@
 #include "MAXCentral.h"
 #include "GD.h"
 
+#include <iomanip>
+
 namespace MAX
 {
 std::shared_ptr<BaseLib::Systems::ICentral> MAXPeer::getCentral()

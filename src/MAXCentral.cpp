@@ -31,6 +31,8 @@
 #include "MAXDeviceTypes.h"
 #include "GD.h"
 
+#include <iomanip>
+
 namespace MAX {
 
 MAXCentral::MAXCentral(ICentralEventSink* eventHandler) : BaseLib::Systems::ICentral(MAX_FAMILY_ID, GD::bl, eventHandler)

@@ -30,6 +30,8 @@
 #include "MAXPacket.h"
 #include "GD.h"
 
+#include <iomanip>
+
 namespace MAX
 {
 MAXPacket::MAXPacket()
