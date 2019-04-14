@@ -305,14 +305,14 @@ bool MAXCentral::onPacketReceived(std::string& senderID, std::shared_ptr<BaseLib
 		if(_disposing) return false;
 		std::shared_ptr<MAXPacket> maxPacket(std::dynamic_pointer_cast<MAXPacket>(packet));
 		if(!maxPacket) return false;
-		if(GD::bl->debugLevel >= 4) std::cout << BaseLib::HelperFunctions::getTimeString(maxPacket->timeReceived()) << " MAX packet received (" + senderID + (maxPacket->rssiDevice() ? ", RSSI: 0x" + _bl->hf.getHexString(maxPacket->rssiDevice(), 2) : "") + "): " + maxPacket->hexString() << std::endl;
+		if(GD::bl->debugLevel >= 4) std::cout << BaseLib::HelperFunctions::getTimeString(maxPacket->getTimeReceived()) << " MAX packet received (" + senderID + (maxPacket->rssiDevice() ? ", RSSI: 0x" + _bl->hf.getHexString(maxPacket->rssiDevice(), 2) : "") + "): " + maxPacket->hexString() << std::endl;
 		if(maxPacket->senderAddress() == _address) //Packet spoofed
 		{
 			std::shared_ptr<MAXPeer> peer(getPeer(maxPacket->destinationAddress()));
 			if(peer)
 			{
 				if(senderID != peer->getPhysicalInterfaceID()) return true; //Packet we sent was received by another interface
-				GD::out.printWarning("Warning: Central address of packet to peer " + std::to_string(peer->getID()) + " was spoofed. Packet was: " + packet->hexString());
+				GD::out.printWarning("Warning: Central address of packet to peer " + std::to_string(peer->getID()) + " was spoofed. Packet was: " + maxPacket->hexString());
 				peer->serviceMessages->set("CENTRAL_ADDRESS_SPOOFED", 1, 0);
 				std::shared_ptr<std::vector<std::string>> valueKeys(new std::vector<std::string> { "CENTRAL_ADDRESS_SPOOFED" });
 				std::shared_ptr<std::vector<PVariable>> values(new std::vector<PVariable> { PVariable(new Variable((int32_t)1)) });
@@ -327,7 +327,7 @@ bool MAXCentral::onPacketReceived(std::string& senderID, std::shared_ptr<BaseLib
 		if(physicalInterface->getID() != senderID) return true;
 
 		bool handled = false;
-		if(_receivedPackets.set(maxPacket->senderAddress(), maxPacket, maxPacket->timeReceived())) handled = true;
+		if(_receivedPackets.set(maxPacket->senderAddress(), maxPacket, maxPacket->getTimeReceived())) handled = true;
 		std::shared_ptr<MAXMessage> message = _messages->find(maxPacket);
 		if(message && message->checkAccess(maxPacket, _queueManager.get(maxPacket->senderAddress())))
 		{
@@ -1414,7 +1414,7 @@ void MAXCentral::handleAck(int32_t messageCounter, std::shared_ptr<MAXPacket> pa
 		std::shared_ptr<PacketQueue> queue = _queueManager.get(packet->senderAddress());
 		if(!queue) return;
 		std::shared_ptr<MAXPacket> sentPacket(_sentPackets.get(packet->senderAddress()));
-		if(packet->payload()->size() > 1 && (packet->payload()->at(1) & 0x80))
+		if(packet->payload().size() > 1 && (packet->payload().at(1) & 0x80))
 		{
 			if(_bl->debugLevel >= 2)
 			{
@@ -1503,14 +1503,14 @@ void MAXCentral::handlePairingRequest(int32_t messageCounter, std::shared_ptr<MA
 			GD::out.printError("Error: Pairing packet rejected, because this peer is already paired to another central.");
 			return;
 		}
-		if(packet->payload()->size() < 14)
+		if(packet->payload().size() < 14)
 		{
 			GD::out.printError("Error: Pairing packet is too small (payload size has to be at least 14).");
 			return;
 		}
 
-		std::string serialNumber((char*)&packet->payload()->at(4), 10);
-		uint32_t deviceType = (packet->payload()->at(2) << 8) + packet->payload()->at(3);
+		std::string serialNumber((char*)&packet->payload().at(4), 10);
+		uint32_t deviceType = (packet->payload().at(2) << 8) + packet->payload().at(3);
 
 		std::shared_ptr<MAXPeer> peer(getPeer(packet->senderAddress()));
 		if(peer && (peer->getSerialNumber() != serialNumber || peer->getDeviceType() != deviceType))
@@ -1526,7 +1526,7 @@ void MAXCentral::handlePairingRequest(int32_t messageCounter, std::shared_ptr<MA
 
 			if(!peer)
 			{
-				int32_t firmwareVersion = (packet->payload()->at(0) << 8) + packet->payload()->at(1);
+				int32_t firmwareVersion = (packet->payload().at(0) << 8) + packet->payload().at(1);
 				//Do not save here
 				queue->peer = createPeer(packet->senderAddress(), firmwareVersion, deviceType, serialNumber, false);
 				if(!queue->peer)

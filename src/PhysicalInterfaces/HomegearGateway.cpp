@@ -248,7 +248,7 @@ void HomegearGateway::sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packe
         auto result = invoke("sendPacket", parameters);
         if(result->errorStruct)
         {
-            _out.printError("Error sending packet " + packet->hexString() + ": " + result->structValue->at("faultString")->stringValue);
+            _out.printError("Error sending packet " + maxPacket->hexString() + ": " + result->structValue->at("faultString")->stringValue);
         }
 
         _lastPacketSent = BaseLib::HelperFunctions::getTime();

@@ -790,11 +790,11 @@ void MAXPeer::getValuesFromPacket(std::shared_ptr<MAXPacket> packet, std::vector
 			if(!frame) continue;
 			if(frame->direction == BaseLib::DeviceDescription::Packet::Direction::Enum::toCentral && packet->senderAddress() != _address) continue;
 			if(frame->direction == BaseLib::DeviceDescription::Packet::Direction::Enum::fromCentral && packet->destinationAddress() != _address) continue;
-			if(packet->payload()->empty()) break;
+			if(packet->payload().empty()) break;
 			if(frame->subtype > -1 && packet->messageSubtype() != frame->subtype) continue;
 			int32_t channelIndex = frame->channelIndex;
 			int32_t channel = -1;
-			if(channelIndex >= 9 && (signed)packet->payload()->size() > (channelIndex - 9)) channel = packet->payload()->at(channelIndex - 9) - frame->channelIndexOffset;
+			if(channelIndex >= 9 && (signed)packet->payload().size() > (channelIndex - 9)) channel = packet->payload().at(channelIndex - 9) - frame->channelIndexOffset;
 			if(channel > -1 && frame->channelSize < 1.0) channel &= (0xFF >> (8 - std::lround(frame->channelSize * 10) % 10));
 			if(frame->channel > -1) channel = frame->channel;
 			if(frame->length > 0 && packet->length() != frame->length) continue;
@@ -805,7 +805,7 @@ void MAXPeer::getValuesFromPacket(std::shared_ptr<MAXPacket> packet, std::vector
 				std::vector<uint8_t> data;
 				if((*j)->size > 0 && (*j)->index > 0)
 				{
-					if(((int32_t)(*j)->index) - 9 >= (signed)packet->payload()->size()) continue;
+					if(((int32_t)(*j)->index) - 9 >= (signed)packet->payload().size()) continue;
 					data = packet->getPosition((*j)->index, (*j)->size, -1);
 
 					if((*j)->constValueInteger > -1)
@@ -819,7 +819,7 @@ void MAXPeer::getValuesFromPacket(std::shared_ptr<MAXPacket> packet, std::vector
 					if((*j)->size2 > 0 && (*j)->index2 > 0 && (*j)->index2Offset > 0) //Only
 					{
 						if((*j)->size2 > 1.0) GD::out.printWarning("Warning: size2 of frame parameter is larger than 1 byte. That is not supported.");
-						else if(((int32_t)(*j)->index2) - 9 < (signed)packet->payload()->size())
+						else if(((int32_t)(*j)->index2) - 9 < (signed)packet->payload().size())
 						{
 							std::vector<uint8_t> data2 = packet->getPosition((*j)->index2, (*j)->size2, -1);
 							int32_t byteIndex = (*j)->index2Offset / 8;
@@ -1260,7 +1260,7 @@ PVariable MAXPeer::putParamset(BaseLib::PRpcClientInfo clientInfo, int32_t chann
 					configPacket->setPosition((*j)->physical->index - (std::lround(std::ceil(((*j)->physical->size))) - 1), (*j)->physical->size, parameterData);
 				}
 
-				if(configPacket->payload()->size() > 2)
+				if(configPacket->payload().size() > 2)
 				{
 					std::shared_ptr<PacketQueue> queue(new PacketQueue(_physicalInterface, PacketQueueType::CONFIG));
 					queue->noSending = true;

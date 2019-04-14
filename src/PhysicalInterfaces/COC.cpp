@@ -85,15 +85,17 @@ void COC::sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet)
 			_out.printError("Error: Couldn't write to COC device, because the device descriptor is not valid: " + _settings->device);
 			return;
 		}
-		if(packet->payload()->size() > 54)
+
+        std::shared_ptr<MAXPacket> maxPacket(std::dynamic_pointer_cast<MAXPacket>(packet));
+        if(!maxPacket) return;
+
+		if(maxPacket->payload().size() > 54)
 		{
 			if(_bl->debugLevel >= 2) _out.printError("Error: Tried to send packet larger than 64 bytes. That is not supported.");
 			return;
 		}
 
-		std::shared_ptr<MAXPacket> maxPacket(std::dynamic_pointer_cast<MAXPacket>(packet));
-		if(!maxPacket) return;
-		std::string packetHex = packet->hexString();
+		std::string packetHex = maxPacket->hexString();
 		if(_bl->debugLevel > 3) _out.printInfo("Info: Sending (" + _settings->id + ", WOR: " + (maxPacket->getBurst() ? "yes" : "no") + "): " + packetHex);
 		if(maxPacket->getBurst()) writeToDevice(stackPrefix + "Zs" + packetHex + "\n" + stackPrefix + "Zr\n");
 		else writeToDevice(stackPrefix + "Zf" + packetHex + "\n" + stackPrefix + "Zr\n");

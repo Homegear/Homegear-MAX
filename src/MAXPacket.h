@@ -38,40 +38,50 @@ namespace MAX
 {
 class MAXPacket : public BaseLib::Systems::Packet
 {
-    public:
-        //Properties
-        MAXPacket();
-        MAXPacket(std::vector<uint8_t>&, bool rssiByte, int64_t timeReceived = 0);
-        MAXPacket(std::string packet, int64_t timeReceived = 0);
-        MAXPacket(uint8_t messageCounter, uint8_t messageType, uint8_t messageSubtype, int32_t senderAddress, int32_t destinationAddress, std::vector<uint8_t> payload, bool burst);
-        virtual ~MAXPacket();
+public:
+    //Properties
+    MAXPacket();
+    MAXPacket(std::vector<uint8_t>&, bool rssiByte, int64_t timeReceived = 0);
+    MAXPacket(std::string packet, int64_t timeReceived = 0);
+    MAXPacket(uint8_t messageCounter, uint8_t messageType, uint8_t messageSubtype, int32_t senderAddress, int32_t destinationAddress, std::vector<uint8_t> payload, bool burst);
+    virtual ~MAXPacket();
 
-        virtual void import(std::string& packet, bool removeFirstCharacter = true);
-        virtual void import(std::vector<uint8_t>& packet, bool rssiByte);
+    void import(std::string& packet, bool removeFirstCharacter = true);
+    void import(std::vector<uint8_t>& packet, bool rssiByte);
 
-        void setBurst(bool value) { _burst = value; }
-        bool getBurst() { return _burst; }
-        uint8_t messageCounter() { return _messageCounter; }
-        void setMessageCounter(uint8_t counter) { _messageCounter = counter; }
-        uint8_t messageType() { return _messageType; }
-        void setMessageType(uint8_t type) { _messageType = type; }
-        uint8_t messageSubtype() { return _messageSubtype; }
-        uint8_t rssiDevice() { return _rssiDevice; }
-        virtual std::string hexString();
-        virtual std::vector<uint8_t> byteArray();
-        virtual std::vector<uint8_t> getPosition(double index, double size, int32_t mask);
-        virtual void setPosition(double index, double size, std::vector<uint8_t>& value);
+    uint8_t length() { return _length; }
+    int32_t senderAddress() { return _senderAddress; }
+    int32_t destinationAddress() { return _destinationAddress; }
+    void setBurst(bool value) { _burst = value; }
+    bool getBurst() { return _burst; }
+    uint8_t messageCounter() { return _messageCounter; }
+    void setMessageCounter(uint8_t counter) { _messageCounter = counter; }
+    uint8_t messageType() { return _messageType; }
+    void setMessageType(uint8_t type) { _messageType = type; }
+    uint8_t messageSubtype() { return _messageSubtype; }
+    uint8_t rssiDevice() { return _rssiDevice; }
+    std::vector<uint8_t>& payload() { return _payload; }
+    std::string hexString();
+    std::vector<uint8_t> byteArray();
+    std::vector<uint8_t> getPosition(double index, double size, int32_t mask);
+    void setPosition(double index, double size, std::vector<uint8_t>& value);
 
-        bool equals(std::shared_ptr<MAXPacket>& rhs);
-    protected:
-        bool _burst = false;
-        uint8_t _messageCounter = 0;
-        uint8_t _messageType = 0;
-        uint8_t _messageSubtype = 0;
-        uint8_t _rssiDevice = 0;
+    bool equals(std::shared_ptr<MAXPacket>& rhs);
+protected:
+    static constexpr std::array<uint8_t, 9> _bitmask{0xFF, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF};
 
-        virtual uint8_t getByte(std::string);
-        int32_t getInt(std::string);
+    uint8_t _length = 0;
+    int32_t _senderAddress = 0;
+    int32_t _destinationAddress = 0;
+    bool _burst = false;
+    uint8_t _messageCounter = 0;
+    uint8_t _messageType = 0;
+    uint8_t _messageSubtype = 0;
+    uint8_t _rssiDevice = 0;
+    std::vector<uint8_t> _payload;
+
+    virtual uint8_t getByte(std::string);
+    int32_t getInt(std::string);
 };
 
 }
