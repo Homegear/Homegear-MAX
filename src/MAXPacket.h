@@ -68,7 +68,7 @@ public:
 
     bool equals(std::shared_ptr<MAXPacket>& rhs);
 protected:
-    static constexpr std::array<uint8_t, 9> _bitmask{0xFF, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF};
+    static const std::array<uint8_t, 9> _bitmask;
 
     uint8_t _length = 0;
     int32_t _senderAddress = 0;
