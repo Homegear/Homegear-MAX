@@ -131,8 +131,8 @@ protected:
 	virtual void worker();
 	virtual void init();
 
-	void addHomegearFeatures(std::shared_ptr<MAXPeer> peer);
-	void addHomegearFeaturesValveDrive(std::shared_ptr<MAXPeer> peer);
+	void addHomegearFeatures(std::shared_ptr<MAXPeer> peer, int32_t senderChannelIndex);
+	void addHomegearFeaturesValveDrive(std::shared_ptr<MAXPeer> peer, int32_t senderChannelIndex);
 
 	virtual std::shared_ptr<IPhysicalInterface> getPhysicalInterface(int32_t peerAddress);
 };

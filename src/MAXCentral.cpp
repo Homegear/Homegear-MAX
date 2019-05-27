@@ -1327,12 +1327,68 @@ std::shared_ptr<MAXPeer> MAXCentral::createPeer(int32_t address, int32_t firmwar
     return std::shared_ptr<MAXPeer>();
 }
 
-void MAXCentral::addHomegearFeatures(std::shared_ptr<MAXPeer> peer)
+void MAXCentral::addHomegearFeaturesValveDrive(std::shared_ptr<MAXPeer> peer, int32_t senderChannelIndex)
 {
 	try
 	{
 		if(!peer) return;
-		//if(peer->getDeviceType().type() == (uint32_t)DeviceType::BCRTTRXCYG3) addHomegearFeaturesValveDrive(peer);
+		GD::out.printInfo("Info: Adding Homegear features to BC-RT-TRX-Cy*.");
+		std::shared_ptr<BaseLib::Systems::BasicPeer> switchPeer;
+
+		switchPeer.reset(new BaseLib::Systems::BasicPeer());
+		switchPeer->id = 0xFFFFFFFFFFFFFFFF;
+		switchPeer->address = _address;
+		switchPeer->serialNumber = _serialNumber;
+		switchPeer->isVirtual = true;
+		peer->addPeer(senderChannelIndex, switchPeer);
+
+		std::vector<uint8_t> payload;
+		std::shared_ptr<PacketQueue> pendingQueue(new PacketQueue(peer->getPhysicalInterface(), PacketQueueType::CONFIG));
+		pendingQueue->noSending = true;
+
+		payload.clear();
+		//CONFIG_ADD_PEER
+		payload.push_back(0);
+		payload.push_back(peer->getAddress() >> 16);
+		payload.push_back((peer->getAddress() >> 8) & 0xFF);
+		payload.push_back(peer->getAddress() & 0xFF);
+		payload.push_back(senderChannelIndex);
+		std::shared_ptr<MAXPacket> configPacket(new MAXPacket(_messageCounter[0], 0x20, 0, _address, peer->getAddress(), payload, peer->getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio));
+		pendingQueue->push(configPacket);
+		pendingQueue->push(_messages->find(0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
+		_messageCounter[0]++;
+		
+		peer->pendingQueues->push(pendingQueue);
+		peer->serviceMessages->setConfigPending(true);
+
+		if((peer->getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio) || (peer->getRXModes() & HomegearDevice::ReceiveModes::always))
+		{
+			std::shared_ptr<PacketQueue> queue = _queueManager.createQueue(peer->getPhysicalInterface(), PacketQueueType::CONFIG, peer->getAddress());
+			queue->peer = peer;
+			queue->push(peer->pendingQueues);
+		}
+		
+	}
+	catch(const std::exception& ex)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(BaseLib::Exception& ex)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
+void MAXCentral::addHomegearFeatures(std::shared_ptr<MAXPeer> peer, int32_t senderChannelIndex)
+{
+	try
+	{
+		if(!peer) return;
+		if(peer->getDeviceType() == (uint32_t)DeviceType::BCRTTRXCYG3) addHomegearFeaturesValveDrive(peer, senderChannelIndex);
 	}
 	catch(const std::exception& ex)
 	{
@@ -1464,7 +1520,7 @@ void MAXCentral::handleAck(int32_t messageCounter, std::shared_ptr<MAXPacket> pa
                     std::vector<uint64_t> newIds{ queue->peer->getID() };
 					raiseRPCNewDevices(newIds, deviceDescriptions);
 					GD::out.printMessage("Added peer 0x" + BaseLib::HelperFunctions::getHexString(queue->peer->getAddress()) + ".");
-					addHomegearFeatures(queue->peer);
+					addHomegearFeatures(queue->peer, -1);
 				}
 			}
 		}
