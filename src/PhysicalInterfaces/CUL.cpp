@@ -79,17 +79,20 @@ void CUL::sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet)
 			_out.printWarning("Warning: Packet was nullptr.");
 			return;
 		}
+
 		if(_fileDescriptor->descriptor == -1) throw(BaseLib::Exception("Couldn't write to CUL device, because the file descriptor is not valid: " + _settings->device));
-		if(packet->payload()->size() > 54)
+
+        std::shared_ptr<MAXPacket> maxPacket(std::dynamic_pointer_cast<MAXPacket>(packet));
+        if(!maxPacket) return;
+
+		if(maxPacket->payload().size() > 54)
 		{
 			if(_bl->debugLevel >= 2) _out.printError("Error: Tried to send packet larger than 64 bytes. That is not supported.");
 			return;
 		}
 
-		std::shared_ptr<MAXPacket> maxPacket(std::dynamic_pointer_cast<MAXPacket>(packet));
-		if(!maxPacket) return;
-		if(maxPacket->getBurst()) writeToDevice("Zs" + packet->hexString() + "\n", true);
-		else writeToDevice("Zf" + packet->hexString() + "\n", true);
+		if(maxPacket->getBurst()) writeToDevice("Zs" + maxPacket->hexString() + "\n", true);
+		else writeToDevice("Zf" + maxPacket->hexString() + "\n", true);
 	}
 	catch(const std::exception& ex)
     {

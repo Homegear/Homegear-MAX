@@ -83,18 +83,20 @@ void Cunx::sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet)
 		}
 		if(!isOpen())
 		{
-			_out.printWarning(std::string("Warning: !!!Not!!! sending packet, because device is not connected or opened: ") + packet->hexString());
+			_out.printWarning(std::string("Warning: !!!Not!!! sending packet, because device is not connected or opened."));
 			return;
 		}
-		if(packet->payload()->size() > 54)
+
+        std::shared_ptr<MAXPacket> maxPacket(std::dynamic_pointer_cast<MAXPacket>(packet));
+        if(!maxPacket) return;
+
+		if(maxPacket->payload().size() > 54)
 		{
 			if(_bl->debugLevel >= 2) _out.printError("Error: Tried to send packet larger than 64 bytes. That is not supported.");
 			return;
 		}
 
-		std::shared_ptr<MAXPacket> maxPacket(std::dynamic_pointer_cast<MAXPacket>(packet));
-		if(!maxPacket) return;
-		std::string packetHex = packet->hexString();
+		std::string packetHex = maxPacket->hexString();
 		if(_bl->debugLevel > 3) _out.printInfo("Info: Sending (" + _settings->id + ", WOR: " + (maxPacket->getBurst() ? "yes" : "no") + "): " + packetHex);
 		if(maxPacket->getBurst()) send("Zs" + packetHex + "\n");
 		else send("Zf" + packetHex + "\n");
@@ -274,14 +276,14 @@ void Cunx::listen()
 			catch(const BaseLib::SocketClosedException& ex)
 			{
 				_stopped = true;
-				_out.printWarning("Warning: " + ex.what());
+				_out.printWarning("Warning: " + std::string(ex.what()));
 				std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 				continue;
 			}
 			catch(const BaseLib::SocketOperationException& ex)
 			{
 				_stopped = true;
-				_out.printError("Error: " + ex.what());
+				_out.printError("Error: " + std::string(ex.what()));
 				std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 				continue;
 			}

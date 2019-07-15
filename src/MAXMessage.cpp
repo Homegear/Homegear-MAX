@@ -105,12 +105,12 @@ bool MAXMessage::typeIsEqual(std::shared_ptr<MAXPacket> packet)
 	try
 	{
 		if(_messageType != packet->messageType() || (_messageSubtype > -1 && packet->messageSubtype() > -1 && _messageSubtype != packet->messageSubtype())) return false;
-		std::vector<uint8_t>* payload = packet->payload();
+		std::vector<uint8_t>& payload = packet->payload();
 		if(_subtypes.empty()) return true;
 		for(std::vector<std::pair<uint32_t, int32_t>>::const_iterator i = _subtypes.begin(); i != _subtypes.end(); ++i)
 		{
-			if(i->first >= payload->size()) return false;
-			if(payload->at(i->first) != i->second) return false;
+			if(i->first >= payload.size()) return false;
+			if(payload.at(i->first) != i->second) return false;
 		}
 		return true;
 	}
@@ -166,12 +166,12 @@ bool MAXMessage::typeIsEqual(std::shared_ptr<MAXMessage> message, std::shared_pt
 		if(message->getMessageType() != packet->messageType()) return false;
 		if(message->getMessageSubtype() > -1 && packet->messageSubtype() > -1 && message->getMessageSubtype() != packet->messageSubtype()) return false;
 		std::vector<std::pair<uint32_t, int32_t>>* subtypes = message->getSubtypes();
-		std::vector<uint8_t>* payload = packet->payload();
+		std::vector<uint8_t>& payload = packet->payload();
 		if(subtypes == nullptr || subtypes->size() == 0) return true;
 		for(std::vector<std::pair<uint32_t, int32_t> >::const_iterator i = subtypes->begin(); i != subtypes->end(); ++i)
 		{
-			if(i->first >= payload->size()) return false;
-			if(payload->at(i->first) != i->second) return false;
+			if(i->first >= payload.size()) return false;
+			if(payload.at(i->first) != i->second) return false;
 		}
 		return true;
 	}
