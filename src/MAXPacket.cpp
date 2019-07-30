@@ -30,8 +30,13 @@
 #include "MAXPacket.h"
 #include "GD.h"
 
+#include <iomanip>
+
 namespace MAX
 {
+
+const std::array<uint8_t, 9> MAXPacket::_bitmask{0xFF, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF};
+
 MAXPacket::MAXPacket()
 {
 
@@ -482,10 +487,10 @@ bool MAXPacket::equals(std::shared_ptr<MAXPacket>& rhs)
 	if(_messageCounter != rhs->messageCounter()) return false;
 	if(_messageType != rhs->messageType()) return false;
 	if(_messageSubtype != rhs->messageSubtype()) return false;
-	if(_payload.size() != rhs->payload()->size()) return false;
+	if(_payload.size() != rhs->payload().size()) return false;
 	if(_senderAddress != rhs->senderAddress()) return false;
 	if(_destinationAddress != rhs->destinationAddress()) return false;
-	if(_payload == (*rhs->payload())) return true;
+	if(_payload == rhs->payload()) return true;
 	return false;
 }
 }

@@ -32,6 +32,8 @@
 #include "MAXCentral.h"
 #include "GD.h"
 
+#include <iomanip>
+
 namespace MAX
 {
 

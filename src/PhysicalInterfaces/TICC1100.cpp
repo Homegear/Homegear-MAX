@@ -349,13 +349,16 @@ void TICC1100::sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet)
 			return;
 		}
 		if(_fileDescriptor->descriptor == -1 || _gpioDescriptors[1]->descriptor == -1 || _stopped) return;
-		if(packet->payload()->size() > 54)
+
+        std::shared_ptr<MAXPacket> maxPacket(std::dynamic_pointer_cast<MAXPacket>(packet));
+        if(!maxPacket) return;
+
+		if(maxPacket->payload().size() > 54)
 		{
 			_out.printError("Error: Tried to send packet larger than 64 bytes. That is not supported.");
 			return;
 		}
-		std::shared_ptr<MAXPacket> maxPacket(std::dynamic_pointer_cast<MAXPacket>(packet));
-		if(!maxPacket) return;
+
 		std::vector<uint8_t> packetBytes = maxPacket->byteArray();
 
 		int64_t timeBeforeLock = BaseLib::HelperFunctions::getTime();
@@ -385,13 +388,13 @@ void TICC1100::sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet)
 
 		if(_bl->debugLevel > 3)
 		{
-			if(packet->timeSending() > 0)
+			if(packet->getTimeSending() > 0)
 			{
-				_out.printInfo("Info: Sending (" + _settings->id + ", WOR: " + (maxPacket->getBurst() ? "yes" : "no") + "): " + packet->hexString() + " Planned sending time: " + BaseLib::HelperFunctions::getTimeString(packet->timeSending()));
+				_out.printInfo("Info: Sending (" + _settings->id + ", WOR: " + (maxPacket->getBurst() ? "yes" : "no") + "): " + maxPacket->hexString() + " Planned sending time: " + BaseLib::HelperFunctions::getTimeString(packet->getTimeSending()));
 			}
 			else
 			{
-				_out.printInfo("Info: Sending (" + _settings->id + ", WOR: " + (maxPacket->getBurst() ? "yes" : "no") + "): " + packet->hexString());
+				_out.printInfo("Info: Sending (" + _settings->id + ", WOR: " + (maxPacket->getBurst() ? "yes" : "no") + "): " + maxPacket->hexString());
 			}
 		}
 
