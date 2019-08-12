@@ -13,7 +13,7 @@
 	</supportedDevices>
 	<properties>
 		<receiveMode>wakeUp</receiveMode>
-		<timeout>12000</timeout>
+		<timeout>86400</timeout>
 		<hasBattery>true</hasBattery>
 	</properties>
 	<functions>
