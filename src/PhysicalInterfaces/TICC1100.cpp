@@ -899,10 +899,8 @@ void TICC1100::mainThread()
 					}
 					_txMutex.unlock(); //Make sure _txMutex is unlocked
 
+                    closeGPIO(1);
 					initDevice();
-					closeGPIO(1);
-					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-					openGPIO(1, true);
 					_stopped = false;
 					continue;
 				}
@@ -946,6 +944,7 @@ void TICC1100::mainThread()
 								if(!_firstPacket)
 								{
 									_out.printWarning("Warning: Too large packet received: " + BaseLib::HelperFunctions::getHexString(packetBytes));
+                                    closeDevice();
 									_txMutex.unlock();
 									continue;
 								}
