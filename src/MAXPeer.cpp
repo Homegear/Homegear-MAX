@@ -823,6 +823,10 @@ void MAXPeer::packetReceived(std::shared_ptr<MAXPacket> packet)
 		setLastPacketReceived();
 		setRSSIDevice(packet->rssiDevice());
 		serviceMessages->endUnreach();
+
+        if(_lastReceivedMessageCounter == packet->messageCounter()) return;
+        _lastReceivedMessageCounter = packet->messageCounter();
+
 		std::vector<FrameValues> frameValues;
 		getValuesFromPacket(packet, frameValues);
 		std::map<uint32_t, std::shared_ptr<std::vector<std::string>>> valueKeys;
