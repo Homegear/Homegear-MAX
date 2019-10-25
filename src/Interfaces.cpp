@@ -33,6 +33,7 @@
 #include "PhysicalInterfaces/COC.h"
 #include "PhysicalInterfaces/Cunx.h"
 #include "PhysicalInterfaces/TICC1100.h"
+#include "PhysicalInterfaces/HomegearGateway.h"
 
 namespace MAX
 {
@@ -58,6 +59,7 @@ void Interfaces::create()
 			if(i->second->type == "cul") device.reset(new CUL(i->second));
 			else if(i->second->type == "coc") device.reset(new COC(i->second));
 			else if(i->second->type == "cunx") device.reset(new Cunx(i->second));
+            else if(i->second->type == "homegeargateway") device.reset(new HomegearGateway(i->second));
 #ifdef SPIINTERFACES
 			else if(i->second->type == "cc1100") device.reset(new TICC1100(i->second));
 #endif
