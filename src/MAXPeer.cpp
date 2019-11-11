@@ -824,7 +824,11 @@ void MAXPeer::packetReceived(std::shared_ptr<MAXPacket> packet)
 		setRSSIDevice(packet->rssiDevice());
 		serviceMessages->endUnreach();
 
-        if(_lastReceivedMessageCounter == packet->messageCounter()) return;
+        if(_lastReceivedMessageCounter == packet->messageCounter())
+        {
+            if(packet->messageType() != 0x02 && packet->messageType() != 0xFF && packet->destinationAddress() == central->getAddress()) central->sendOK(packet->messageCounter(), packet->senderAddress());
+            return;
+        }
         _lastReceivedMessageCounter = packet->messageCounter();
 
 		std::vector<FrameValues> frameValues;
