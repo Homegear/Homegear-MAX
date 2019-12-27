@@ -42,14 +42,6 @@ void MAXMessages::add(std::shared_ptr<MAXMessage> message)
 	{
 		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
 }
 
 std::shared_ptr<MAXMessage> MAXMessages::find(std::shared_ptr<MAXPacket> packet)
@@ -76,14 +68,6 @@ std::shared_ptr<MAXMessage> MAXMessages::find(std::shared_ptr<MAXPacket> packet)
 	{
 		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
 	return std::shared_ptr<MAXMessage>();
 }
 
@@ -99,14 +83,6 @@ std::shared_ptr<MAXMessage> MAXMessages::find(int32_t messageType, int32_t messa
 	catch(const std::exception& ex)
 	{
 		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 	}
     return std::shared_ptr<MAXMessage>();
 }
