@@ -119,6 +119,7 @@ protected:
 	std::shared_ptr<IPhysicalInterface> _physicalInterface;
 	int64_t _lastTimePacket = 0;
 	int32_t _randomSleep = 0;
+	int32_t _lastReceivedMessageCounter = -1;
 
 	//In table variables:
 	uint8_t _messageCounter = 0;

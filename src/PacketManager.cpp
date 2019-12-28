@@ -50,14 +50,6 @@ PacketManager::PacketManager()
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
 PacketManager::~PacketManager()
@@ -123,29 +115,11 @@ void PacketManager::worker()
 				_packetMutex.unlock();
 				GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 			}
-			catch(BaseLib::Exception& ex)
-			{
-				_packetMutex.unlock();
-				GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-			}
-			catch(...)
-			{
-				_packetMutex.unlock();
-				GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-			}
 		}
 	}
     catch(const std::exception& ex)
     {
     	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(BaseLib::Exception& ex)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
     }
 }
 
@@ -154,39 +128,32 @@ bool PacketManager::set(int32_t address, std::shared_ptr<MAXPacket>& packet, int
 	try
 	{
 		if(_disposing) return false;
-		_packetMutex.lock();
-		if(_packets.find(address) != _packets.end())
-		{
-			std::shared_ptr<MAXPacket> oldPacket = _packets.at(address)->packet;
-			if(oldPacket->equals(packet))
-			{
-				_packetMutex.unlock();
-				return true;
-			}
-			_packets.erase(_packets.find(address));
-		}
-		_packetMutex.unlock();
 
-		std::shared_ptr<MAXPacketInfo> info(new MAXPacketInfo());
+        {
+            std::lock_guard<std::mutex> packetGuard(_packetMutex);
+            auto packetsIterator = _packets.find(address);
+            if(packetsIterator != _packets.end())
+            {
+                std::shared_ptr<MAXPacket> oldPacket = packetsIterator->second->packet;
+                if(oldPacket->equals(packet) && time - packetsIterator->second->time < 200)
+                {
+                    return true;
+                }
+                _packets.erase(_packets.find(address));
+            }
+        }
+
+		auto info = std::make_shared<MAXPacketInfo>();
 		info->packet = packet;
 		info->id = _id++;
 		if(time > 0) info->time = time;
-		_packetMutex.lock();
-		_packets.insert(std::pair<int32_t, std::shared_ptr<MAXPacketInfo>>(address, info));
+        std::lock_guard<std::mutex> packetGuard(_packetMutex);
+		_packets.emplace(address, std::move(info));
 	}
 	catch(const std::exception& ex)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
-    _packetMutex.unlock();
     return false;
 }
 
@@ -210,14 +177,6 @@ void PacketManager::deletePacket(int32_t address, uint32_t id)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
     _packetMutex.unlock();
 }
 
@@ -235,14 +194,6 @@ std::shared_ptr<MAXPacket> PacketManager::get(int32_t address)
 	catch(const std::exception& ex)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
     }
     _packetMutex.unlock();
     return std::shared_ptr<MAXPacket>();
@@ -263,14 +214,6 @@ std::shared_ptr<MAXPacketInfo> PacketManager::getInfo(int32_t address)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
     _packetMutex.unlock();
     return std::shared_ptr<MAXPacketInfo>();
 }
@@ -286,14 +229,6 @@ void PacketManager::keepAlive(int32_t address)
 	catch(const std::exception& ex)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
     }
     _packetMutex.unlock();
 }
