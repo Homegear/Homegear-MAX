@@ -875,7 +875,7 @@ void MAXPeer::packetReceived(std::shared_ptr<MAXPacket> packet)
 						}
 
 						valueKeys[*j]->push_back(i->first);
-						rpcValues[*j]->push_back(parameter.rpcParameter->convertFromPacket(i->second.value, parameter.invert(), true));
+						rpcValues[*j]->push_back(parameter.rpcParameter->convertFromPacket(i->second.value, parameter.mainRole(), true));
 					}
 				}
 			}
@@ -950,7 +950,7 @@ void MAXPeer::setRSSIDevice(uint8_t rssi)
 
 			std::shared_ptr<std::vector<std::string>> valueKeys(new std::vector<std::string>({std::string("RSSI_DEVICE")}));
 			std::shared_ptr<std::vector<PVariable>> rpcValues(new std::vector<PVariable>());
-			rpcValues->push_back(parameter.rpcParameter->convertFromPacket(parameterData, parameter.invert(), false));
+			rpcValues->push_back(parameter.rpcParameter->convertFromPacket(parameterData, parameter.mainRole(), false));
 
             std::string eventSource = "device-" + std::to_string(_peerID);
             std::string address = _serialNumber + ":0";
@@ -1037,7 +1037,7 @@ PVariable MAXPeer::putParamset(BaseLib::PRpcClientInfo clientInfo, int32_t chann
 				if(configCentral[channel].find(i->first) == configCentral[channel].end()) continue;
 				BaseLib::Systems::RpcConfigurationParameter& parameter = configCentral[channel][i->first];
 				if(!parameter.rpcParameter) continue;
-				parameter.rpcParameter->convertToPacket(i->second, parameter.invert(), value);
+				parameter.rpcParameter->convertToPacket(i->second, parameter.mainRole(), value);
 				std::vector<uint8_t> shiftedValue = value;
 				parameter.rpcParameter->adjustBitPosition(shiftedValue);
 				int32_t intIndex = (int32_t)parameter.rpcParameter->physical->index;
@@ -1168,7 +1168,7 @@ PVariable MAXPeer::getParamset(BaseLib::PRpcClientInfo clientInfo, int32_t chann
 				if(valuesCentral[channel].find(i->second->id) == valuesCentral[channel].end()) continue;
 				auto& parameter = valuesCentral[channel][i->second->id];
 				std::vector<uint8_t> parameterData = parameter.getBinaryData();
-				element = i->second->convertFromPacket(parameterData, parameter.invert(), false);
+				element = i->second->convertFromPacket(parameterData, parameter.mainRole(), false);
 			}
 			else if(type == ParameterGroup::Type::Enum::config)
 			{
@@ -1176,7 +1176,7 @@ PVariable MAXPeer::getParamset(BaseLib::PRpcClientInfo clientInfo, int32_t chann
 				if(configCentral[channel].find(i->second->id) == configCentral[channel].end()) continue;
                 auto& parameter = configCentral[channel][i->second->id];
 				std::vector<uint8_t> parameterData = parameter.getBinaryData();
-				element = i->second->convertFromPacket(parameterData, parameter.invert(), false);
+				element = i->second->convertFromPacket(parameterData, parameter.mainRole(), false);
 			}
 			else if(type == ParameterGroup::Type::Enum::link)
 			{
@@ -1189,7 +1189,7 @@ PVariable MAXPeer::getParamset(BaseLib::PRpcClientInfo clientInfo, int32_t chann
 				if(remotePeer->channel != remoteChannel) continue;
                 auto& parameter = linksCentral[channel][remotePeer->address][remotePeer->channel][i->second->id];
 				std::vector<uint8_t> parameterData = parameter.getBinaryData();
-				element = i->second->convertFromPacket(parameterData, parameter.invert(), false);
+				element = i->second->convertFromPacket(parameterData, parameter.mainRole(), false);
 			}
 
 			if(!element) continue;
@@ -1250,7 +1250,7 @@ PVariable MAXPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel
 		if(rpcParameter->physical->operationType == IPhysical::OperationType::Enum::store)
 		{
 			std::vector<uint8_t> parameterData;
-			rpcParameter->convertToPacket(value, parameter.invert(), parameterData);
+			rpcParameter->convertToPacket(value, parameter.mainRole(), parameterData);
 			parameter.setBinaryData(parameterData);
 			if(parameter.databaseId > 0) saveParameter(parameter.databaseId, parameterData);
 			else saveParameter(0, ParameterGroup::Type::Enum::variables, channel, valueKey, parameterData);
@@ -1275,7 +1275,7 @@ PVariable MAXPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel
 			PVariable toggleValue;
 			if(toggleParam.rpcParameter->logical->type == ILogical::Type::Enum::tBoolean)
 			{
-				toggleValue = toggleParam.rpcParameter->convertFromPacket(parameterData, toggleParam.invert(), false);
+				toggleValue = toggleParam.rpcParameter->convertFromPacket(parameterData, toggleParam.mainRole(), false);
 				toggleValue->booleanValue = !toggleValue->booleanValue;
 			}
 			else if(toggleParam.rpcParameter->logical->type == ILogical::Type::Enum::tInteger ||
@@ -1285,7 +1285,7 @@ PVariable MAXPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel
 				std::vector<uint8_t> temp({0});
 				if(currentToggleValue != toggleCast->on) temp.at(0) = toggleCast->on;
 				else temp.at(0) = toggleCast->off;
-				toggleValue = toggleParam.rpcParameter->convertFromPacket(temp, toggleParam.invert(), false);
+				toggleValue = toggleParam.rpcParameter->convertFromPacket(temp, toggleParam.mainRole(), false);
 			}
 			else return Variable::createError(-6, "Toggle parameter has to be of type boolean, float or integer.");
 			return setValue(clientInfo, channel, toggleCast->parameter, toggleValue, wait);
@@ -1296,7 +1296,7 @@ PVariable MAXPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel
 		if(packetIterator == _rpcDevice->packetsById.end()) return Variable::createError(-6, "No frame was found for parameter " + valueKey);
 		PPacket frame = packetIterator->second;
 		std::vector<uint8_t> parameterData;
-		rpcParameter->convertToPacket(value, parameter.invert(), parameterData);
+		rpcParameter->convertToPacket(value, parameter.mainRole(), parameterData);
 		parameter.setBinaryData(parameterData);
 		if(parameter.databaseId > 0) saveParameter(parameter.databaseId, parameterData);
 		else saveParameter(0, ParameterGroup::Type::Enum::variables, channel, valueKey, parameterData);
@@ -1377,7 +1377,7 @@ PVariable MAXPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel
 				PVariable logicalDefaultValue = valuesCentral.at(channel).at(*j).rpcParameter->logical->getDefaultValue();
 				std::vector<uint8_t> defaultValue;
                 BaseLib::Systems::RpcConfigurationParameter& tempParam = valuesCentral.at(channel).at(*j);
-                tempParam.rpcParameter->convertToPacket(logicalDefaultValue, tempParam.invert(), defaultValue);
+                tempParam.rpcParameter->convertToPacket(logicalDefaultValue, tempParam.mainRole(), defaultValue);
 				if(!tempParam.equals(defaultValue))
 				{
 					tempParam.setBinaryData(defaultValue);
