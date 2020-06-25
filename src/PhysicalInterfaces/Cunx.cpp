@@ -243,8 +243,7 @@ void Cunx::listen()
 
         	if(_bl->debugLevel >= 6)
         	{
-        		_out.printDebug("Debug: Packet received from CUNX. Raw data:");
-        		_out.printBinary(data);
+        		_out.printDebug("Debug: Packet received from CUNX. Raw data: " + BaseLib::HelperFunctions::getHexString(data));
         	}
 
         	processData(data);
