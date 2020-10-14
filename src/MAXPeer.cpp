@@ -1215,7 +1215,7 @@ PVariable MAXPeer::setInterface(BaseLib::PRpcClientInfo clientInfo, std::string 
 		}
 		std::shared_ptr<IPhysicalInterface> interface(GD::physicalInterfaces.at(interfaceID));
 		setPhysicalInterfaceID(interfaceID);
-		return PVariable(new Variable(VariableType::tVoid));
+		return std::make_shared<Variable>(VariableType::tVoid);
 	}
 	catch(const std::exception& ex)
     {
