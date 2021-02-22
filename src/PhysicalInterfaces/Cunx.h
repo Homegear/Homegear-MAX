@@ -49,6 +49,7 @@ class Cunx : public IMaxInterface
         BaseLib::Output _out;
         std::string _port;
         std::unique_ptr<BaseLib::TcpSocket> _socket;
+        std::string stackPrefix;
 
         void reconnect();
         void processData(std::vector<uint8_t>& data);

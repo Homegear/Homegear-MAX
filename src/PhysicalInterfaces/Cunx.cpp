@@ -40,6 +40,11 @@ Cunx::Cunx(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings
 	_out.init(GD::bl);
 	_out.setPrefix(GD::out.getPrefix() + "CUNX \"" + settings->id + "\": ");
 
+	stackPrefix = "";
+	for (uint32_t i = 1; i < settings->stackPosition; i++) {
+	  stackPrefix.push_back('*');
+	}
+
 	signal(SIGPIPE, SIG_IGN);
 
 	_socket = std::unique_ptr<BaseLib::TcpSocket>(new BaseLib::TcpSocket(_bl));
@@ -90,8 +95,8 @@ void Cunx::sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet)
 
 		std::string packetHex = maxPacket->hexString();
 		if(_bl->debugLevel > 3) _out.printInfo("Info: Sending (" + _settings->id + ", WOR: " + (maxPacket->getBurst() ? "yes" : "no") + "): " + packetHex);
-		if(maxPacket->getBurst()) send("Zs" + packetHex + "\n");
-		else send("Zf" + packetHex + "\n");
+		if(maxPacket->getBurst()) send(stackPrefix + "Zs" + packetHex + "\n");
+		else send(stackPrefix + "Zf" + packetHex + "\n");
         if(maxPacket->getBurst()) std::this_thread::sleep_for(std::chrono::milliseconds(1100));
 		_lastPacketSent = BaseLib::HelperFunctions::getTime();
 	}
@@ -158,7 +163,7 @@ void Cunx::reconnect()
 		_hostname = _settings->host;
 		_ipAddress = _socket->getIpAddress();
 		_stopped = false;
-		send("X21\nZr\n");
+		send(stackPrefix + "X21\nZr\n");
 		_out.printInfo("Connected to CUNX device with hostname " + _settings->host + " on port " + _settings->port + ".");
 	}
     catch(const std::exception& ex)
@@ -171,7 +176,7 @@ void Cunx::stopListening()
 {
 	try
 	{
-		if(_socket->connected()) send("Zx\nX00\n");
+		if(_socket->connected()) send(stackPrefix + "Zx\nX00\n");
 		_stopCallbackThread = true;
 		GD::bl->threadManager.join(_listenThread);
 		_stopCallbackThread = false;
@@ -269,6 +274,13 @@ void Cunx::processData(std::vector<uint8_t>& data)
 		std::string packetHex;
 		while(std::getline(stringStream, packetHex))
 		{
+		    if (stackPrefix.empty()) {
+		      if(packetHex.size() > 0 && packetHex.at(0) == '*') return;
+		    } else {
+		      if (packetHex.size() + 1 <= stackPrefix.size()) return;
+		      if (packetHex.substr(0, stackPrefix.size()) != stackPrefix || packetHex.at(stackPrefix.size()) == '*') return;
+		      else packetHex = packetHex.substr(stackPrefix.size());
+		    }
 			if(packetHex.size() > 21) //21 is minimal packet length (=10 Byte + CUNX "Z" + "\n")
         	{
 				std::shared_ptr<MAXPacket> packet(new MAXPacket(packetHex, BaseLib::HelperFunctions::getTime()));
