@@ -346,6 +346,13 @@ PVariable MAX::getPairingInfo()
 		interface->structValue->emplace("host", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(4));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.stackposition")));
+		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("integer")));
+		field->structValue->emplace("default", std::make_shared<BaseLib::Variable>(0));
+		interface->structValue->emplace("stackPosition", field);
+
+		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(2));
 		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.default")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("boolean")));
