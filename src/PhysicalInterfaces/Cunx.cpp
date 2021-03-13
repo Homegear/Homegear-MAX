@@ -45,6 +45,16 @@ Cunx::Cunx(std::shared_ptr<BaseLib::Systems::PhysicalInterfaceSettings> settings
 	  stackPrefix.push_back('*');
 	}
 
+	// Fix up _additionalCommands
+	_additionalCommands.clear();
+
+	std::vector<std::string> additionalCommands = BaseLib::HelperFunctions::splitAll(settings->additionalCommands, ',');
+	for(std::string& command : additionalCommands)
+	{
+		BaseLib::HelperFunctions::trim(command);
+		_additionalCommands += stackPrefix + command + "\n";
+	}
+
 	signal(SIGPIPE, SIG_IGN);
 
 	_socket = std::unique_ptr<BaseLib::TcpSocket>(new BaseLib::TcpSocket(_bl));
@@ -163,7 +173,10 @@ void Cunx::reconnect()
 		_hostname = _settings->host;
 		_ipAddress = _socket->getIpAddress();
 		_stopped = false;
-		send(stackPrefix + "X21\nZr\n");
+		send(stackPrefix + "X21\n");
+		send(stackPrefix + "Zr\n");
+		if(!_additionalCommands.empty()) send(_additionalCommands); // _additionalCommands already contain stackPrefix
+		_out.printInfo("Sent: " + _additionalCommands);
 		_out.printInfo("Connected to CUNX device with hostname " + _settings->host + " on port " + _settings->port + ".");
 	}
     catch(const std::exception& ex)
