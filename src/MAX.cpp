@@ -368,6 +368,12 @@ PVariable MAX::getPairingInfo()
 		field->structValue->emplace("const", std::make_shared<BaseLib::Variable>(93));
 		interface->structValue->emplace("responseDelay", field);
 
+		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(3));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.additionalcommands")));
+		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
+		interface->structValue->emplace("additionalCommands", field);
+
 		interfaces->structValue->emplace("cunx", interface);
 		//}}}
 
