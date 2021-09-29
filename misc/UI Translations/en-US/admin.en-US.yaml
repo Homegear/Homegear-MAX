@@ -1,0 +1,26 @@
+---
+# {{{ Pairing info
+l10n.max.pairingInfo.centraladdress: 'Address of central'
+l10n.max.pairingInfo.aeskey: 'AES key'
+l10n.max.pairingInfo.currentrfkeyindex: 'Current AES key index'
+l10n.max.pairingInfo.oldaeskey: 'Last AES key index'
+l10n.max.pairingInfo.processbroadcastwithaesenabled: 'Process insecure status messages'
+l10n.max.pairingInfo.id: 'ID'
+l10n.max.pairingInfo.hostname: 'IP-Address'
+l10n.max.pairingInfo.password: 'Password'
+l10n.max.pairingInfo.default: 'Default'
+l10n.max.pairingInfo.device: 'Device'
+l10n.max.pairingInfo.gpio1: 'GPIO 1'
+l10n.max.pairingInfo.gpio2: 'GPIO 2'
+l10n.max.pairingInfo.stackposition: 'Stack position'
+l10n.max.pairingInfo.interruptpin: 'Interrupt pin'
+l10n.max.pairingInfo.key: 'Key'
+l10n.max.pairingInfo.sendfix: 'Send fix'
+# }}}
+
+# {{{ Pairing
+l10n.max.pairing.alreadyPaired: 'This peer is already paired to central with address 0x%variable0%.'
+l10n.max.pairing.samePeer: 'A peer with the same address but different serial number or device type is already paired to this central.'
+l10n.max.pairing.unsupportedDeviceType: 'Device type 0x%variable0% is not supported.'
+l10n.max.pairing.unknownError: 'Unknown error during pairing.'
+# }}}

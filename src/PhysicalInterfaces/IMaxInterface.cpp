@@ -42,6 +42,13 @@ IMaxInterface::IMaxInterface(std::shared_ptr<BaseLib::Systems::PhysicalInterface
         settings->listenThreadPriority = 0;
         settings->listenThreadPolicy = SCHED_OTHER;
     }
+
+	std::vector<std::string> additionalCommands = BaseLib::HelperFunctions::splitAll(settings->additionalCommands, ',');
+	for(std::string& command : additionalCommands)
+	{
+		BaseLib::HelperFunctions::trim(command);
+		_additionalCommands += command + "\r\n";
+	}
 }
 
 IMaxInterface::~IMaxInterface()

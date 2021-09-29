@@ -13,6 +13,11 @@ override_dh_auto_install:
 	chmod 755 $(CURDIR)/debian/homegear-max/etc/homegear/devices/4
 	chmod 644 $(CURDIR)/debian/homegear-max/etc/homegear/devices/4/*
 
+	mkdir -p $(CURDIR)/debian/homegear-max/var/lib/homegear/admin-ui/translations/modules/max
+	cp -R $(CURDIR)/misc/UI\ Translations/* $(CURDIR)/debian/homegear-max/var/lib/homegear/admin-ui/translations/modules/max
+	chown -R root:root $(CURDIR)/debian/homegear-max/var/lib/homegear/admin-ui/translations/modules/max
+	chmod -R 555 $(CURDIR)/debian/homegear-max/var/lib/homegear/admin-ui/translations/modules/max
+
 override_dh_strip:
 	dh_strip --dbg-package=homegear-max
 
