@@ -120,6 +120,8 @@ protected:
 	std::atomic_bool _stopPairingModeThread;
 	std::mutex _pairingModeThreadMutex;
 	std::thread _pairingModeThread;
+	std::mutex _pairingInterfaceMutex;
+	std::string _pairingInterface;
 	std::mutex _unpairThreadMutex;
 	std::thread _unpairThread;
 

@@ -48,6 +48,7 @@ public:
 protected:
     BaseLib::SharedObjects* _bl = nullptr;
     BaseLib::Output _out;
+	std::string _additionalCommands;
 };
 
 }

@@ -153,19 +153,19 @@ PVariable MAX::getPairingInfo()
 
 		auto field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(0));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.pairingInfo.id")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.id")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
 		interface->structValue->emplace("id", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(1));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.pairingInfo.hostname")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.hostname")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
 		interface->structValue->emplace("host", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(2));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.pairingInfo.password")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.password")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
 		interface->structValue->emplace("password", field);
 
@@ -199,19 +199,19 @@ PVariable MAX::getPairingInfo()
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(0));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.id")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.id")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
 		interface->structValue->emplace("id", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(1));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.device")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.device")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
 		interface->structValue->emplace("device", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(2));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.default")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.default")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("boolean")));
 		interface->structValue->emplace("default", field);
 
@@ -230,40 +230,40 @@ PVariable MAX::getPairingInfo()
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(0));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.id")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.id")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
 		interface->structValue->emplace("id", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(1));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.device")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.device")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
 		interface->structValue->emplace("device", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(2));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.gpio1")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.gpio1")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("integer")));
 		field->structValue->emplace("default", std::make_shared<BaseLib::Variable>(17));
 		interface->structValue->emplace("gpio1", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(3));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.gpio2")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.gpio2")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("integer")));
 		field->structValue->emplace("default", std::make_shared<BaseLib::Variable>(18));
 		interface->structValue->emplace("gpio2", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(4));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.stackposition")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.stackposition")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("integer")));
 		field->structValue->emplace("default", std::make_shared<BaseLib::Variable>(0));
 		interface->structValue->emplace("stackPosition", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(5));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.default")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.default")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("boolean")));
 		interface->structValue->emplace("default", field);
 
@@ -282,41 +282,41 @@ PVariable MAX::getPairingInfo()
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(0));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.id")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.id")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
 		interface->structValue->emplace("id", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(1));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.device")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.device")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
 		field->structValue->emplace("default", std::make_shared<BaseLib::Variable>(std::string("/dev/spidev0.0")));
 		interface->structValue->emplace("device", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(2));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.interruptpin")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.interruptpin")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("integer")));
 		field->structValue->emplace("default", std::make_shared<BaseLib::Variable>(2));
 		interface->structValue->emplace("interruptPin", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(3));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.gpio1")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.gpio1")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("integer")));
 		field->structValue->emplace("default", std::make_shared<BaseLib::Variable>(24));
 		interface->structValue->emplace("gpio1", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(4));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.gpio2")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.gpio2")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("integer")));
 		field->structValue->emplace("default", std::make_shared<BaseLib::Variable>(5));
 		interface->structValue->emplace("gpio2", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(5));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.default")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.default")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("boolean")));
 		interface->structValue->emplace("default", field);
 
@@ -335,19 +335,26 @@ PVariable MAX::getPairingInfo()
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(0));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.id")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.id")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
 		interface->structValue->emplace("id", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(1));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.hostname")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.hostname")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
 		interface->structValue->emplace("host", field);
 
 		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(4));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.stackposition")));
+		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("integer")));
+		field->structValue->emplace("default", std::make_shared<BaseLib::Variable>(0));
+		interface->structValue->emplace("stackPosition", field);
+
+		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
 		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(2));
-		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.default")));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.max.pairingInfo.default")));
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("boolean")));
 		interface->structValue->emplace("default", field);
 
@@ -360,6 +367,12 @@ PVariable MAX::getPairingInfo()
 		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("integer")));
 		field->structValue->emplace("const", std::make_shared<BaseLib::Variable>(93));
 		interface->structValue->emplace("responseDelay", field);
+
+		field = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		field->structValue->emplace("pos", std::make_shared<BaseLib::Variable>(3));
+		field->structValue->emplace("label", std::make_shared<BaseLib::Variable>(std::string("l10n.common.additionalcommands")));
+		field->structValue->emplace("type", std::make_shared<BaseLib::Variable>(std::string("string")));
+		interface->structValue->emplace("additionalCommands", field);
 
 		interfaces->structValue->emplace("cunx", interface);
 		//}}}
