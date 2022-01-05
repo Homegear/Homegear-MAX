@@ -786,7 +786,7 @@ void PacketQueue::nextQueueEntry()
 		if(_disposing) return;
 		_queueMutex.lock();
 		if(_queue.empty()) {
-			if(_workingOnPendingQueue && !_pendingQueues->empty()) _pendingQueues->pop(pendingQueueID);
+			if(_workingOnPendingQueue && _pendingQueues && !_pendingQueues->empty()) _pendingQueues->pop(pendingQueueID);
 			if(!_pendingQueues || (_pendingQueues && _pendingQueues->empty()))
 			{
 				_stopResendThread = true;
