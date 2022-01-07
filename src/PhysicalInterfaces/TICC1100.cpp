@@ -760,7 +760,7 @@ void TICC1100::mainThread()
 						{
 							uint8_t firstByte = readRegister(Registers::Enum::FIFO);
 							std::vector<uint8_t> packetBytes = readRegisters(Registers::Enum::FIFO, firstByte + 1); //Read packet + RSSI
-							packetBytes[0] = firstByte;
+							packetBytes.at(0) = firstByte;
 							if(packetBytes.size() > 100)
 							{
 								if(!_firstPacket)
