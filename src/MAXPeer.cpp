@@ -106,19 +106,7 @@ void MAXPeer::worker()
 			serviceMessages->checkUnreach(_rpcDevice->timeout, getLastPacketReceived());
 			if(_rpcDevice->needsTime && (time - _lastTimePacket) > 43200000)
 			{
-				_lastTimePacket = time;
-				std::shared_ptr<MAXCentral> central = std::dynamic_pointer_cast<MAXCentral>(getCentral());
-				std::shared_ptr<PacketQueue> queue(new PacketQueue(_physicalInterface, PacketQueueType::PEER));
-				queue->peer = central->getPeer(_peerID);
-				queue->noSending = true;
-
-				queue->push(central->getTimePacket(central->messageCounter()->at(0)++, _address, getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio));
-				queue->push(central->getMessages()->find(0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
-				queue->parameterName = "CURRENT_TIME";
-				queue->channel = 0;
-				pendingQueues->remove("CURRENT_TIME", 0);
-				pendingQueues->push(queue);
-				if((getRXModes() & HomegearDevice::ReceiveModes::always) || (getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio)) central->enqueuePendingQueues(_address);
+				sendTime();
 			}
 		}
 		if(serviceMessages->getConfigPending())
@@ -157,6 +145,7 @@ std::string MAXPeer::handleCliCommand(std::string command)
 			stringStream << "queues info\t\tPrints information about the pending MAX! packet queues" << std::endl;
 			stringStream << "queues clear\t\tClears pending MAX! packet queues" << std::endl;
 			stringStream << "peers list\t\tLists all peers paired to this peer" << std::endl;
+			stringStream << "update time\t\tSends the current time to this peer" << std::endl;
 			return stringStream.str();
 		}
 		if(command.compare(0, 13, "channel count") == 0)
@@ -313,6 +302,41 @@ std::string MAXPeer::handleCliCommand(std::string command)
 					stringStream << "Channel: " << i->first << "\tAddress: 0x" << std::hex << (*j)->address << "\tRemote channel: " << std::dec << (*j)->channel << "\tSerial number: " << (*j)->serialNumber << std::endl << std::dec;
 				}
 			}
+			return stringStream.str();
+		}
+		else if(command.compare(0, 11, "update time") == 0)
+		{
+			std::stringstream stream(command);
+			std::string element;
+			int32_t index = 0;
+			while(std::getline(stream, element, ' '))
+			{
+				if(index < 2)
+				{
+					index++;
+					continue;
+				}
+				else if(index == 2)
+				{
+					if(element == "help")
+					{
+						stringStream << "Description: This command sends the current time to this peer." << std::endl;
+						stringStream << "Usage: update time" << std::endl << std::endl;
+						stringStream << "Parameters:" << std::endl;
+						stringStream << "  There are no parameters." << std::endl;
+						return stringStream.str();
+					}
+				}
+				index++;
+			}
+
+			if(!_rpcDevice->needsTime)
+			{
+				stringStream << "This device does not support setting the time." << std::endl;
+				return stringStream.str();
+			}
+			sendTime();
+			stringStream << "Sending time to peer." << std::endl;
 			return stringStream.str();
 		}
 		else return "Unknown command.\n";
@@ -962,6 +986,24 @@ void MAXPeer::setRSSIDevice(uint8_t rssi)
     {
     	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
+}
+
+void MAXPeer::sendTime()
+{
+	_lastTimePacket = BaseLib::HelperFunctions::getTime();
+	if(_bl->debugLevel >= 4) GD::out.printInfo("Info: Sending time packet to peer " + std::to_string(_peerID) + ".");
+	std::shared_ptr<MAXCentral> central = std::dynamic_pointer_cast<MAXCentral>(getCentral());
+	std::shared_ptr<PacketQueue> queue(new PacketQueue(_physicalInterface, PacketQueueType::PEER));
+	queue->peer = central->getPeer(_peerID);
+	queue->noSending = true;
+
+	queue->push(central->getTimePacket(central->messageCounter()->at(0)++, _address, getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio));
+	queue->push(central->getMessages()->find(0x02, 0x02, std::vector<std::pair<uint32_t, int32_t>>()));
+	queue->parameterName = "CURRENT_TIME";
+	queue->channel = 0;
+	pendingQueues->remove("CURRENT_TIME", 0);
+	pendingQueues->push(queue);
+	if((getRXModes() & HomegearDevice::ReceiveModes::always) || (getRXModes() & HomegearDevice::ReceiveModes::wakeOnRadio)) central->enqueuePendingQueues(_address);
 }
 
 //RPC Methods
