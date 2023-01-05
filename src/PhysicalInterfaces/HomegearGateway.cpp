@@ -202,7 +202,7 @@ void HomegearGateway::sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packe
         parameters->push_back(std::make_shared<BaseLib::Variable>(maxPacket->hexString()));
         parameters->push_back(std::make_shared<BaseLib::Variable>(maxPacket->getBurst()));
 
-        if(_bl->debugLevel >= 4) _out.printInfo("Info: Sending: " + parameters->back()->stringValue);
+        if(_bl->debugLevel >= 4) _out.printInfo("Info: Sending: " + parameters->at(1)->stringValue);
 
         auto result = invoke("sendPacket", parameters);
         if(result->errorStruct)
