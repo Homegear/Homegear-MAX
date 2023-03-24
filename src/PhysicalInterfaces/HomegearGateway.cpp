@@ -113,7 +113,7 @@ void HomegearGateway::listen() {
         try {
           bytesRead = _tcpSocket->Read((uint8_t *)buffer.data(), buffer.size(), more_data);
         }
-        catch (C1Net::TimeoutException &ex) {
+        catch (const C1Net::TimeoutException &ex) {
           continue;
         }
         if (bytesRead <= 0) continue;
@@ -147,13 +147,14 @@ void HomegearGateway::listen() {
               _binaryRpc->reset();
             }
           }
-          catch (BaseLib::Rpc::BinaryRpcException &ex) {
+          catch (const BaseLib::Rpc::BinaryRpcException &ex) {
             _binaryRpc->reset();
             _out.printError("Error processing packet: " + std::string(ex.what()));
           }
         }
       }
       catch (const std::exception &ex) {
+        _stopped = true;
         _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
       }
     }
