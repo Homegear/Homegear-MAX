@@ -33,6 +33,8 @@ void HomegearGateway::startListening() {
       _out.printError("Error: Configuration of Homegear Gateway is incomplete. Please correct it in \"max.conf\".");
       return;
     }
+    
+    IPhysicalInterface::startListening();
 
     C1Net::TcpSocketInfo tcp_socket_info;
     tcp_socket_info.read_timeout = 5000;
@@ -41,9 +43,10 @@ void HomegearGateway::startListening() {
     C1Net::TcpSocketHostInfo tcp_socket_host_info{
         .host = _settings->host,
         .port = (uint16_t)BaseLib::Math::getUnsignedNumber(_settings->port),
-        .tls = _settings->ssl,
-        .verify_certificate = _settings->verifyCertificate,
+        .tls = true,
         .ca_file = _settings->caFile,
+        .client_cert_file = _settings->certFile,
+        .client_key_file = _settings->keyFile,
         .connection_retries = 1
     };
 
@@ -57,7 +60,6 @@ void HomegearGateway::startListening() {
     _stopCallbackThread = false;
     if (_settings->listenThreadPriority > -1) _bl->threadManager.start(_listenThread, true, _settings->listenThreadPriority, _settings->listenThreadPolicy, &HomegearGateway::listen, this);
     else _bl->threadManager.start(_listenThread, true, &HomegearGateway::listen, this);
-    IPhysicalInterface::startListening();
   }
   catch (const std::exception &ex) {
     _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
