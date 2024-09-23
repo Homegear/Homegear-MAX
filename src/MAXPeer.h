@@ -105,6 +105,7 @@ public:
     void setRSSIDevice(uint8_t rssi);
 	void getValuesFromPacket(std::shared_ptr<MAXPacket> packet, std::vector<FrameValues>& frameValue);
 	void packetReceived(std::shared_ptr<MAXPacket> packet);
+	void sendTime();
 
 	//RPC methods
 	virtual PVariable getDeviceInfo(BaseLib::PRpcClientInfo clientInfo, std::map<std::string, bool> fields);
