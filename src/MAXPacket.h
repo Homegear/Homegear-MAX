@@ -30,6 +30,8 @@
 #ifndef MAXPACKET_H_
 #define MAXPACKET_H_
 
+#include <cstdint>
+
 #include <homegear-base/BaseLib.h>
 
 #include <map>

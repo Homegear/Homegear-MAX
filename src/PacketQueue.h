@@ -30,6 +30,8 @@
 #ifndef PACKETQUEUE_H
 #define PACKETQUEUE_H
 
+#include <cstdint>
+
 #include "delegate.hpp"
 #include <homegear-base/BaseLib.h>
 #include "MAXPacket.h"

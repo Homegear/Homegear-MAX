@@ -30,6 +30,8 @@
 #ifndef QUEUEMANAGER_H_
 #define QUEUEMANAGER_H_
 
+#include <cstdint>
+
 #include <homegear-base/BaseLib.h>
 #include "PacketQueue.h"
 #include "MAXPeer.h"

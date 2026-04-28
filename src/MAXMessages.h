@@ -30,6 +30,8 @@
 #ifndef MAXMESSAGES_H
 #define MAXMESSAGES_H
 
+#include <cstdint>
+
 #include "MAXMessage.h"
 
 #include <iostream>

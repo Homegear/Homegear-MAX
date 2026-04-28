@@ -30,6 +30,8 @@
 #ifndef MAXPEER_H_
 #define MAXPEER_H_
 
+#include <cstdint>
+
 #include <homegear-base/BaseLib.h>
 #include "MAXPacket.h"
 #include "PendingQueues.h"
