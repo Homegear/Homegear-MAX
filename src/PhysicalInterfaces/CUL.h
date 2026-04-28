@@ -30,6 +30,8 @@
 #ifndef CUL_H
 #define CUL_H
 
+#include <cstdint>
+
 #include <homegear-base/BaseLib.h>
 
 #include "IMaxInterface.h"

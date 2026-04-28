@@ -30,6 +30,8 @@
 #ifndef MAXMESSAGE_H
 #define MAXMESSAGE_H
 
+#include <cstdint>
+
 #include <homegear-base/BaseLib.h>
 #include "MAXPacket.h"
 #include "MAXCentral.h"

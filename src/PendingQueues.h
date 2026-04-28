@@ -30,6 +30,8 @@
 #ifndef PENDINGQUEUES_H_
 #define PENDINGQUEUES_H_
 
+#include <cstdint>
+
 #include "PacketQueue.h"
 #include "MAXPeer.h"
 

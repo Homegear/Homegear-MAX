@@ -30,6 +30,8 @@
 #ifndef COC_H
 #define COC_H
 
+#include <cstdint>
+
 #include <homegear-base/BaseLib.h>
 
 #include "IMaxInterface.h"

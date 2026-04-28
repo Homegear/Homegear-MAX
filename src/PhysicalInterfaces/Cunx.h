@@ -30,6 +30,8 @@
 #ifndef CUNX_H
 #define CUNX_H
 
+#include <cstdint>
+
 #include <homegear-base/BaseLib.h>
 #include "IMaxInterface.h"
 
