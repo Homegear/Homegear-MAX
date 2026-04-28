@@ -30,6 +30,8 @@
 #ifndef MAX_H_
 #define MAX_H_
 
+#include <cstdint>
+
 #include <homegear-base/BaseLib.h>
 
 using namespace BaseLib;
